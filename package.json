@@ -1,0 +1,55 @@
+{
+  "name": "@thednp/solid-color-picker",
+  "version": "0.0.1",
+  "description": "Modern Color Picker for SolidJS",
+  "homepage": "https://github.com/thednp/solid-color-picker#readme",
+  "bugs": {
+    "url": "https://github.com/thednp/solid-color-picker/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thednp/solid-color-picker.git"
+  },
+  "sideEffects": false,
+  "type": "module",
+  "source": "src/index.tsx",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/types/index.d.ts",
+  "files": ["dist"],
+  "exports": {
+    ".": {
+      "solid": "./dist/source/index.jsx",
+      "import": "./dist/esm/index.js",
+      "browser": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js",
+      "node": "./dist/cjs/index.js"
+    }
+  },
+  "scripts": {
+    "example:dev": "vite serve example",
+    "example:build": "vite build example",
+    "format": "prettier --write \"src/**/*.(ts|tsx)\"",
+    "dev": "npx vite serve example --config vite.config.ts",
+    "typecheck": "tsc --noEmit",
+    "build": "rollup -c",
+    "serve": "vite preview"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "rollup": "^3.28.0",
+    "rollup-preset-solid": "^2.0.1",
+    "sass": "^1.65.1",
+    "solid-devtools": "^0.27.7",
+    "typescript": "^5.1.6",
+    "vite": "^4.4.9",
+    "vite-plugin-solid": "^2.7.0"
+  },
+  "dependencies": {
+    "@thednp/color": "^1.0.8",
+    "@thednp/color-picker": "^2.0.0-alpha7",
+    "bootstrap": "^5.3.1",
+    "prettier": "^3.0.2",
+    "solid-js": "^1.7.11"
+  }
+}
