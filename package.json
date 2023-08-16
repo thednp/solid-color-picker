@@ -50,6 +50,8 @@
   "dependencies": {
     "@thednp/color": "^1.0.8",
     "@thednp/color-picker": "2.0.0-alpha7",
+    "@thednp/event-listener": "^2.0.2",
+    "@thednp/shorty": "2.0.0-alpha16",
     "bootstrap": "^5.3.1",
     "prettier": "^3.0.2",
     "solid-js": "^1.7.11"
