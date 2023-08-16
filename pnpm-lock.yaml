@@ -11,6 +11,12 @@ dependencies:
   '@thednp/color-picker':
     specifier: 2.0.0-alpha7
     version: 2.0.0-alpha7
+  '@thednp/event-listener':
+    specifier: ^2.0.2
+    version: 2.0.2
+  '@thednp/shorty':
+    specifier: 2.0.0-alpha16
+    version: 2.0.0-alpha16
   bootstrap:
     specifier: ^5.3.1
     version: 5.3.1(@popperjs/core@2.11.8)
