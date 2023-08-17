@@ -32,7 +32,7 @@
     "example:dev": "vite serve example",
     "example:build": "vite build example",
     "format": "prettier --write \"src/**/*.(ts|tsx)\"",
-    "dev": "npx vite serve example --config vite.config.ts",
+    "dev": "vite serve example --config vite.config.ts",
     "typecheck": "tsc --noEmit",
     "build": "rollup -c",
     "serve": "vite preview"
