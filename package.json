@@ -54,5 +54,6 @@
     "bootstrap": "^5.3.1",
     "prettier": "^3.0.2",
     "solid-js": "^1.7.11"
-  }
+  },
+  "packageManager": "pnpm@8.6.12"
 }
