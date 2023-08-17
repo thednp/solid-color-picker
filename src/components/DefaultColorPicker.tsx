@@ -17,7 +17,7 @@ import {
   keyEnter,
   hasClass,
   getElementStyle,
-  focus
+  focus,
 } from '@thednp/shorty';
 const { colorPickerLabels, colorNames } = ColorPicker;
 
@@ -52,7 +52,8 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
   const [position, setPosition] = createSignal('');
   const [controlPositions, setControlPositions] = createSignal(initialControlPositions);
   const isDark = () => color().isDark && color().a > 0.33;
-  const className = () => ['color-picker', props.class, isDark() ? 'txt-dark' : 'txt-light',  open() ? 'open' : ''].join(' ');
+  const className = () =>
+    ['color-picker', props.class, isDark() ? 'txt-dark' : 'txt-light', open() ? 'open' : ''].join(' ');
   pickerCount += 1;
 
   let pickerDropdown!: HTMLDivElement;
@@ -69,8 +70,10 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
   };
 
   const knobs = () => {
-    return [...getElementsByClassName('color-pointer', pickerDropdown),
-    ...getElementsByClassName('color-slider', pickerDropdown)];
+    return [
+      ...getElementsByClassName('color-pointer', pickerDropdown),
+      ...getElementsByClassName('color-slider', pickerDropdown),
+    ];
   };
 
   const inputs = () => {
@@ -321,7 +324,7 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
     /**
      * this instance must avoid using useVisualOffset()
      * @see https://stackoverflow.com/questions/70373659/solidjs-computations-created-outside-a-createroot-or-render-will-never-be
-     */ 
+     */
     const [{ offsetWidth, offsetHeight }] = visuals();
     const { activeElement } = getDocument(k1);
     const currentKnob = [k1, k2, k3].find(x => x === activeElement);
@@ -459,7 +462,7 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
     action(doc, 'pointermove', pointerMove as EventListener);
     [c1, c2, c3].forEach(c => c && action(c, 'pointerdown', pointerDown as EventListener));
     [k1, k2, k3].forEach(k => k && action(k, 'keydown', handleKnobs as EventListener));
-    if (parent) action(parent, 'focusout', handleBlur as EventListener)
+    if (parent) action(parent, 'focusout', handleBlur as EventListener);
     if (menuDropdown) action(menuDropdown, 'keydown', menuKeyHandler as EventListener);
   };
 
@@ -557,7 +560,6 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
         fillGradient,
       }}
     >
-
       <div class={className()}>
         <button
           ref={pickerToggle}

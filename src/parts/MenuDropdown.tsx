@@ -77,7 +77,10 @@ const KeywordsMenu: Component<MenuProps> = props => {
           return (
             <li
               class={`color-option${isActive() ? ' active' : ''}`}
-              onClick={() => {setValue(val); update(new Color(val, format))}}
+              onClick={() => {
+                setValue(val);
+                update(new Color(val, format));
+              }}
               tabindex="0"
               role="option"
               aria-selected={isActive()}

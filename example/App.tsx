@@ -1,6 +1,7 @@
 import 'bootstrap/scss/bootstrap-reboot.scss';
 import 'bootstrap/scss/bootstrap-grid.scss';
 import '@thednp/color-picker/src/scss/color-picker.scss';
+import './style.css';
 
 import { DefaultColorPicker } from '../src';
 
@@ -18,6 +19,9 @@ const App = () => {
   };
   return (
     <div class="container" style={{ padding: '70vh 0' }}>
+      <header>
+        <h1><a target="_blank" href="https://github.com/thednp/solid-color-picker" title="Solid Color Picker on Github">Solid Color Picker</a></h1>
+      </header>
       <div class="row">
         <div class="col">
           <label for="my-id-red">Default Color Picker</label>
@@ -68,6 +72,14 @@ const App = () => {
           <p>This is where we are working on.</p>
         </div>
       </div>
+      <footer>
+        <p class="copy"><a target="_blank" href="https://github.com/thednp">thednp</a> © {new Date().getFullYear()}</p>
+        
+        <p class="links">
+          <a target="_blank" href="https://github.com/thednp/solid-color-picker" title="Solid Color Picker on Github">Github</a> |
+          <a target="_blank" href="https://www.npmjs.com/package/@thednp/solid-color-picker" title="ColorPicker on NPM">NPM</a>.
+        </p>
+      </footer>
     </div>
   );
 };
