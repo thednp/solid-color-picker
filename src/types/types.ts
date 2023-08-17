@@ -31,7 +31,7 @@ export type ColorPickerProps = {
 };
 
 export type ControlProps = {
-  format: SupportedFormat;
+  format: Accessor<SupportedFormat>;
   colorPickerLabels: typeof ColorPicker.colorPickerLabels;
   stringValue: Accessor<string>;
 };
@@ -40,7 +40,7 @@ export type PickerProps = {
   id: string;
   ref: HTMLDivElement;
   class: Accessor<string>;
-  format: SupportedFormat;
+  format: Accessor<SupportedFormat>;
   colorPickerLabels: typeof colorPickerLabels;
   colorNames: Record<string, string>;
 };
@@ -49,7 +49,7 @@ export type MenuProps = {
   id: string;
   ref: HTMLDivElement;
   class: Accessor<string>;
-  format: SupportedFormat;
+  format: Accessor<SupportedFormat>;
   colorPickerLabels: typeof colorPickerLabels;
   colorPresets?: ColorPresets;
   colorKeywords?: ColorKeywords;

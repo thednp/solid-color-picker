@@ -10,7 +10,7 @@
     "esModuleInterop": true,
     "jsx": "preserve",
     "jsxImportSource": "solid-js",
-    "types": ["vite/client", "@thednp/color", "@thednp/color-picker", "@thednp/event-listener", "@thednp/shorty"],
+    "types": ["@thednp/color", "@thednp/color-picker", "@thednp/event-listener", "@thednp/shorty"],
     "noEmit": true,
     "isolatedModules": true
   },

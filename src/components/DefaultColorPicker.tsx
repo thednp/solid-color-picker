@@ -39,12 +39,13 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
   colorNames.forEach((c, i) => {
     colorLabels[c] = translatedLabels[i].trim();
   });
-  const format = props.format || 'rgb';
+  let oldFormat = props.format;
+  const format = () => props.format || 'rgb';
   const initValue = props.value || 'red';
   const { roundPart } = Color;
   const { offsetHeight, offsetWidth } = useVisualOffset();
   const [value, setValue] = createSignal(initValue);
-  const [color, setColor] = createSignal(new Color(initValue, format));
+  const [color, setColor] = createSignal(new Color(initValue, format()));
   const [open, setOpen] = createSignal(undefined as HTMLDivElement | undefined);
   const [drag, setDrag] = createSignal<HTMLElement | undefined>(undefined);
   const [pickerShown, setPickerShown] = createSignal(false);
@@ -53,7 +54,12 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
   const [controlPositions, setControlPositions] = createSignal(initialControlPositions);
   const isDark = () => color().isDark && color().a > 0.33;
   const className = () =>
-    ['color-picker', props.class, isDark() ? 'txt-dark' : 'txt-light', open() ? 'open' : ''].join(' ');
+    [
+      'color-picker',
+      ...[props.class ? props.class.split('s') : ''],
+      isDark() ? 'txt-dark' : 'txt-light',
+      open() ? 'open' : '',
+    ].join(' ');
   pickerCount += 1;
 
   let pickerDropdown!: HTMLDivElement;
@@ -131,7 +137,7 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
     const hsv = color().toHsv();
 
     const hue = roundPart(hsl.h * 360);
-    const saturationSource = format === 'hsl' ? hsl.s : hsv.s;
+    const saturationSource = format() === 'hsl' ? hsl.s : hsv.s;
     const saturation = roundPart(saturationSource * 100);
     const lightness = roundPart(hsl.l * 100);
     const hsvl = hsv.v * 100;
@@ -231,7 +237,6 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
     }
 
     if ([keyEnter, keySpace].includes(code)) {
-      // menuClickHandler(e);
       target.click();
     }
   };
@@ -389,7 +394,7 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
         v: lightness,
         a: alpha,
       },
-      format,
+      format(),
     );
 
     setValue(newColor.toString());
@@ -420,7 +425,7 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
         v: lightness,
         a: alpha,
       },
-      format,
+      format(),
     );
 
     setValue(newColor.toString());
@@ -439,7 +444,7 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
 
     // update color alpha
     const alpha = 1 - offsetY / offsetHeight();
-    const newColor = new Color(color().setAlpha(alpha), format);
+    const newColor = new Color(color().setAlpha(alpha), format());
 
     setValue(newColor.toString());
     setColor(newColor);
@@ -528,10 +533,21 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
     onCleanup(toggleEvents);
   });
   createEffect(() => {
-    if (typeof props.onChange === 'function') {
-      props.onChange(value());
-    }
+    startTransition(() => {
+      if (typeof props.onChange === 'function') {
+        props.onChange(value());
+      }
+    });
   });
+  createEffect(() => {
+    startTransition(() => {
+      if (oldFormat !== format()) {
+        oldFormat = props.format;
+        update(new Color(color(), oldFormat));
+      }
+    });
+  });
+
   // on mount, update control positions
   updateControlPositions();
 
@@ -570,7 +586,7 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
         >
           <span class="v-hidden">{`${pickerLabels.pickerLabel}. ${
             pickerLabels.formatLabel
-          }: ${format.toUpperCase()}`}</span>
+          }: ${format().toUpperCase()}`}</span>
         </button>
         <input
           ref={input}
@@ -580,16 +596,16 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
           class="color-preview btn-appearance"
           autocomplete="off"
           spellcheck={false}
-          placeholder={props.placeholder ? props.placeholder : `Type colour value in ${format.toUpperCase()} format`}
-          value={color().toString()}
+          placeholder={props.placeholder ? props.placeholder : `Type colour value in ${format().toUpperCase()} format`}
+          value={value()}
           tabindex={-1}
-          style={`background-color: ${color().toString()};`}
+          style={`background-color: ${value()};`}
           onFocus={showPicker}
           onInput={e => setValue(e.currentTarget.value)}
           onChange={e => {
             const newValue = e.currentTarget.value;
             setValue(newValue);
-            setColor(new Color(newValue, format));
+            setColor(new Color(newValue, format()));
             updateControlPositions();
           }}
         />

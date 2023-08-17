@@ -28,6 +28,7 @@ const PresetsMenu: Component<MenuProps> = props => {
   optionSize = fit > 5 && isMultiLine ? 1.5 : optionSize;
   const menuHeight = `${rowCount * optionSize}rem`;
   const menuHeightHover = `calc(${rowCountHover} * ${optionSize}rem + ${rowCountHover - 1} * ${gap})`;
+  const colorFormat = () => props.format();
 
   return (
     <ul
@@ -38,9 +39,9 @@ const PresetsMenu: Component<MenuProps> = props => {
     >
       <For each={colors}>
         {color => {
-          const newColor = new Color(color, props.format);
-          const newValue = newColor.toString();
-          const isActive = () => newValue === value();
+          const newColor = () => new Color(color, colorFormat());
+          const newValue = () => newColor().toString();
+          const isActive = () => newValue() === value();
           return (
             <li
               tabindex="0"
@@ -48,14 +49,14 @@ const PresetsMenu: Component<MenuProps> = props => {
               aria-selected={isActive()}
               class={`color-option${isActive() ? ' active' : ''}`}
               onClick={() => {
-                setValue(newValue);
-                setColor(newColor);
+                setValue(newValue());
+                setColor(newColor());
 
                 updateControlPositions();
               }}
               style={`background-color: ${color.toRgbString()};`}
             >
-              {newValue}
+              {newValue()}
             </li>
           );
         }}
@@ -65,21 +66,22 @@ const PresetsMenu: Component<MenuProps> = props => {
 };
 
 const KeywordsMenu: Component<MenuProps> = props => {
-  const { colorPickerLabels, format } = props;
+  const { colorPickerLabels } = props;
   const { value, setValue, update } = usePickerContext();
 
   return (
     <ul class="color-defaults" role="listbox" aria-label={colorPickerLabels.defaultsLabel}>
       <For each={props.colorKeywords}>
         {key => {
-          const { label, value: val } = typeof key === 'object' ? key : { label: key, value: key };
+          const { label, value: val } =
+            typeof key === 'object' ? key : { label: key, value: new Color(key, props.format()).toString() };
           const isActive = () => val === value();
           return (
             <li
               class={`color-option${isActive() ? ' active' : ''}`}
               onClick={() => {
                 setValue(val);
-                update(new Color(val, format));
+                update(new Color(val, props.format()));
               }}
               tabindex="0"
               role="option"

@@ -1,0 +1,154 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 800 600">
+  <defs>
+    <path id="reuse-01" fill="url(#c1)" d="M0 30.76 57.6 0l57.6 30.76v70.984l-57.6 31.943L0 101.744Z" />
+    <path id="reuse-111" fill="url(#d1)" d="M0 30.76 57.6 0l57.6 30.76v70.984l-57.6 31.943L0 101.744Z" />
+    <path id="reuse-21" fill="url(#e1)" d="M0 31.943 57.6 0v70.984L0 102.927Z" />
+    <path id="reuse-31" fill="url(#f1)" d="m0 0 57.6 39.041L0 70.984Z" />
+    <path id="reuse-41" fill="url(#g1)" d="M0 31.943-57.6 0v70.984L0 102.927Z" />
+    <path id="reuse-51" fill="url(#g1)" d="m0 0-57.6 39.041L0 70.984Z" />
+    <path id="reuse-61" fill="url(#c1)" d="M0 30.421 56.751 0 113.5 30.421v70.2l-56.749 31.592L0 100.622Z" />
+    <path id="reuse-71" fill="url(#d1)" d="M0 30.421 56.751 0 113.5 30.421v70.2l-56.749 31.592L0 100.622Z" />
+    <path id="reuse-81" fill="url(#e1)" d="M0 31.591 56.751 0v70.2L0 101.792Z" />
+    <path id="reuse-91" fill="url(#f1)" d="m0 0 56.751 38.611L0 70.2Z" />
+    <path id="reuse-101" fill="url(#g1)" d="M0 31.591-56.751 0v70.2L0 101.792Z" />
+    <path id="reuse-1111" fill="url(#g1)" d="m0 0-56.751 38.611L0 70.2Z" />
+  </defs>
+  <defs>
+    <linearGradient id="c1" x1=".5" x2=".5" y2="1" gradientUnits="objectBoundingBox">
+      <!-- <stop offset="0" stop-color="#fff" /> -->
+      <!-- <stop offset="1" stop-color="#f7fbff" /> -->
+      <stop offset="0" stop-color="var(--heading-color)" />
+      <stop offset="1" stop-color="var(--color90)" />
+    </linearGradient>
+    <linearGradient id="d1" x1=".5" x2=".5" y2="1" gradientUnits="objectBoundingBox">
+      <!-- <stop offset="0" stop-color="#d0deea" />
+      <stop offset="1" stop-color="#dae1e8" /> -->
+      <stop offset="0" stop-color="var(--color90)" />
+      <stop offset="1" stop-color="var(--color180)" />
+    </linearGradient>
+    <linearGradient id="e1" x1=".5" x2=".5" y2="1" gradientUnits="objectBoundingBox">
+      <!-- <stop offset="0" stop-color="#bdc2c8" />
+      <stop offset="1" stop-color="#dcedef" /> -->
+      <stop offset="0" stop-color="var(--color180)" />
+      <stop offset="1" stop-color="var(--color)" />
+    </linearGradient>
+    <linearGradient id="f1" x1=".5" x2=".5" y2="1" gradientUnits="objectBoundingBox">
+      <!-- <stop offset="0" stop-color="#adbbca" stop-opacity=".702" />
+      <stop offset="1" stop-color="#e4e8e9" stop-opacity="0" /> -->
+      <stop offset="0" stop-color="var(--color270)" stop-opacity=".702" />
+      <stop offset="1" stop-color="var(--color90)" stop-opacity="0" />
+    </linearGradient>
+    <linearGradient id="g1" x1=".5" x2=".5" y2="1" gradientUnits="objectBoundingBox">
+      <!-- <stop offset="0" stop-color="#7692ae" />
+      <stop offset="1" stop-color="#93b0ce" /> -->
+      <stop offset="0" stop-color="var(--color)" />
+      <stop offset="1" stop-color="var(--color90)" />
+    </linearGradient>
+    <radialGradient id="b1" cx="-.061" cy="-.082" r="1.895" gradientUnits="objectBoundingBox">
+      <!-- <stop offset="0" stop-color="#002c69" />
+      <stop offset=".748" stop-color="#20569a" />
+      <stop offset="1" stop-color="#28abd8" /> -->
+      <stop offset="0" stop-color="var(--color)" />
+      <stop offset=".748" stop-color="var(--color180)" />
+      <stop offset="1" stop-color="var(--color270)" />
+    </radialGradient>
+  </defs>
+  <g>
+    <rect x="0" y="0" width="800" height="600" fill="url(#b1)" />
+    <g opacity=".3" style="mix-blend-mode: color-burn; isolation: isolate">
+      <g>
+        <g>
+          <use xlink:href="#reuse-01" transform="translate(115.645 -71.225)" />
+          <g opacity=".237">
+            <g>
+              <use xlink:href="#reuse-111" transform="translate(115.645 -71.225)" />
+              <use xlink:href="#reuse-21" transform="translate(173.246 -40.465)" />
+              <use xlink:href="#reuse-21" transform="translate(173.246 -40.465)" />
+              <use xlink:href="#reuse-31" transform="translate(173.246 -8.522)" />
+              <use xlink:href="#reuse-41" transform="translate(173.246 -40.465)" />
+              <use xlink:href="#reuse-51" transform="translate(173.246 -8.522)" />
+            </g>
+          </g>
+        </g>
+        <g>
+          <use xlink:href="#reuse-01" transform="translate(170.686 -40.374)" />
+          <g opacity=".237">
+            <g>
+              <use xlink:href="#reuse-111" transform="translate(170.686 -40.374)" />
+              <use xlink:href="#reuse-21" transform="translate(228.287 -9.614)" />
+              <use xlink:href="#reuse-21" transform="translate(228.287 -9.614)" />
+              <use xlink:href="#reuse-31" transform="translate(228.287 22.329)" />
+              <use xlink:href="#reuse-41" transform="translate(228.287 -9.614)" />
+              <use xlink:href="#reuse-51" transform="translate(228.287 22.329)" />
+            </g>
+          </g>
+        </g>
+        <g>
+          <use xlink:href="#reuse-01" transform="translate(228.287 -8.517)" />
+          <g opacity=".237">
+            <g>
+              <use xlink:href="#reuse-111" transform="translate(228.287 -8.517)" />
+              <use xlink:href="#reuse-21" transform="translate(285.888 22.243)" />
+              <use xlink:href="#reuse-21" transform="translate(285.888 22.243)" />
+              <use xlink:href="#reuse-31" transform="translate(285.888 54.186)" />
+              <use xlink:href="#reuse-41" transform="translate(285.888 22.243)" />
+              <use xlink:href="#reuse-51" transform="translate(285.888 54.186)" />
+            </g>
+          </g>
+        </g>
+        <g>
+          <use xlink:href="#reuse-01" transform="translate(170.686 93.313)" />
+          <g opacity=".237">
+            <g>
+              <use xlink:href="#reuse-111" transform="translate(170.686 93.313)" />
+              <use xlink:href="#reuse-21" transform="translate(228.287 124.073)" />
+              <use xlink:href="#reuse-21" transform="translate(228.287 124.073)" />
+              <use xlink:href="#reuse-31" transform="translate(228.287 156.016)" />
+              <use xlink:href="#reuse-41" transform="translate(228.287 124.073)" />
+              <use xlink:href="#reuse-51" transform="translate(228.287 156.016)" />
+            </g>
+          </g>
+        </g>
+        <g>
+          <use xlink:href="#reuse-01" transform="translate(0 -.822)" />
+          <g opacity=".237">
+            <g>
+              <use xlink:href="#reuse-111" transform="translate(0 -.822)" />
+              <use xlink:href="#reuse-21" transform="translate(57.601 29.938)" />
+              <use xlink:href="#reuse-21" transform="translate(57.601 29.938)" />
+              <use xlink:href="#reuse-31" transform="translate(57.601 61.881)" />
+              <use xlink:href="#reuse-41" transform="translate(57.601 29.938)" />
+              <use xlink:href="#reuse-51" transform="translate(57.601 61.881)" />
+            </g>
+          </g>
+        </g>
+      </g>
+      <g>
+        <use xlink:href="#reuse-61" transform="translate(341.499 -9.592)" />
+        <g opacity=".237">
+          <g>
+            <use xlink:href="#reuse-71" transform="translate(341.499 -9.592)" />
+            <use xlink:href="#reuse-81" transform="translate(398.25 20.829)" />
+            <use xlink:href="#reuse-81" transform="translate(398.25 20.829)" />
+            <use xlink:href="#reuse-91" transform="translate(398.25 52.419)" />
+            <use xlink:href="#reuse-101" transform="translate(398.25 20.829)" />
+            <use xlink:href="#reuse-1111" transform="translate(398.25 52.419)" />
+          </g>
+        </g>
+      </g>
+      <g>
+        <use xlink:href="#reuse-61" transform="translate(284.748 -109)" />
+        <g opacity=".237">
+          <g>
+            <use xlink:href="#reuse-71" transform="translate(284.748 -109)" />
+            <use xlink:href="#reuse-81" transform="translate(341.499 -78.579)" />
+            <use xlink:href="#reuse-81" transform="translate(341.499 -78.579)" />
+            <use xlink:href="#reuse-91" transform="translate(341.499 -46.989)" />
+            <use xlink:href="#reuse-101" transform="translate(341.499 -78.579)" />
+            <use xlink:href="#reuse-1111" transform="translate(341.499 -46.989)" />
+          </g>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>
