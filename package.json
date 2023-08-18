@@ -2,6 +2,12 @@
   "name": "@thednp/solid-color-picker",
   "version": "0.0.1",
   "description": "Modern Color Picker for SolidJS",
+  "keywords": [
+    "solid",
+    "solid-component",
+    "color picker",
+    "colorpicker"
+  ],
   "homepage": "https://github.com/thednp/solid-color-picker#readme",
   "bugs": {
     "url": "https://github.com/thednp/solid-color-picker/issues"

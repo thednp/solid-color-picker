@@ -1,34 +1,16 @@
-/* latin-ext */
-@font-face {
-  font-family: "Smooch Sans";
-  font-style: normal;
-  font-weight: 200;
-  font-display: swap;
-  src: url("https://fonts.gstatic.com/s/smoochsans/v4/c4mz1n5uGsXss2LJh1QH6b129FZvxPj6I4oiQUBYf6gfBlw.woff2") format("woff2");
-  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-
-/* latin */
-@font-face {
-  font-family: "Smooch Sans";
-  font-style: normal;
-  font-weight: 200;
-  font-display: swap;
-  src: url("https://fonts.gstatic.com/s/smoochsans/v4/c4mz1n5uGsXss2LJh1QH6b129FZvxPj6I4oiQUBYcagf.woff2") format("woff2");
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-
 body {
   --btn-bg-color: #3f0f99;
   --btn-color: rgb(255 255 255 / 70%);
   --body-bg: #f6f6f6;
   padding: 0;
   margin: 2rem;
-  font: 14px Arial;
+  font-size: 14px;
+  font-family: 'Roboto', Arial, sans-serif;
   color: var(--text-color, #555);
   background-color: var(--body-bg, #f6f6f6);
 }
 
+.row,
 header,
 main,
 footer {
@@ -324,21 +306,21 @@ header { text-align: center; }
 .btn {
   background-color: var(--bg-color);
   color: var(--text-color);
-  border-radius: 2px;
-  border: 1px solid var(--heading-color);
+  border-radius: 3px;
+  border: 1px solid var(--bg-color);
   cursor: pointer
 }
 
 .btn:hover,
 .btn:active,
 .btn:focus {
-  background-color: var(--color);
-  color: var(--color180);
-  border-color: var(--color);
+  background-color: var(--color180);
+  color: var(--color);
+  border-color: var(--color180);
 }
 
 .btn.active {
-  background-color: var(--color180);
-  color: var(--color);
-  border-color: var(--color270);
+  background-color: var(--color);
+  color: var(--heading-color);
+  border-color: var(--color);
 }
