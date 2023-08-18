@@ -22,7 +22,7 @@ import {
 const { colorPickerLabels, colorNames } = ColorPicker;
 
 import type { Component } from 'solid-js';
-import { createSignal, createEffect, onCleanup, startTransition } from 'solid-js';
+import { createSignal, createEffect, onCleanup, startTransition, createMemo } from 'solid-js';
 import type { ColorPickerProps } from '../types/types';
 import PickerDropdown from '../parts/PickerDropdown';
 import MenuDropdown from '../parts/MenuDropdown';
@@ -41,11 +41,11 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
   });
   let oldFormat = props.format;
   const format = () => props.format || 'rgb';
-  const initValue = props.value || 'red';
+  const initValue = () => props.value || 'red';
   const { roundPart } = Color;
   const { offsetHeight, offsetWidth } = useVisualOffset();
-  const [value, setValue] = createSignal(initValue);
-  const [color, setColor] = createSignal(new Color(initValue, format()));
+  const [value, setValue] = createSignal(initValue());
+  const [color, setColor] = createSignal(new Color(value(), format()));
   const [open, setOpen] = createSignal(undefined as HTMLDivElement | undefined);
   const [drag, setDrag] = createSignal<HTMLElement | undefined>(undefined);
   const [pickerShown, setPickerShown] = createSignal(false);
@@ -56,7 +56,7 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
   const className = () =>
     [
       'color-picker',
-      ...[props.class ? props.class.split('s') : ''],
+      ...[props.class ? props.class.split(/\s/) : ''],
       isDark() ? 'txt-dark' : 'txt-light',
       open() ? 'open' : '',
     ].join(' ');
@@ -65,7 +65,6 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
   let pickerDropdown!: HTMLDivElement;
   let menuDropdown!: HTMLDivElement;
   let input!: HTMLInputElement;
-  let pickerToggle!: HTMLButtonElement;
 
   const controls = () => {
     return getElementsByClassName('color-control', pickerDropdown);
@@ -179,20 +178,19 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
     return colorName;
   };
 
-  const updateControlPositions = () => {
+  const updateControlPositions = createMemo(() => {
     const hsv = color().toHsv();
     const alpha = color().a;
     const hue = hsv.h;
     const saturation = hsv.s;
     const lightness = hsv.v;
-
     setControlPositions({
       c1x: saturation * offsetWidth(),
       c1y: (1 - lightness) * offsetHeight(),
       c2y: hue * offsetHeight(),
       c3y: (1 - alpha) * offsetHeight(),
     });
-  };
+  });
   const hideDropdown = () => {
     if (pickerShown()) hidePicker();
     else if (menuShown()) hideMenu();
@@ -578,7 +576,6 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
     >
       <div class={className()}>
         <button
-          ref={pickerToggle}
           class="picker-toggle btn-appearance"
           aria-expanded={pickerShown()}
           aria-haspopup={true}
