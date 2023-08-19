@@ -6,14 +6,17 @@
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
+    "noUncheckedIndexedAccess": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
+    "isolatedModules": true,
+    "skipLibCheck": true,
     "jsx": "preserve",
     "jsxImportSource": "solid-js",
     "types": ["@thednp/color", "@thednp/color-picker", "@thednp/event-listener", "@thednp/shorty"],
     "noEmit": true,
-    "isolatedModules": true
+    "baseUrl": "."
   },
-  "include": ["src"],
-  "exclude": ["node_modules", "dist", "example/dist"]
+  "include": ["./src"],
+  "exclude": ["node_modules", "dist", "example"]
 }

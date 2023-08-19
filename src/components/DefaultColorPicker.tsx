@@ -15,15 +15,18 @@ import {
   keyArrowRight,
   keySpace,
   keyEnter,
-  hasClass,
+  // hasClass,
   getElementStyle,
   focus,
+  ObjectAssign,
+  isArray,
+  ObjectFromEntries,
 } from '@thednp/shorty';
 const { colorPickerLabels, colorNames } = ColorPicker;
 
 import type { Component } from 'solid-js';
 import { createSignal, createEffect, onCleanup, startTransition, createMemo } from 'solid-js';
-import type { ColorPickerProps } from '../types/types';
+import type { ColorNames, ColorPickerProps } from '../types/types';
 import PickerDropdown from '../parts/PickerDropdown';
 import MenuDropdown from '../parts/MenuDropdown';
 import { PickerContext } from '../parts/ColorPickerContext';
@@ -34,11 +37,14 @@ let pickerCount = 0;
 const DefaultColorPicker: Component<ColorPickerProps> = props => {
   const id = props.id ? props.id : `color-picker-${pickerCount}`;
   const pickerLabels = props.colorPickerLabels ? props.colorPickerLabels : colorPickerLabels;
-  const translatedLabels = props.colorNames && props.colorNames.length === 17 ? props.colorNames : colorNames;
-  const colorLabels: Record<string, string> = {};
-  colorNames.forEach((c, i) => {
-    colorLabels[c] = translatedLabels[i].trim();
-  });
+  const colorLabels = ObjectFromEntries(colorNames.map(c => ([c, c]))) as ColorNames;
+
+  if (props.colorNames && isArray(props.colorNames) && props.colorNames.length === 17) {
+    const translatedLabels = props.colorNames.map((c, i) => ([colorNames[i], c])) as [string, string][];
+    const translatedLabelsObject = ObjectFromEntries(translatedLabels) as ColorNames;
+    ObjectAssign(colorLabels, translatedLabelsObject);
+  }
+
   let oldFormat = props.format;
   const format = () => props.format || 'rgb';
   const initValue = () => props.value || 'red';
@@ -59,7 +65,7 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
       ...[props.class ? props.class.split(/\s/) : ''],
       isDark() ? 'txt-dark' : 'txt-light',
       open() ? 'open' : '',
-    ].join(' ');
+    ].filter(c => c).join(' ');
   pickerCount += 1;
 
   let pickerDropdown!: HTMLDivElement;
@@ -67,22 +73,22 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
   let input!: HTMLInputElement;
 
   const controls = () => {
-    return getElementsByClassName('color-control', pickerDropdown);
+    return [...getElementsByClassName('color-control', pickerDropdown)] as [HTMLElement, HTMLElement, HTMLElement];
   };
 
   const visuals = () => {
-    return getElementsByClassName('visual-control', pickerDropdown);
+    return [...getElementsByClassName('visual-control', pickerDropdown)] as [HTMLElement, HTMLElement, HTMLElement];
   };
 
   const knobs = () => {
     return [
       ...getElementsByClassName('color-pointer', pickerDropdown),
       ...getElementsByClassName('color-slider', pickerDropdown),
-    ];
+    ] as [HTMLElement, HTMLElement, HTMLElement];
   };
 
   const inputs = () => {
-    return getElementsByClassName('color-input', pickerDropdown);
+    return [...getElementsByClassName('color-input', pickerDropdown)] as [HTMLElement, HTMLElement, HTMLElement];
   };
   const hue = () => controlPositions().c2y / offsetHeight();
   const lightness = () => roundPart(color().toHsv().v * 100);
@@ -206,7 +212,8 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
   const menuKeyHandler = (e: KeyboardEvent & { target: HTMLElement; code: string }) => {
     const { target, code } = e;
     const { previousElementSibling, nextElementSibling, parentElement } = target;
-    const isColorOptionsMenu = parentElement && hasClass(parentElement, 'color-options');
+    // const isColorOptionsMenu = parentElement && hasClass(parentElement, 'color-options');
+    const isColorOptionsMenu = parentElement && menuDropdown.contains(parentElement);
     const allSiblings = parentElement ? [...parentElement.children] : [];
     const columnsCount =
       isColorOptionsMenu && getElementStyle(parentElement, 'grid-template-columns').split(' ').length;
@@ -458,7 +465,7 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
     const doc = win.document;
     const [c1, c2, c3] = controls();
     const [k1, k2, k3] = knobs();
-    const parent = c1.closest('.color-picker');
+    const parent = c1 ? c1.closest('.color-picker') : null;
     action(win, 'scroll', handleScroll);
     action(doc, 'keyup', handleDismiss as EventListener);
     action(doc, 'pointerup', pointerUp as EventListener);
@@ -466,7 +473,7 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
     [c1, c2, c3].forEach(c => c && action(c, 'pointerdown', pointerDown as EventListener));
     [k1, k2, k3].forEach(k => k && action(k, 'keydown', handleKnobs as EventListener));
     if (parent) action(parent, 'focusout', handleBlur as EventListener);
-    if (menuDropdown) action(menuDropdown, 'keydown', menuKeyHandler as EventListener);
+    action(menuDropdown, 'keydown', menuKeyHandler as EventListener);
   };
 
   const hideTransitionEnd = () => {

@@ -3,7 +3,6 @@ import {
   Component,
   createComponent,
   createEffect,
-  createSelector,
   createSignal,
   startTransition,
   Suspense,
@@ -83,12 +82,12 @@ const RGBForm: Component<PickerProps> = props => {
   const { color, update, alpha } = usePickerContext();
   const rgb = () => {
     let { r, g, b, a } = color().toRgb();
-    [r, g, b] = [r, g, b].map(roundPart);
+    [r, g, b] = [r, g, b].map(roundPart) as [number, number, number];
     a = roundPart(alpha() * 100);
     return { r, g, b, a };
   };
   const stringValue = () => {
-    const { r, g, b, a } = rgb();
+    const { r, g, b } = rgb();
     return `${props.format().toUpperCase()}: ${r} ${g} ${b}`;
   };
 
@@ -180,7 +179,7 @@ const HSLForm: Component<PickerProps> = props => {
   const { hueLabel, saturationLabel, lightnessLabel, alphaLabel } = colorPickerLabels;
   const hsl = () => {
     let { h, s, l, a } = color().toHsl();
-    [h, s, l] = [h, s, l].map((cl, i) => roundPart(cl * (i ? 100 : 360)));
+    [h, s, l] = [h, s, l].map((cl, i) => roundPart(cl * (i ? 100 : 360))) as [number, number, number];
     a = roundPart(alpha() * 100);
     return { h, s, l, a };
   };
@@ -278,7 +277,7 @@ const HWBForm: Component<PickerProps> = props => {
   const { hueLabel, blacknessLabel, whitenessLabel, alphaLabel } = colorPickerLabels;
   const hwb = () => {
     let { h, w, b, a } = color().toHwb();
-    [h, w, b] = [h, w, b].map((cl, i) => roundPart(cl * (i ? 100 : 360)));
+    [h, w, b] = [h, w, b].map((cl, i) => roundPart(cl * (i ? 100 : 360))) as [number, number, number];
     a = roundPart(alpha() * 100);
     return { h, w, b, a };
   };

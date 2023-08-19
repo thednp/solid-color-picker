@@ -5,6 +5,45 @@ const { colorPickerLabels, colorNames } = ColorPicker;
 
 export type SupportedFormat = 'rgb' | 'hex' | 'hwb' | 'hsl';
 
+// export type ColorNames = [
+//   /** white */ string,
+//   /** black */ string,
+//   /** grey */ string,
+//   /** red */ string,
+//   /** orange */ string,
+//   /** brown */ string,
+//   /** gold */ string,
+//   /** olive */ string,
+//   /** yellow */ string,
+//   /** lime */ string,
+//   /** green */ string,
+//   /** teal */ string,
+//   /** cyan */ string,
+//   /** blue */ string,
+//   /** violet */ string,
+//   /** magenta */ string,
+//   /** pink */ string,
+// ];
+export type ColorNames = {
+  white: string,
+  black: string,
+  grey: string,
+  red: string,
+  orange: string,
+  brown: string,
+  gold: string,
+  olive: string,
+  yellow: string,
+  lime: string,
+  green: string,
+  teal: string,
+  cyan: string,
+  blue: string,
+  violet: string,
+  magenta: string,
+  pink: string,
+};
+
 /**
  * typical {hue: 0, hueSteps: 12, lightSteps: 10, saturation: 85}
  */

@@ -202,19 +202,14 @@ a:focus {
   margin-right: auto; 
 }
 
-/* .logo {
-  width: 100%;
-} */
+.logo {
+  width: 480px;
+  max-width: 100%;
+}
 
 header { text-align: center; }
 
 @media (min-width: 992px) {
-  /* .row {
-    max-width: inherit;
-  } */
-  /* .logo {
-    width: 80%;
-  } */
 
   .col {
     flex: 1 0 0%;

@@ -1,7 +1,7 @@
 [<img width="100%" src="banner.svg" alt="solid-color-picker">](https://solid-color-picker.netlify.app/)
 
 # Solid Color Picker
-
+[![ci](https://github.com/thednp/solid-color-picker/actions/workflows/ci.yml/badge.svg)](https://github.com/thednp/solid-color-picker/actions/workflows/ci.yml)
 [![Npm Version](https://img.shields.io/npm/v/solid-color-picker)](https://www.npmjs.com/package/solid-color-picker)
 [![License](https://img.shields.io/npm/l/solid-color-picker)](https://npm-stat.com/charts.html?package=solid-color-picker)
 [![Downloads](https://img.shields.io/npm/dm/solid-color-picker)](LICENSE)

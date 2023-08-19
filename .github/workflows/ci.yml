@@ -1,4 +1,4 @@
-name: Build and Test
+name: Build and Test Types
 
 on: [push]
 
@@ -8,7 +8,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [16.x, 17.x]
+        node-version: [16.x, 18.x]
         operating-system: [ubuntu-latest]
 
     steps:
@@ -26,10 +26,10 @@ jobs:
           cache: pnpm
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --no-frozen-lockfile --ignore-scripts
 
       - name: Build
-        run: pnpm run build
+        run: pnpm build
 
       - name: Typecheck
-        run: pnpm run typecheck
+        run: pnpm lint:types

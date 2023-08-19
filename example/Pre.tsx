@@ -1,4 +1,4 @@
-import { Accessor, Component } from "solid-js";
+import type { Accessor, Component } from "solid-js";
 
 type PreProps = {
     color: Accessor<string>;
