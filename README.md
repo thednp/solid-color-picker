@@ -1,4 +1,4 @@
-[<img width="100%" src="banner.svg" alt="solid-color-picker">](https://solid-color-picker.netlify.app/) ![solid-js version](https://img.shields.io/badge/solid--js-1.7.11-brightgreen)
+[<img width="100%" src="banner.svg" alt="solid-color-picker">](https://solid-color-picker.netlify.app/)
 
 # Solid Color Picker
 [![ci](https://github.com/thednp/solid-color-picker/actions/workflows/ci.yml/badge.svg)](https://github.com/thednp/solid-color-picker/actions/workflows/ci.yml)
@@ -6,7 +6,7 @@
 [![typescript version](https://img.shields.io/badge/typescript-5.1.6-brightgreen)](https://www.typescriptlang.org/)
 [![eslint version](https://img.shields.io/badge/eslint-8.47.0-brightgreen)](https://github.com/eslint)
 [![prettier version](https://img.shields.io/badge/prettier-3.0.2-brightgreen)](https://prettier.io/)
-[![solid version](https://img.shields.io/badge/solid-js-1.7.11-brightgreen)](https://solidjs.com/)
+[![solid-js version](https://img.shields.io/badge/solid--js-1.7.11-brightgreen)](https://solidjs.com/)
 [![vite version](https://img.shields.io/badge/vite-4.4.9-brightgreen)](https://github.com/vitejs)
 
 The feature rich **ColorPicker** component for SolidJS, sourced with TypeScript, WAI-ARIA compliant and is mainly based on [ColorPicker](http://github.com/thednp/color-picker).
