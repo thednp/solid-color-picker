@@ -31,5 +31,5 @@ jobs:
       - name: Build
         run: pnpm build
 
-      - name: Typecheck
+      - name: Typecheck & ESLint
         run: pnpm lint
