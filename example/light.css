@@ -1,0 +1,17 @@
+.light {
+  --dropdown-bg: var(--white-90);
+  --dropdown-color: var(--black-75);
+  --dropdown-scrollbar-bg: var(--black-33);
+  --dropdown-scrollbar-bg-hover: var(--black-50);
+  --knob-bg: #fff;
+  --knob-border: 1px solid var(--black-90);
+  --input-border: 1px solid var(--black-15);
+  --knob-shadow-hover: 0 0 0 6px var(--black-50);
+  --knob-shadow-active: 0 0 0 6px var(--black-90);
+  --input-border-hover: 1px solid var(--black-33);
+  --option-color-hover: var(--white-75);
+  --option-bg-hover: var(--black-50);
+  --option-color-active: var(--white-75);
+  --option-bg-active: var(--black-90);
+  --visual-shadow: 0 0 0 1px var(--black-15) inset;
+}

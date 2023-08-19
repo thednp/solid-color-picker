@@ -37,10 +37,10 @@ let pickerCount = 0;
 const DefaultColorPicker: Component<ColorPickerProps> = props => {
   const id = props.id ? props.id : `color-picker-${pickerCount}`;
   const pickerLabels = props.colorPickerLabels ? props.colorPickerLabels : colorPickerLabels;
-  const colorLabels = ObjectFromEntries(colorNames.map(c => ([c, c]))) as ColorNames;
+  const colorLabels = ObjectFromEntries(colorNames.map(c => [c, c])) as ColorNames;
 
   if (props.colorNames && isArray(props.colorNames) && props.colorNames.length === 17) {
-    const translatedLabels = props.colorNames.map((c, i) => ([colorNames[i], c])) as [string, string][];
+    const translatedLabels = props.colorNames.map((c, i) => [colorNames[i], c]) as [string, string][];
     const translatedLabelsObject = ObjectFromEntries(translatedLabels) as ColorNames;
     ObjectAssign(colorLabels, translatedLabelsObject);
   }
@@ -65,7 +65,9 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
       ...[props.class ? props.class.split(/\s/) : ''],
       isDark() ? 'txt-dark' : 'txt-light',
       open() ? 'open' : '',
-    ].filter(c => c).join(' ');
+    ]
+      .filter(c => c)
+      .join(' ');
   pickerCount += 1;
 
   let pickerDropdown!: HTMLDivElement;
@@ -465,13 +467,13 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
     const doc = win.document;
     const [c1, c2, c3] = controls();
     const [k1, k2, k3] = knobs();
-    const parent = c1 ? c1.closest('.color-picker') : null;
+    const parent = c1.closest('.color-picker');
     action(win, 'scroll', handleScroll);
     action(doc, 'keyup', handleDismiss as EventListener);
     action(doc, 'pointerup', pointerUp as EventListener);
     action(doc, 'pointermove', pointerMove as EventListener);
-    [c1, c2, c3].forEach(c => c && action(c, 'pointerdown', pointerDown as EventListener));
-    [k1, k2, k3].forEach(k => k && action(k, 'keydown', handleKnobs as EventListener));
+    [c1, c2, c3].forEach(c => action(c, 'pointerdown', pointerDown as EventListener));
+    [k1, k2, k3].forEach(k => action(k, 'keydown', handleKnobs as EventListener));
     if (parent) action(parent, 'focusout', handleBlur as EventListener);
     action(menuDropdown, 'keydown', menuKeyHandler as EventListener);
   };

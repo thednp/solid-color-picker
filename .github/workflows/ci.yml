@@ -1,4 +1,4 @@
-name: Build and Test Types
+name: CI & Test
 
 on: [push]
 
@@ -32,4 +32,4 @@ jobs:
         run: pnpm build
 
       - name: Typecheck
-        run: pnpm lint:types
+        run: pnpm lint

@@ -47,10 +47,10 @@
     "format": "prettier --ignore-path .gitignore -w \"src/**/*.{js,ts,json,css,tsx,jsx}\" \"example/**/*.{js,ts,json,css,tsx,jsx}\"",
     "build": "tsup",
     "prepublishOnly": "pnpm build",
-    "lint": "pnpm:lint:code && pnpm lint:types",
+    "lint": "pnpm lint:types && pnpm lint:code",
     "lint:code": "eslint --ignore-path .gitignore --max-warnings 0 src/**/*.{ts,tsx}",
-    "fix:ts": "eslint src/**/*.{ts,tsx} --fix",
     "lint:types": "tsc --noEmit",
+    "fix:ts": "eslint src/**/*.{ts,tsx} --fix",
     "update-deps": "pnpm up -Li"
   },
   "license": "MIT",

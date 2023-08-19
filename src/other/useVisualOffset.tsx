@@ -7,7 +7,7 @@ export default function useVisualOffset() {
   const [v1] = visuals();
   const screenWidth = () => window.innerWidth;
   const getHeight = () => (screenWidth() >= 1200 ? 300 : screenWidth() >= 578 && screenWidth() < 1200 ? 230 : 150);
-  const getWidth = () => (v1 && v1.offsetWidth ? v1.offsetWidth : getHeight());
+  const getWidth = () => (typeof v1 !== 'undefined' && v1.offsetWidth ? v1.offsetWidth : getHeight());
   const [offsetHeight, setOffsetHeight] = createSignal(getHeight());
   const [offsetWidth, setOffsetWidth] = createSignal(getWidth());
   const listenerOptions = { passive: true };

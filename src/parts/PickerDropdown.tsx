@@ -1,12 +1,5 @@
 import Color from '@thednp/color';
-import {
-  Component,
-  createComponent,
-  createEffect,
-  createSignal,
-  startTransition,
-  Suspense,
-} from 'solid-js';
+import { Component, createComponent, createEffect, createSignal, startTransition, Suspense } from 'solid-js';
 import type { ControlProps, PickerProps } from '../types/types';
 import { usePickerContext } from './ColorPickerContext';
 
