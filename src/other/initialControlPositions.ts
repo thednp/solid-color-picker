@@ -3,6 +3,6 @@ const initialControlPositions = {
   c1y: 0,
   c2y: 0,
   c3y: 0,
-};
+}
 
-export default initialControlPositions;
+export default initialControlPositions

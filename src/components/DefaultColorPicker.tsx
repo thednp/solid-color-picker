@@ -1,6 +1,6 @@
-import Color from '@thednp/color';
-import { addListener, removeListener } from '@thednp/event-listener';
-import ColorPicker from '@thednp/color-picker';
+import Color from '@thednp/color'
+import { addListener, removeListener } from '@thednp/event-listener'
+import ColorPicker from '@thednp/color-picker'
 import {
   getWindow,
   getElementsByClassName,
@@ -21,375 +21,376 @@ import {
   ObjectAssign,
   isArray,
   ObjectFromEntries,
-} from '@thednp/shorty';
-const { colorPickerLabels, colorNames } = ColorPicker;
+} from '@thednp/shorty'
+const { colorPickerLabels, colorNames } = ColorPicker
 
-import type { Component } from 'solid-js';
-import { createSignal, createEffect, onCleanup, startTransition, createMemo } from 'solid-js';
-import type { ColorNames, ColorPickerProps } from '../types/types';
-import PickerDropdown from '../parts/PickerDropdown';
-import MenuDropdown from '../parts/MenuDropdown';
-import { PickerContext } from '../parts/ColorPickerContext';
-import initialControlPositions from '../other/initialControlPositions';
-import useVisualOffset from '../other/useVisualOffset';
+import type { Component } from 'solid-js'
+import { createSignal, createEffect, onCleanup, startTransition, createMemo } from 'solid-js'
+import type { ColorNames, ColorPickerProps } from '../types/types'
+import PickerDropdown from '../parts/PickerDropdown'
+import MenuDropdown from '../parts/MenuDropdown'
+import { PickerContext } from '../parts/ColorPickerContext'
+import initialControlPositions from '../other/initialControlPositions'
+import useVisualOffset from '../other/useVisualOffset'
 
-let pickerCount = 0;
+let pickerCount = 0
 const DefaultColorPicker: Component<ColorPickerProps> = props => {
-  const id = props.id ? props.id : `color-picker-${pickerCount}`;
-  const pickerLabels = props.colorPickerLabels ? props.colorPickerLabels : colorPickerLabels;
-  const colorLabels = ObjectFromEntries(colorNames.map(c => ([c, c]))) as ColorNames;
+  const id = props.id ? props.id : `color-picker-${pickerCount}`
+  const pickerLabels = props.colorPickerLabels ? props.colorPickerLabels : colorPickerLabels
+  const colorLabels = ObjectFromEntries(colorNames.map(c => [c, c])) as ColorNames
 
   if (props.colorNames && isArray(props.colorNames) && props.colorNames.length === 17) {
-    const translatedLabels = props.colorNames.map((c, i) => ([colorNames[i], c])) as [string, string][];
-    const translatedLabelsObject = ObjectFromEntries(translatedLabels) as ColorNames;
-    ObjectAssign(colorLabels, translatedLabelsObject);
+    const translatedLabels = props.colorNames.map((c, i) => [colorNames[i], c]) as [string, string][]
+    const translatedLabelsObject = ObjectFromEntries(translatedLabels) as ColorNames
+    ObjectAssign(colorLabels, translatedLabelsObject)
   }
 
-  let oldFormat = props.format;
-  const format = () => props.format || 'rgb';
-  const initValue = () => props.value || 'red';
-  const { roundPart } = Color;
-  const { offsetHeight, offsetWidth } = useVisualOffset();
-  const [value, setValue] = createSignal(initValue());
-  const [color, setColor] = createSignal(new Color(value(), format()));
-  const [open, setOpen] = createSignal(undefined as HTMLDivElement | undefined);
-  const [drag, setDrag] = createSignal<HTMLElement | undefined>(undefined);
-  const [pickerShown, setPickerShown] = createSignal(false);
-  const [menuShown, setMenuShown] = createSignal(false);
-  const [position, setPosition] = createSignal('');
-  const [controlPositions, setControlPositions] = createSignal(initialControlPositions);
-  const isDark = () => color().isDark && color().a > 0.33;
+  let oldFormat = props.format
+  const format = () => props.format || 'rgb'
+  const initValue = () => props.value || 'red'
+  const { roundPart } = Color
+  const { offsetHeight, offsetWidth } = useVisualOffset()
+  const [value, setValue] = createSignal(initValue())
+  const [color, setColor] = createSignal(new Color(value(), format()))
+  const [open, setOpen] = createSignal(undefined as HTMLDivElement | undefined)
+  const [drag, setDrag] = createSignal<HTMLElement | undefined>(undefined)
+  const [pickerShown, setPickerShown] = createSignal(false)
+  const [menuShown, setMenuShown] = createSignal(false)
+  const [position, setPosition] = createSignal('')
+  const [controlPositions, setControlPositions] = createSignal(initialControlPositions)
+  const isDark = () => color().isDark && color().a > 0.33
   const className = () =>
     [
       'color-picker',
       ...[props.class ? props.class.split(/\s/) : ''],
       isDark() ? 'txt-dark' : 'txt-light',
       open() ? 'open' : '',
-    ].filter(c => c).join(' ');
-  pickerCount += 1;
+    ]
+      .filter(c => c)
+      .join(' ')
+  pickerCount += 1
 
-  let pickerDropdown!: HTMLDivElement;
-  let menuDropdown!: HTMLDivElement;
-  let input!: HTMLInputElement;
+  let pickerDropdown!: HTMLDivElement
+  let menuDropdown!: HTMLDivElement
+  let input!: HTMLInputElement
 
   const controls = () => {
-    return [...getElementsByClassName('color-control', pickerDropdown)] as [HTMLElement, HTMLElement, HTMLElement];
-  };
+    return [...getElementsByClassName('color-control', pickerDropdown)] as [HTMLElement, HTMLElement, HTMLElement]
+  }
 
   const visuals = () => {
-    return [...getElementsByClassName('visual-control', pickerDropdown)] as [HTMLElement, HTMLElement, HTMLElement];
-  };
+    return [...getElementsByClassName('visual-control', pickerDropdown)] as [HTMLElement, HTMLElement, HTMLElement]
+  }
 
   const knobs = () => {
     return [
       ...getElementsByClassName('color-pointer', pickerDropdown),
       ...getElementsByClassName('color-slider', pickerDropdown),
-    ] as [HTMLElement, HTMLElement, HTMLElement];
-  };
+    ] as [HTMLElement, HTMLElement, HTMLElement]
+  }
 
   const inputs = () => {
-    return [...getElementsByClassName('color-input', pickerDropdown)] as [HTMLElement, HTMLElement, HTMLElement];
-  };
-  const hue = () => controlPositions().c2y / offsetHeight();
-  const lightness = () => roundPart(color().toHsv().v * 100);
-  const saturation = () => roundPart(color().toHsv().s * 100);
-  const alpha = () => 1 - controlPositions().c3y / offsetHeight();
+    return [...getElementsByClassName('color-input', pickerDropdown)] as [HTMLElement, HTMLElement, HTMLElement]
+  }
+  const hue = () => controlPositions().c2y / offsetHeight()
+  const lightness = () => roundPart(color().toHsv().v * 100)
+  const saturation = () => roundPart(color().toHsv().s * 100)
+  const alpha = () => 1 - controlPositions().c3y / offsetHeight()
   const fill = () => {
     return new Color({
       h: hue(),
       s: 1,
       l: 0.5,
       a: alpha(),
-    });
-  };
+    })
+  }
   const fillGradient = () => {
-    const roundA = roundPart(alpha() * 100) / 100;
+    const roundA = roundPart(alpha() * 100) / 100
 
     return `linear-gradient(rgba(0,0,0,0) 0%, rgba(0,0,0,${roundA}) 100%),
           linear-gradient(to right, rgba(255,255,255,${roundA}) 0%, ${fill().toRgbString()} 100%), 
-          linear-gradient(rgb(255,255,255) 0%, rgb(255,255,255) 100%)`;
-  };
+          linear-gradient(rgb(255,255,255) 0%, rgb(255,255,255) 100%)`
+  }
 
   const updateDropdownPosition = () => {
-    const elRect = getBoundingClientRect(input);
-    const { top, bottom } = elRect;
-    const { offsetHeight: elHeight } = input;
-    const windowHeight = getDocumentElement(input).clientHeight;
-    const dropdown = open();
-    if (!dropdown) return;
-    const { offsetHeight: dropHeight } = dropdown;
-    const distanceBottom = windowHeight - bottom;
-    const distanceTop = top;
-    const bottomExceed = top + dropHeight + elHeight > windowHeight; // show
-    const topExceed = top - dropHeight < 0; // show-top
+    const elRect = getBoundingClientRect(input)
+    const { top, bottom } = elRect
+    const { offsetHeight: elHeight } = input
+    const windowHeight = getDocumentElement(input).clientHeight
+    const dropdown = open()
+    if (!dropdown) return
+    const { offsetHeight: dropHeight } = dropdown
+    const distanceBottom = windowHeight - bottom
+    const distanceTop = top
+    const bottomExceed = top + dropHeight + elHeight > windowHeight // show
+    const topExceed = top - dropHeight < 0 // show-top
 
     if ((dropdown === pickerDropdown || !topExceed) && distanceBottom < distanceTop && bottomExceed) {
-      setPosition('top');
+      setPosition('top')
     } else {
-      setPosition('bottom');
+      setPosition('bottom')
     }
-  };
+  }
   const pickerClass = () => {
-    return `${open() === pickerDropdown ? ' ' + position() : ''}${pickerShown() ? ' show' : ''}`;
-  };
+    return `${open() === pickerDropdown ? ' ' + position() : ''}${pickerShown() ? ' show' : ''}`
+  }
   const menuClass = () => {
-    return `${open() === menuDropdown ? ' ' + position() : ''}${menuShown() ? ' show' : ''}`;
-  };
+    return `${open() === menuDropdown ? ' ' + position() : ''}${menuShown() ? ' show' : ''}`
+  }
 
   const appearance = () => {
-    const { roundPart } = Color;
-    const hsl = color().toHsl();
-    const hsv = color().toHsv();
+    const { roundPart } = Color
+    const hsl = color().toHsl()
+    const hsv = color().toHsv()
 
-    const hue = roundPart(hsl.h * 360);
-    const saturationSource = format() === 'hsl' ? hsl.s : hsv.s;
-    const saturation = roundPart(saturationSource * 100);
-    const lightness = roundPart(hsl.l * 100);
-    const hsvl = hsv.v * 100;
+    const hue = roundPart(hsl.h * 360)
+    const saturationSource = format() === 'hsl' ? hsl.s : hsv.s
+    const saturation = roundPart(saturationSource * 100)
+    const lightness = roundPart(hsl.l * 100)
+    const hsvl = hsv.v * 100
 
-    let colorName = 'black';
+    let colorName = 'black'
 
     // determine color appearance
     /* istanbul ignore else */
     if (lightness === 100 && saturation === 0) {
-      colorName = colorLabels.white;
+      colorName = colorLabels.white
     } else if (lightness === 0) {
-      colorName = colorLabels.black;
+      colorName = colorLabels.black
     } else if (saturation === 0) {
-      colorName = colorLabels.grey;
+      colorName = colorLabels.grey
     } else if (hue < 15 || hue >= 345) {
-      colorName = colorLabels.red;
+      colorName = colorLabels.red
     } else if (hue >= 15 && hue < 45) {
-      colorName = hsvl > 80 && saturation > 80 ? colorLabels.orange : colorLabels.brown;
+      colorName = hsvl > 80 && saturation > 80 ? colorLabels.orange : colorLabels.brown
     } else if (hue >= 45 && hue < 75) {
-      const isGold = hue > 46 && hue < 54 && hsvl < 80 && saturation > 90;
-      const isOlive = hue >= 54 && hue < 75 && hsvl < 80;
-      colorName = isGold ? colorLabels.gold : colorLabels.yellow;
-      colorName = isOlive ? colorLabels.olive : colorName;
+      const isGold = hue > 46 && hue < 54 && hsvl < 80 && saturation > 90
+      const isOlive = hue >= 54 && hue < 75 && hsvl < 80
+      colorName = isGold ? colorLabels.gold : colorLabels.yellow
+      colorName = isOlive ? colorLabels.olive : colorName
     } else if (hue >= 75 && hue < 155) {
-      colorName = hsvl < 68 ? colorLabels.green : colorLabels.lime;
+      colorName = hsvl < 68 ? colorLabels.green : colorLabels.lime
     } else if (hue >= 155 && hue < 175) {
-      colorName = colorLabels.teal;
+      colorName = colorLabels.teal
     } else if (hue >= 175 && hue < 195) {
-      colorName = colorLabels.cyan;
+      colorName = colorLabels.cyan
     } else if (hue >= 195 && hue < 255) {
-      colorName = colorLabels.blue;
+      colorName = colorLabels.blue
     } else if (hue >= 255 && hue < 270) {
-      colorName = colorLabels.violet;
+      colorName = colorLabels.violet
     } else if (hue >= 270 && hue < 295) {
-      colorName = colorLabels.magenta;
+      colorName = colorLabels.magenta
     } else if (hue >= 295 && hue < 345) {
-      colorName = colorLabels.pink;
+      colorName = colorLabels.pink
     }
-    return colorName;
-  };
+    return colorName
+  }
 
   const updateControlPositions = createMemo(() => {
-    const hsv = color().toHsv();
-    const alpha = color().a;
-    const hue = hsv.h;
-    const saturation = hsv.s;
-    const lightness = hsv.v;
+    const hsv = color().toHsv()
+    const alpha = color().a
+    const hue = hsv.h
+    const saturation = hsv.s
+    const lightness = hsv.v
     setControlPositions({
       c1x: saturation * offsetWidth(),
       c1y: (1 - lightness) * offsetHeight(),
       c2y: hue * offsetHeight(),
       c3y: (1 - alpha) * offsetHeight(),
-    });
-  });
+    })
+  })
   const hideDropdown = () => {
-    if (pickerShown()) hidePicker();
-    else if (menuShown()) hideMenu();
-  };
+    if (pickerShown()) hidePicker()
+    else if (menuShown()) hideMenu()
+  }
 
   /** Event Listeners */
   // handleBlur must be function to allow accessing THIS
   function handleBlur(this: HTMLElement, { relatedTarget }: FocusEvent) {
     if (relatedTarget && !this.contains(relatedTarget as HTMLElement)) {
-      hideDropdown();
+      hideDropdown()
     }
   }
   const menuKeyHandler = (e: KeyboardEvent & { target: HTMLElement; code: string }) => {
-    const { target, code } = e;
-    const { previousElementSibling, nextElementSibling, parentElement } = target;
+    const { target, code } = e
+    const { previousElementSibling, nextElementSibling, parentElement } = target
     // const isColorOptionsMenu = parentElement && hasClass(parentElement, 'color-options');
-    const isColorOptionsMenu = parentElement && menuDropdown.contains(parentElement);
-    const allSiblings = parentElement ? [...parentElement.children] : [];
-    const columnsCount =
-      isColorOptionsMenu && getElementStyle(parentElement, 'grid-template-columns').split(' ').length;
-    const currentIndex = allSiblings.indexOf(target);
-    const previousElement = currentIndex > -1 && columnsCount && allSiblings[currentIndex - columnsCount];
-    const nextElement = currentIndex > -1 && columnsCount && allSiblings[currentIndex + columnsCount];
+    const isColorOptionsMenu = parentElement && menuDropdown.contains(parentElement)
+    const allSiblings = parentElement ? [...parentElement.children] : []
+    const columnsCount = isColorOptionsMenu && getElementStyle(parentElement, 'grid-template-columns').split(' ').length
+    const currentIndex = allSiblings.indexOf(target)
+    const previousElement = currentIndex > -1 && columnsCount && allSiblings[currentIndex - columnsCount]
+    const nextElement = currentIndex > -1 && columnsCount && allSiblings[currentIndex + columnsCount]
 
     if ([keyArrowDown, keyArrowUp, keySpace].includes(code)) {
       // prevent scroll when navigating the menu via arrow keys / Space
-      e.preventDefault();
+      e.preventDefault()
     }
     if (isColorOptionsMenu) {
       if (previousElement && code === keyArrowUp) {
-        focus(previousElement as HTMLElement);
+        focus(previousElement as HTMLElement)
       } else if (nextElement && code === keyArrowDown) {
-        focus(nextElement as HTMLElement);
+        focus(nextElement as HTMLElement)
       } else if (previousElementSibling && code === keyArrowLeft) {
-        focus(previousElementSibling as HTMLElement);
+        focus(previousElementSibling as HTMLElement)
       } else if (nextElementSibling && code === keyArrowRight) {
-        focus(nextElementSibling as HTMLElement);
+        focus(nextElementSibling as HTMLElement)
       }
     } else if (previousElementSibling && [keyArrowLeft, keyArrowUp].includes(code)) {
-      focus(previousElementSibling as HTMLElement);
+      focus(previousElementSibling as HTMLElement)
     } else if (nextElementSibling && [keyArrowRight, keyArrowDown].includes(code)) {
-      focus(nextElementSibling as HTMLElement);
+      focus(nextElementSibling as HTMLElement)
     }
 
     if ([keyEnter, keySpace].includes(code)) {
-      target.click();
+      target.click()
     }
-  };
+  }
   const handleScroll = (e: Event) => {
-    const { activeElement } = getDocument(e.target as HTMLElement);
+    const { activeElement } = getDocument(e.target as HTMLElement)
 
-    updateDropdownPosition();
+    updateDropdownPosition()
 
     /* istanbul ignore next */
     if (
       (['pointermove', 'touchmove'].includes(e.type) && drag()) ||
       (activeElement && [...knobs()].includes(activeElement as HTMLElement))
     ) {
-      e.stopPropagation();
-      e.preventDefault();
+      e.stopPropagation()
+      e.preventDefault()
     }
-  };
+  }
   const handleDismiss = (e: KeyboardEvent) => {
-    if (open() && e.code === 'Escape') hideDropdown();
-  };
+    if (open() && e.code === 'Escape') hideDropdown()
+  }
   const pointerDown = (e: PointerEvent) => {
-    if (e.button !== 0) return;
-    const { currentTarget, target, pageX, pageY } = e;
-    const controlWrappers = [...controls()];
-    const idx = controlWrappers.indexOf(currentTarget as HTMLElement);
-    const [v1, v2, v3] = visuals();
-    const [k1, k2, k3] = knobs();
-    const visual = visuals()[idx];
-    const { left, top } = getBoundingClientRect(visual as HTMLDivElement);
-    const html = getDocumentElement(v1);
-    const offsetX = pageX - html.scrollLeft - left;
-    const offsetY = pageY - html.scrollTop - top;
+    if (e.button !== 0) return
+    const { currentTarget, target, pageX, pageY } = e
+    const controlWrappers = [...controls()]
+    const idx = controlWrappers.indexOf(currentTarget as HTMLElement)
+    const [v1, v2, v3] = visuals()
+    const [k1, k2, k3] = knobs()
+    const visual = visuals()[idx]
+    const { left, top } = getBoundingClientRect(visual as HTMLDivElement)
+    const html = getDocumentElement(v1)
+    const offsetX = pageX - html.scrollLeft - left
+    const offsetY = pageY - html.scrollTop - top
 
     /* istanbul ignore else */
     if (visual === v1 || target === k1) {
-      setDrag(visual);
-      changeControl1(offsetX, offsetY);
+      setDrag(visual)
+      changeControl1(offsetX, offsetY)
     } else if (visual === v2 || target === k2) {
-      setDrag(visual);
-      changeControl2(offsetY);
+      setDrag(visual)
+      changeControl2(offsetY)
     } else if (visual === v3 || target === k3) {
-      setDrag(visual);
-      changeAlpha(offsetY);
+      setDrag(visual)
+      changeAlpha(offsetY)
     }
-    e.preventDefault();
-  };
+    e.preventDefault()
+  }
   const pointerUp = (e: PointerEvent) => {
-    const [v1] = visuals();
-    const doc = getDocument(v1);
-    const [parent] = getElementsByClassName('color-picker open', doc);
-    const selection = doc.getSelection();
+    const [v1] = visuals()
+    const doc = getDocument(v1)
+    const [parent] = getElementsByClassName('color-picker open', doc)
+    const selection = doc.getSelection()
 
     if (!drag() && (!selection || !selection.toString().length) && (!parent || !parent.contains(e.target as Node))) {
-      hideDropdown();
+      hideDropdown()
     }
 
-    setDrag();
-  };
+    setDrag()
+  }
   const pointerMove = (e: PointerEvent): void => {
-    const [v1, v2, v3] = visuals();
-    const { pageX, pageY } = e;
+    const [v1, v2, v3] = visuals()
+    const { pageX, pageY } = e
 
-    if (!drag()) return;
+    if (!drag()) return
 
-    const controlRect = getBoundingClientRect(drag() as HTMLElement);
-    const win = getDocumentElement(v1);
-    const offsetX = pageX - win.scrollLeft - controlRect.left;
-    const offsetY = pageY - win.scrollTop - controlRect.top;
+    const controlRect = getBoundingClientRect(drag() as HTMLElement)
+    const win = getDocumentElement(v1)
+    const offsetX = pageX - win.scrollLeft - controlRect.left
+    const offsetY = pageY - win.scrollTop - controlRect.top
 
     if (drag() === v1) {
-      changeControl1(offsetX, offsetY);
+      changeControl1(offsetX, offsetY)
     }
 
     if (drag() === v2) {
-      changeControl2(offsetY);
+      changeControl2(offsetY)
     }
 
     if (drag() === v3) {
-      changeAlpha(offsetY);
+      changeAlpha(offsetY)
     }
-  };
+  }
   const handleKnobs = (e: Event & { code: string }) => {
-    const { target, code } = e;
+    const { target, code } = e
 
     // only react to arrow buttons
-    if (![keyArrowUp, keyArrowDown, keyArrowLeft, keyArrowRight].includes(code)) return;
-    e.preventDefault();
+    if (![keyArrowUp, keyArrowDown, keyArrowLeft, keyArrowRight].includes(code)) return
+    e.preventDefault()
 
-    const [k1, k2, k3] = knobs();
+    const [k1, k2, k3] = knobs()
     /**
      * this instance must avoid using useVisualOffset()
      * @see https://stackoverflow.com/questions/70373659/solidjs-computations-created-outside-a-createroot-or-render-will-never-be
      */
-    const [{ offsetWidth, offsetHeight }] = visuals();
-    const { activeElement } = getDocument(k1);
-    const currentKnob = [k1, k2, k3].find(x => x === activeElement);
-    const yRatio = offsetHeight / 360;
+    const [{ offsetWidth, offsetHeight }] = visuals()
+    const { activeElement } = getDocument(k1)
+    const currentKnob = [k1, k2, k3].find(x => x === activeElement)
+    const yRatio = offsetHeight / 360
 
     /* istanbul ignore else */
     if (currentKnob) {
       /* istanbul ignore else */
       if (target === k1) {
-        const xRatio = offsetWidth / 100;
+        const xRatio = offsetWidth / 100
 
         /* istanbul ignore else */
         if ([keyArrowLeft, keyArrowRight].includes(code)) {
           setControlPositions({
             ...controlPositions(),
             c1x: controlPositions().c1x + (code === keyArrowRight ? xRatio : -xRatio),
-          });
+          })
         } else if ([keyArrowUp, keyArrowDown].includes(code)) {
           setControlPositions({
             ...controlPositions(),
             c1y: controlPositions().c1y + (code === keyArrowDown ? yRatio : -yRatio),
-          });
+          })
         }
 
-        changeControl1(controlPositions().c1x, controlPositions().c1y);
+        changeControl1(controlPositions().c1x, controlPositions().c1y)
       } else if (target === k2) {
         setControlPositions({
           ...controlPositions(),
           c2y: controlPositions().c2y + ([keyArrowDown, keyArrowRight].includes(code) ? yRatio : -yRatio),
-        });
-        changeControl2(controlPositions().c2y);
+        })
+        changeControl2(controlPositions().c2y)
       } else if (target === k3) {
         setControlPositions({
           ...controlPositions(),
           c3y: controlPositions().c3y + ([keyArrowDown, keyArrowRight].includes(code) ? yRatio : -yRatio),
-        });
-        changeAlpha(controlPositions().c3y);
+        })
+        changeAlpha(controlPositions().c3y)
       }
-      handleScroll(e);
+      handleScroll(e)
     }
-  };
+  }
 
   const changeControl1 = (X: number, Y: number) => {
-    let [offsetX, offsetY] = [0, 0];
+    let [offsetX, offsetY] = [0, 0]
 
-    if (X > offsetWidth()) offsetX = offsetWidth();
-    else if (X >= 0) offsetX = X;
+    if (X > offsetWidth()) offsetX = offsetWidth()
+    else if (X >= 0) offsetX = X
 
-    if (Y > offsetHeight()) offsetY = offsetHeight();
-    else if (Y >= 0) offsetY = Y;
+    if (Y > offsetHeight()) offsetY = offsetHeight()
+    else if (Y >= 0) offsetY = Y
 
-    const hue = controlPositions().c2y / offsetHeight();
-    const saturation = offsetX / offsetWidth();
-    const lightness = 1 - offsetY / offsetHeight();
-    const alpha = 1 - controlPositions().c3y / offsetHeight();
+    const hue = controlPositions().c2y / offsetHeight()
+    const saturation = offsetX / offsetWidth()
+    const lightness = 1 - offsetY / offsetHeight()
+    const alpha = 1 - controlPositions().c3y / offsetHeight()
 
     // new color
     const newColor = new Color(
@@ -400,27 +401,27 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
         a: alpha,
       },
       format(),
-    );
+    )
 
-    setValue(newColor.toString());
-    setColor(newColor);
+    setValue(newColor.toString())
+    setColor(newColor)
     setControlPositions({
       ...controlPositions(),
       c1x: offsetX,
       c1y: offsetY,
-    });
-  };
+    })
+  }
 
   const changeControl2 = (Y: number) => {
-    let offsetY = 0;
+    let offsetY = 0
 
-    if (Y > offsetHeight()) offsetY = offsetHeight();
-    else if (Y >= 0) offsetY = Y;
+    if (Y > offsetHeight()) offsetY = offsetHeight()
+    else if (Y >= 0) offsetY = Y
 
-    const hue = offsetY / offsetHeight();
-    const saturation = controlPositions().c1x / offsetWidth();
-    const lightness = 1 - controlPositions().c1y / offsetHeight();
-    const alpha = 1 - controlPositions().c3y / offsetHeight();
+    const hue = offsetY / offsetHeight()
+    const saturation = controlPositions().c1x / offsetWidth()
+    const lightness = 1 - controlPositions().c1y / offsetHeight()
+    const alpha = 1 - controlPositions().c3y / offsetHeight()
 
     // new color
     const newColor = new Color(
@@ -431,130 +432,130 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
         a: alpha,
       },
       format(),
-    );
+    )
 
-    setValue(newColor.toString());
-    setColor(newColor);
+    setValue(newColor.toString())
+    setColor(newColor)
     setControlPositions({
       ...controlPositions(),
       c2y: offsetY,
-    });
-  };
+    })
+  }
 
   const changeAlpha = (Y: number) => {
-    let offsetY = 0;
+    let offsetY = 0
 
-    if (Y > offsetHeight()) offsetY = offsetHeight();
-    else if (Y >= 0) offsetY = Y;
+    if (Y > offsetHeight()) offsetY = offsetHeight()
+    else if (Y >= 0) offsetY = Y
 
     // update color alpha
-    const alpha = 1 - offsetY / offsetHeight();
-    const newColor = new Color(color().setAlpha(alpha), format());
+    const alpha = 1 - offsetY / offsetHeight()
+    const newColor = new Color(color().setAlpha(alpha), format())
 
-    setValue(newColor.toString());
-    setColor(newColor);
+    setValue(newColor.toString())
+    setColor(newColor)
     setControlPositions({
       ...controlPositions(),
       c3y: offsetY,
-    });
-  };
+    })
+  }
 
   const toggleEvents = (add?: boolean) => {
-    const action = add ? addListener : removeListener;
-    const win = getWindow(input);
-    const doc = win.document;
-    const [c1, c2, c3] = controls();
-    const [k1, k2, k3] = knobs();
-    const parent = c1 ? c1.closest('.color-picker') : null;
-    action(win, 'scroll', handleScroll);
-    action(doc, 'keyup', handleDismiss as EventListener);
-    action(doc, 'pointerup', pointerUp as EventListener);
-    action(doc, 'pointermove', pointerMove as EventListener);
-    [c1, c2, c3].forEach(c => c && action(c, 'pointerdown', pointerDown as EventListener));
-    [k1, k2, k3].forEach(k => k && action(k, 'keydown', handleKnobs as EventListener));
-    if (parent) action(parent, 'focusout', handleBlur as EventListener);
-    action(menuDropdown, 'keydown', menuKeyHandler as EventListener);
-  };
+    const action = add ? addListener : removeListener
+    const win = getWindow(input)
+    const doc = win.document
+    const [c1, c2, c3] = controls()
+    const [k1, k2, k3] = knobs()
+    const parent = c1 ? c1.closest('.color-picker') : null
+    action(win, 'scroll', handleScroll)
+    action(doc, 'keyup', handleDismiss as EventListener)
+    action(doc, 'pointerup', pointerUp as EventListener)
+    action(doc, 'pointermove', pointerMove as EventListener)
+    ;[c1, c2, c3].forEach(c => c && action(c, 'pointerdown', pointerDown as EventListener))
+    ;[k1, k2, k3].forEach(k => k && action(k, 'keydown', handleKnobs as EventListener))
+    if (parent) action(parent, 'focusout', handleBlur as EventListener)
+    action(menuDropdown, 'keydown', menuKeyHandler as EventListener)
+  }
 
   const hideTransitionEnd = () => {
-    setPosition('');
-    setOpen();
+    setPosition('')
+    setOpen()
     // reset value if not changed
-    setValue(color().toString());
-  };
+    setValue(color().toString())
+  }
   const showMenu = () => {
-    setOpen(menuDropdown);
-    setPosition('bottom');
-    reflow(menuDropdown);
+    setOpen(menuDropdown)
+    setPosition('bottom')
+    reflow(menuDropdown)
     startTransition(() => {
-      updateDropdownPosition();
-      setMenuShown(true);
-      setPickerShown(false);
-    });
-  };
+      updateDropdownPosition()
+      setMenuShown(true)
+      setPickerShown(false)
+    })
+  }
   const hideMenu = () => {
-    setMenuShown(false);
-    reflow(menuDropdown);
-    emulateTransitionEnd(menuDropdown, hideTransitionEnd);
-  };
+    setMenuShown(false)
+    reflow(menuDropdown)
+    emulateTransitionEnd(menuDropdown, hideTransitionEnd)
+  }
   const toggleMenu = () => {
     if (open() !== menuDropdown) {
-      showMenu();
+      showMenu()
     } else {
-      hideMenu();
+      hideMenu()
     }
-  };
+  }
   const showPicker = () => {
-    setOpen(pickerDropdown);
-    setPosition('bottom');
-    reflow(pickerDropdown);
+    setOpen(pickerDropdown)
+    setPosition('bottom')
+    reflow(pickerDropdown)
     startTransition(() => {
-      updateDropdownPosition();
-      setPickerShown(true);
-      setMenuShown(false);
-      input.focus();
-    });
-  };
+      updateDropdownPosition()
+      setPickerShown(true)
+      setMenuShown(false)
+      input.focus()
+    })
+  }
   const hidePicker = () => {
-    setPickerShown(false);
-    reflow(pickerDropdown);
-    emulateTransitionEnd(pickerDropdown, hideTransitionEnd);
-  };
+    setPickerShown(false)
+    reflow(pickerDropdown)
+    emulateTransitionEnd(pickerDropdown, hideTransitionEnd)
+  }
   const update = (newColor: Color) => {
     startTransition(() => {
-      setColor(newColor);
-      setValue(newColor.toString());
-      updateControlPositions();
-    });
-  };
+      setColor(newColor)
+      setValue(newColor.toString())
+      updateControlPositions()
+    })
+  }
 
   createEffect(() => {
     if (pickerShown() || menuShown()) {
-      toggleEvents(true);
+      toggleEvents(true)
     } else if (!pickerShown() && !menuShown()) {
-      toggleEvents();
+      toggleEvents()
     }
 
-    onCleanup(toggleEvents);
-  });
+    onCleanup(toggleEvents)
+  })
   createEffect(() => {
     startTransition(() => {
       if (typeof props.onChange === 'function') {
-        props.onChange(value());
+        props.onChange(value())
       }
-    });
-  });
+    })
+  })
   createEffect(() => {
     startTransition(() => {
       if (oldFormat !== format()) {
-        oldFormat = props.format;
-        update(new Color(color(), oldFormat));
+        oldFormat = props.format
+        update(new Color(color(), oldFormat))
       }
-    });
-  });
+    })
+  })
 
   // on mount, update control positions
-  updateControlPositions();
+  updateControlPositions()
 
   return (
     <PickerContext.Provider
@@ -607,10 +608,10 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
           onFocus={showPicker}
           onInput={e => setValue(e.currentTarget.value)}
           onChange={e => {
-            const newValue = e.currentTarget.value;
-            setValue(newValue);
-            setColor(new Color(newValue, format()));
-            updateControlPositions();
+            const newValue = e.currentTarget.value
+            setValue(newValue)
+            setColor(new Color(newValue, format()))
+            updateControlPositions()
           }}
         />
         <PickerDropdown
@@ -646,7 +647,7 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
         />
       </div>
     </PickerContext.Provider>
-  );
-};
+  )
+}
 
-export default DefaultColorPicker;
+export default DefaultColorPicker

@@ -1,23 +1,16 @@
-import Color from '@thednp/color';
-import {
-  Component,
-  createComponent,
-  createEffect,
-  createSignal,
-  startTransition,
-  Suspense,
-} from 'solid-js';
-import type { ControlProps, PickerProps } from '../types/types';
-import { usePickerContext } from './ColorPickerContext';
+import Color from '@thednp/color'
+import { Component, createComponent, createEffect, createSignal, startTransition, Suspense } from 'solid-js'
+import type { ControlProps, PickerProps } from '../types/types'
+import { usePickerContext } from './ColorPickerContext'
 
-const { roundPart } = Color;
+const { roundPart } = Color
 const hueGradient =
-  'linear-gradient(rgb(255, 0, 0) 0%, rgb(255, 255, 0) 16.67%, rgb(0, 255, 0) 33.33%, rgb(0, 255, 255) 50%, rgb(0, 0, 255) 66.67%, rgb(255, 0, 255) 83.33%, rgb(255, 0, 0) 100%)';
+  'linear-gradient(rgb(255, 0, 0) 0%, rgb(255, 255, 0) 16.67%, rgb(0, 255, 0) 33.33%, rgb(0, 255, 255) 50%, rgb(0, 0, 255) 66.67%, rgb(255, 0, 255) 83.33%, rgb(255, 0, 0) 100%)'
 
 const ColorControls: Component<ControlProps> = props => {
-  const { controlPositions, appearance, hue, saturation, lightness, alpha, fill, fillGradient } = usePickerContext();
-  const { colorPickerLabels, stringValue } = props;
-  const { valueLabel, hueLabel, saturationLabel, lightnessLabel, alphaLabel, appearanceLabel } = colorPickerLabels;
+  const { controlPositions, appearance, hue, saturation, lightness, alpha, fill, fillGradient } = usePickerContext()
+  const { colorPickerLabels, stringValue } = props
+  const { valueLabel, hueLabel, saturationLabel, lightnessLabel, alphaLabel, appearanceLabel } = colorPickerLabels
 
   return (
     <div class={`color-controls ${props.format()}`}>
@@ -73,32 +66,32 @@ const ColorControls: Component<ControlProps> = props => {
         ></div>
       </div>
     </div>
-  );
-};
+  )
+}
 
 const RGBForm: Component<PickerProps> = props => {
-  const { id, colorPickerLabels } = props;
-  const { alphaLabel, redLabel, greenLabel, blueLabel } = colorPickerLabels;
-  const { color, update, alpha } = usePickerContext();
+  const { id, colorPickerLabels } = props
+  const { alphaLabel, redLabel, greenLabel, blueLabel } = colorPickerLabels
+  const { color, update, alpha } = usePickerContext()
   const rgb = () => {
-    let { r, g, b, a } = color().toRgb();
-    [r, g, b] = [r, g, b].map(roundPart) as [number, number, number];
-    a = roundPart(alpha() * 100);
-    return { r, g, b, a };
-  };
+    let { r, g, b, a } = color().toRgb()
+    ;[r, g, b] = [r, g, b].map(roundPart) as [number, number, number]
+    a = roundPart(alpha() * 100)
+    return { r, g, b, a }
+  }
   const stringValue = () => {
-    const { r, g, b } = rgb();
-    return `${props.format().toUpperCase()}: ${r} ${g} ${b}`;
-  };
+    const { r, g, b } = rgb()
+    return `${props.format().toUpperCase()}: ${r} ${g} ${b}`
+  }
 
   const changeRed = (e: Event) =>
-    update(new Color({ ...color(), r: Number((e.currentTarget as HTMLInputElement).value) }, props.format()));
+    update(new Color({ ...color(), r: Number((e.currentTarget as HTMLInputElement).value) }, props.format()))
   const changeGreen = (e: Event) =>
-    update(new Color({ ...color(), g: Number((e.currentTarget as HTMLInputElement).value) }, props.format()));
+    update(new Color({ ...color(), g: Number((e.currentTarget as HTMLInputElement).value) }, props.format()))
   const changeBlue = (e: Event) =>
-    update(new Color({ ...color(), b: Number((e.currentTarget as HTMLInputElement).value) }, props.format()));
+    update(new Color({ ...color(), b: Number((e.currentTarget as HTMLInputElement).value) }, props.format()))
   const changeAlpha = (e: Event) =>
-    update(new Color({ ...color(), a: Number((e.currentTarget as HTMLInputElement).value) / 100 }, props.format()));
+    update(new Color({ ...color(), a: Number((e.currentTarget as HTMLInputElement).value) / 100 }, props.format()))
 
   return (
     <div class={`color-dropdown picker${props.class()}`} role="group" id={`${id}-picker`} ref={props.ref}>
@@ -170,32 +163,32 @@ const RGBForm: Component<PickerProps> = props => {
         />
       </div>
     </div>
-  );
-};
+  )
+}
 
 const HSLForm: Component<PickerProps> = props => {
-  const { color, update, alpha } = usePickerContext();
-  const { id, colorPickerLabels } = props;
-  const { hueLabel, saturationLabel, lightnessLabel, alphaLabel } = colorPickerLabels;
+  const { color, update, alpha } = usePickerContext()
+  const { id, colorPickerLabels } = props
+  const { hueLabel, saturationLabel, lightnessLabel, alphaLabel } = colorPickerLabels
   const hsl = () => {
-    let { h, s, l, a } = color().toHsl();
-    [h, s, l] = [h, s, l].map((cl, i) => roundPart(cl * (i ? 100 : 360))) as [number, number, number];
-    a = roundPart(alpha() * 100);
-    return { h, s, l, a };
-  };
+    let { h, s, l, a } = color().toHsl()
+    ;[h, s, l] = [h, s, l].map((cl, i) => roundPart(cl * (i ? 100 : 360))) as [number, number, number]
+    a = roundPart(alpha() * 100)
+    return { h, s, l, a }
+  }
   const stringValue = () => {
-    const { h, s, l } = hsl();
-    return `${props.format().toUpperCase()}: ${h}° ${s}% ${l}%`;
-  };
+    const { h, s, l } = hsl()
+    return `${props.format().toUpperCase()}: ${h}° ${s}% ${l}%`
+  }
 
   const changeHue = (e: Event) =>
-    update(new Color({ ...color(), h: Number((e.target as HTMLInputElement).value) }, props.format()));
+    update(new Color({ ...color(), h: Number((e.target as HTMLInputElement).value) }, props.format()))
   const changeSaturation = (e: Event) =>
-    update(new Color({ ...color(), s: Number((e.target as HTMLInputElement).value) }, props.format()));
+    update(new Color({ ...color(), s: Number((e.target as HTMLInputElement).value) }, props.format()))
   const changeLightness = (e: Event) =>
-    update(new Color({ ...color(), l: Number((e.target as HTMLInputElement).value) }, props.format()));
+    update(new Color({ ...color(), l: Number((e.target as HTMLInputElement).value) }, props.format()))
   const changeAlpha = (e: Event) =>
-    update(new Color({ ...color(), a: Number((e.target as HTMLInputElement).value) / 100 }, props.format()));
+    update(new Color({ ...color(), a: Number((e.target as HTMLInputElement).value) / 100 }, props.format()))
 
   return (
     <div class={`color-dropdown picker${props.class()}`} role="group" id={`${id}-picker`} ref={props.ref}>
@@ -268,32 +261,32 @@ const HSLForm: Component<PickerProps> = props => {
         />
       </div>
     </div>
-  );
-};
+  )
+}
 
 const HWBForm: Component<PickerProps> = props => {
-  const { color, update, alpha } = usePickerContext();
-  const { id, colorPickerLabels } = props;
-  const { hueLabel, blacknessLabel, whitenessLabel, alphaLabel } = colorPickerLabels;
+  const { color, update, alpha } = usePickerContext()
+  const { id, colorPickerLabels } = props
+  const { hueLabel, blacknessLabel, whitenessLabel, alphaLabel } = colorPickerLabels
   const hwb = () => {
-    let { h, w, b, a } = color().toHwb();
-    [h, w, b] = [h, w, b].map((cl, i) => roundPart(cl * (i ? 100 : 360))) as [number, number, number];
-    a = roundPart(alpha() * 100);
-    return { h, w, b, a };
-  };
+    let { h, w, b, a } = color().toHwb()
+    ;[h, w, b] = [h, w, b].map((cl, i) => roundPart(cl * (i ? 100 : 360))) as [number, number, number]
+    a = roundPart(alpha() * 100)
+    return { h, w, b, a }
+  }
   const stringValue = () => {
-    const { h, w, b } = hwb();
-    return `${props.format().toUpperCase()}: ${h}° ${w}% ${b}%`;
-  };
+    const { h, w, b } = hwb()
+    return `${props.format().toUpperCase()}: ${h}° ${w}% ${b}%`
+  }
 
   const changeHue = (e: Event) =>
-    update(new Color({ ...color(), h: Number((e.currentTarget as HTMLInputElement).value) }, props.format()));
+    update(new Color({ ...color(), h: Number((e.currentTarget as HTMLInputElement).value) }, props.format()))
   const changeWhiteness = (e: Event) =>
-    update(new Color({ ...color(), w: Number((e.currentTarget as HTMLInputElement).value) }, props.format()));
+    update(new Color({ ...color(), w: Number((e.currentTarget as HTMLInputElement).value) }, props.format()))
   const changeBlackness = (e: Event) =>
-    update(new Color({ ...color(), b: Number((e.currentTarget as HTMLInputElement).value) }, props.format()));
+    update(new Color({ ...color(), b: Number((e.currentTarget as HTMLInputElement).value) }, props.format()))
   const changeAlpha = (e: Event) =>
-    update(new Color({ ...color(), a: Number((e.currentTarget as HTMLInputElement).value) / 100 }, props.format()));
+    update(new Color({ ...color(), a: Number((e.currentTarget as HTMLInputElement).value) / 100 }, props.format()))
 
   return (
     <div class={`color-dropdown picker${props.class()}`} role="group" id={`${id}-picker`} ref={props.ref}>
@@ -366,16 +359,16 @@ const HWBForm: Component<PickerProps> = props => {
         />
       </div>
     </div>
-  );
-};
+  )
+}
 
 const HEXForm: Component<PickerProps> = props => {
-  const { id, colorPickerLabels } = props;
-  const { hexLabel } = colorPickerLabels;
-  const { color, update } = usePickerContext();
-  const hex = () => color().toHex();
-  const stringValue = () => `${hexLabel}: ${hex().toUpperCase()}`;
-  const changeHex = (e: Event) => update(new Color((e.currentTarget as HTMLInputElement).value, props.format()));
+  const { id, colorPickerLabels } = props
+  const { hexLabel } = colorPickerLabels
+  const { color, update } = usePickerContext()
+  const hex = () => color().toHex()
+  const stringValue = () => `${hexLabel}: ${hex().toUpperCase()}`
+  const changeHex = (e: Event) => update(new Color((e.currentTarget as HTMLInputElement).value, props.format()))
 
   return (
     <div class={`color-dropdown picker${props.class()}`} role="group" id={`${id}-picker`} ref={props.ref}>
@@ -400,26 +393,26 @@ const HEXForm: Component<PickerProps> = props => {
         />
       </div>
     </div>
-  );
-};
+  )
+}
 
 const PartSelection = {
   rgb: RGBForm,
   hex: HEXForm,
   hsl: HSLForm,
   hwb: HWBForm,
-};
+}
 
 const PickerDropdown: Component<PickerProps> = props => {
   // const [part, setPart] = createSignal(PartSelection[props.format()]);
-  const getPart = () => createComponent(PartSelection[props.format()], props);
-  const [part, setPart] = createSignal(getPart());
+  const getPart = () => createComponent(PartSelection[props.format()], props)
+  const [part, setPart] = createSignal(getPart())
   createEffect(() => {
     startTransition(() => {
-      setPart(getPart());
-    });
-  });
-  return <Suspense>{part()}</Suspense>;
-};
+      setPart(getPart())
+    })
+  })
+  return <Suspense>{part()}</Suspense>
+}
 
-export default PickerDropdown;
+export default PickerDropdown
