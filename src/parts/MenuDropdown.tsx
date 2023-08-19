@@ -1,34 +1,34 @@
-import Color from '@thednp/color'
-import ColorPicker from '@thednp/color-picker'
-import { Component, For } from 'solid-js'
-import type { ColorPresets, MenuProps } from '../types/types'
-import { usePickerContext } from './ColorPickerContext'
+import Color from '@thednp/color';
+import ColorPicker from '@thednp/color-picker';
+import { Component, For } from 'solid-js';
+import type { ColorPresets, MenuProps } from '../types/types';
+import { usePickerContext } from './ColorPickerContext';
 
-const { ColorPalette } = ColorPicker
+const { ColorPalette } = ColorPicker;
 
 const PresetsMenu: Component<MenuProps> = props => {
-  const { value, setValue, setColor, updateControlPositions } = usePickerContext()
-  const { colorPickerLabels, colorPresets } = props
-  const { hue, hueSteps, lightSteps, saturation } = colorPresets as ColorPresets
-  const { colors } = new ColorPalette(hue, hueSteps, lightSteps, saturation)
-  const colorsCount = colors.length
-  const fit = lightSteps || [9, 10].find(x => colorsCount >= x * 2 && !(colorsCount % x)) || 5
-  const isMultiLine = colorsCount > fit
-  let rowCountHover = 2
-  rowCountHover = isMultiLine && colorsCount > fit * 2 ? 3 : rowCountHover
-  rowCountHover = isMultiLine && colorsCount > fit * 3 ? 4 : rowCountHover
-  rowCountHover = isMultiLine && colorsCount > fit * 4 ? 5 : rowCountHover
-  const rowCount = rowCountHover - (colorsCount <= fit * 3 ? 1 : 2)
-  const isScrollable = isMultiLine && colorsCount > rowCount * fit
-  let finalClass = `color-options`
-  finalClass += isScrollable ? ' scrollable' : ''
-  finalClass += isMultiLine ? ' multiline' : ''
-  const gap = isMultiLine ? '1px' : '0.25rem'
-  let optionSize = isMultiLine ? 1.75 : 2
-  optionSize = fit > 5 && isMultiLine ? 1.5 : optionSize
-  const menuHeight = `${rowCount * optionSize}rem`
-  const menuHeightHover = `calc(${rowCountHover} * ${optionSize}rem + ${rowCountHover - 1} * ${gap})`
-  const colorFormat = () => props.format()
+  const { value, setValue, setColor, updateControlPositions } = usePickerContext();
+  const { colorPickerLabels, colorPresets } = props;
+  const { hue, hueSteps, lightSteps, saturation } = colorPresets as ColorPresets;
+  const { colors } = new ColorPalette(hue, hueSteps, lightSteps, saturation);
+  const colorsCount = colors.length;
+  const fit = lightSteps || [9, 10].find(x => colorsCount >= x * 2 && !(colorsCount % x)) || 5;
+  const isMultiLine = colorsCount > fit;
+  let rowCountHover = 2;
+  rowCountHover = isMultiLine && colorsCount > fit * 2 ? 3 : rowCountHover;
+  rowCountHover = isMultiLine && colorsCount > fit * 3 ? 4 : rowCountHover;
+  rowCountHover = isMultiLine && colorsCount > fit * 4 ? 5 : rowCountHover;
+  const rowCount = rowCountHover - (colorsCount <= fit * 3 ? 1 : 2);
+  const isScrollable = isMultiLine && colorsCount > rowCount * fit;
+  let finalClass = `color-options`;
+  finalClass += isScrollable ? ' scrollable' : '';
+  finalClass += isMultiLine ? ' multiline' : '';
+  const gap = isMultiLine ? '1px' : '0.25rem';
+  let optionSize = isMultiLine ? 1.75 : 2;
+  optionSize = fit > 5 && isMultiLine ? 1.5 : optionSize;
+  const menuHeight = `${rowCount * optionSize}rem`;
+  const menuHeightHover = `calc(${rowCountHover} * ${optionSize}rem + ${rowCountHover - 1} * ${gap})`;
+  const colorFormat = () => props.format();
 
   return (
     <ul
@@ -39,9 +39,9 @@ const PresetsMenu: Component<MenuProps> = props => {
     >
       <For each={colors}>
         {color => {
-          const newColor = () => new Color(color, colorFormat())
-          const newValue = () => newColor().toString()
-          const isActive = () => newValue() === value()
+          const newColor = () => new Color(color, colorFormat());
+          const newValue = () => newColor().toString();
+          const isActive = () => newValue() === value();
           return (
             <li
               tabindex="0"
@@ -49,39 +49,39 @@ const PresetsMenu: Component<MenuProps> = props => {
               aria-selected={isActive()}
               class={`color-option${isActive() ? ' active' : ''}`}
               onClick={() => {
-                setValue(newValue())
-                setColor(newColor())
+                setValue(newValue());
+                setColor(newColor());
 
-                updateControlPositions()
+                updateControlPositions();
               }}
               style={`background-color: ${color.toRgbString()};`}
             >
               {newValue()}
             </li>
-          )
+          );
         }}
       </For>
     </ul>
-  )
-}
+  );
+};
 
 const KeywordsMenu: Component<MenuProps> = props => {
-  const { colorPickerLabels } = props
-  const { value, setValue, update } = usePickerContext()
+  const { colorPickerLabels } = props;
+  const { value, setValue, update } = usePickerContext();
 
   return (
     <ul class="color-defaults" role="listbox" aria-label={colorPickerLabels.defaultsLabel}>
       <For each={props.colorKeywords}>
         {key => {
           const { label, value: val } =
-            typeof key === 'object' ? key : { label: key, value: new Color(key, props.format()).toString() }
-          const isActive = () => val === value()
+            typeof key === 'object' ? key : { label: key, value: new Color(key, props.format()).toString() };
+          const isActive = () => val === value();
           return (
             <li
               class={`color-option${isActive() ? ' active' : ''}`}
               onClick={() => {
-                setValue(val)
-                update(new Color(val, props.format()))
+                setValue(val);
+                update(new Color(val, props.format()));
               }}
               tabindex="0"
               role="option"
@@ -89,12 +89,12 @@ const KeywordsMenu: Component<MenuProps> = props => {
             >
               {label}
             </li>
-          )
+          );
         }}
       </For>
     </ul>
-  )
-}
+  );
+};
 
 const MenuDropdown: Component<MenuProps> = props => {
   return (props.colorKeywords && props.colorKeywords.length) || props.colorPresets ? (
@@ -102,7 +102,7 @@ const MenuDropdown: Component<MenuProps> = props => {
       {props.colorPresets ? <PresetsMenu {...props} /> : null}
       {props.colorKeywords && props.colorKeywords.length ? <KeywordsMenu {...props} /> : null}
     </div>
-  ) : null
-}
+  ) : null;
+};
 
-export default MenuDropdown
+export default MenuDropdown;
