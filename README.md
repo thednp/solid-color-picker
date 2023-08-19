@@ -1,4 +1,4 @@
-[<img width="100%" src="banner.svg" alt="solid-color-picker">](https://solid-color-picker.netlify.app/)
+[<img width="100%" src="banner.svg" alt="solid-color-picker">](https://solid-color-picker.netlify.app/) ![solid-js version](https://img.shields.io/badge/solid--js-1.7.11-brightgreen)
 
 # Solid Color Picker
 [![ci](https://github.com/thednp/solid-color-picker/actions/workflows/ci.yml/badge.svg)](https://github.com/thednp/solid-color-picker/actions/workflows/ci.yml)
