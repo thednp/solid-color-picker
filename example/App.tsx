@@ -1,7 +1,6 @@
 import Color from '@thednp/color';
 import Fill from './assets/fill.svg';
 import Banner from './assets/banner.svg';
-import '@thednp/color-picker/dist/css/color-picker.css';
 import './light.css';
 import './style.css';
 

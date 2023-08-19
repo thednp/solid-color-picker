@@ -32,6 +32,7 @@ import MenuDropdown from '../parts/MenuDropdown';
 import { PickerContext } from '../parts/ColorPickerContext';
 import initialControlPositions from '../other/initialControlPositions';
 import useVisualOffset from '../other/useVisualOffset';
+import '@thednp/color-picker/dist/css/color-picker.css';
 
 let pickerCount = 0;
 const DefaultColorPicker: Component<ColorPickerProps> = props => {
