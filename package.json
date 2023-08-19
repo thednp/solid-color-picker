@@ -1,6 +1,6 @@
 {
   "name": "@thednp/solid-color-picker",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Modern Color Picker for SolidJS",
   "keywords": [
     "solid",
@@ -27,7 +27,8 @@
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "src"
   ],
   "exports": {
     "solid": {
@@ -48,7 +49,7 @@
   "scripts": {
     "dev": "vite serve example",
     "build:example": "vite build example",
-    "format": "prettier --ignore-path .gitignore -w \"src/**/*.{js,ts,json,css,tsx,jsx}\" \"example/**/*.{js,ts,json,css,tsx,jsx}\"",
+    "format": "prettier -w \"src/**/*.{js,ts,json,css,tsx,jsx}\" \"example/**/*.{js,ts,json,css,tsx,jsx}\"",
     "build": "tsup",
     "prepublishOnly": "pnpm build",
     "lint": "pnpm lint:types && pnpm lint:code",

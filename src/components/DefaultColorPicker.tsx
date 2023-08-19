@@ -15,7 +15,6 @@ import {
   keyArrowRight,
   keySpace,
   keyEnter,
-  // hasClass,
   getElementStyle,
   focus,
   ObjectAssign,
@@ -72,6 +71,7 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
   pickerCount += 1;
 
   let pickerDropdown!: HTMLDivElement;
+  // let menuDropdown = undefined as unknown as HTMLElement;
   let menuDropdown!: HTMLDivElement;
   let input!: HTMLInputElement;
 
@@ -215,8 +215,8 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
   const menuKeyHandler = (e: KeyboardEvent & { target: HTMLElement; code: string }) => {
     const { target, code } = e;
     const { previousElementSibling, nextElementSibling, parentElement } = target;
-    // const isColorOptionsMenu = parentElement && hasClass(parentElement, 'color-options');
-    const isColorOptionsMenu = parentElement && menuDropdown.contains(parentElement);
+    const isColorOptionsMenu =
+      typeof menuDropdown !== 'undefined' && parentElement && menuDropdown.contains(parentElement);
     const allSiblings = parentElement ? [...parentElement.children] : [];
     const columnsCount =
       isColorOptionsMenu && getElementStyle(parentElement, 'grid-template-columns').split(' ').length;
@@ -476,7 +476,7 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
     [c1, c2, c3].forEach(c => action(c, 'pointerdown', pointerDown as EventListener));
     [k1, k2, k3].forEach(k => action(k, 'keydown', handleKnobs as EventListener));
     if (parent) action(parent, 'focusout', handleBlur as EventListener);
-    action(menuDropdown, 'keydown', menuKeyHandler as EventListener);
+    if (typeof menuDropdown !== 'undefined') action(menuDropdown, 'keydown', menuKeyHandler as EventListener);
   };
 
   const hideTransitionEnd = () => {
@@ -488,7 +488,7 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
   const showMenu = () => {
     setOpen(menuDropdown);
     setPosition('bottom');
-    reflow(menuDropdown);
+    reflow(menuDropdown as HTMLElement);
     startTransition(() => {
       updateDropdownPosition();
       setMenuShown(true);
@@ -497,8 +497,8 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
   };
   const hideMenu = () => {
     setMenuShown(false);
-    reflow(menuDropdown);
-    emulateTransitionEnd(menuDropdown, hideTransitionEnd);
+    reflow(menuDropdown as HTMLElement);
+    emulateTransitionEnd(menuDropdown as HTMLElement, hideTransitionEnd);
   };
   const toggleMenu = () => {
     if (open() !== menuDropdown) {
@@ -625,19 +625,6 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
           colorPickerLabels={pickerLabels}
         />
 
-        <button
-          class="menu-toggle btn-appearance"
-          tabindex={menuShown() || pickerShown() ? 0 : -1}
-          aria-expanded={menuShown()}
-          aria-haspopup={true}
-          onClick={toggleMenu}
-        >
-          <span class="v-hidden">{pickerLabels.toggleLabel}</span>
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" aria-hidden={true}>
-            <path d="M98,158l157,156L411,158l27,27L255,368L71,185L98,158z" fill="#fff"></path>
-          </svg>
-        </button>
-
         <MenuDropdown
           id={id}
           class={menuClass}
@@ -646,7 +633,20 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
           colorPickerLabels={pickerLabels}
           colorPresets={props.colorPresets}
           colorKeywords={props.colorKeywords}
-        />
+        >
+          <button
+            class="menu-toggle btn-appearance"
+            tabindex={menuShown() || pickerShown() ? 0 : -1}
+            aria-expanded={menuShown()}
+            aria-haspopup={true}
+            onClick={toggleMenu}
+          >
+            <span class="v-hidden">{pickerLabels.toggleLabel}</span>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" aria-hidden={true}>
+              <path d="M98,158l157,156L411,158l27,27L255,368L71,185L98,158z" fill="#fff"></path>
+            </svg>
+          </button>
+        </MenuDropdown>
       </div>
     </PickerContext.Provider>
   );

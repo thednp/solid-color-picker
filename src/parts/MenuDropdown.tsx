@@ -98,10 +98,13 @@ const KeywordsMenu: Component<MenuProps> = props => {
 
 const MenuDropdown: Component<MenuProps> = props => {
   return (props.colorKeywords && props.colorKeywords.length) || props.colorPresets ? (
-    <div id={`${props.id}-menu`} ref={props.ref} class={`color-dropdown menu${props.class()}`}>
-      {props.colorPresets ? <PresetsMenu {...props} /> : null}
-      {props.colorKeywords && props.colorKeywords.length ? <KeywordsMenu {...props} /> : null}
-    </div>
+    <>
+      {props.children}
+      <div id={`${props.id}-menu`} ref={props.ref} class={`color-dropdown menu${props.class()}`}>
+        {props.colorPresets ? <PresetsMenu {...props} /> : null}
+        {props.colorKeywords && props.colorKeywords.length ? <KeywordsMenu {...props} /> : null}
+      </div>
+    </>
   ) : null;
 };
 

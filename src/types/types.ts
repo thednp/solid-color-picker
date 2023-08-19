@@ -1,4 +1,4 @@
-import type { Accessor } from 'solid-js';
+import type { Accessor, JSXElement } from 'solid-js';
 import ColorPicker from '@thednp/color-picker';
 
 const { colorPickerLabels, colorNames } = ColorPicker;
@@ -73,4 +73,5 @@ export type MenuProps = {
   colorPickerLabels: typeof colorPickerLabels;
   colorPresets?: ColorPresets;
   colorKeywords?: ColorKeywords;
+  children?: JSXElement;
 };
