@@ -1,3 +1,3 @@
-import DefaultColorPicker from './components/DefaultColorPicker';
+import DefaultColorPicker from './components/DefaultColorPicker'
 
-export { DefaultColorPicker };
+export { DefaultColorPicker }

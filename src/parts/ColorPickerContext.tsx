@@ -1,6 +1,6 @@
-import Color from '@thednp/color';
-import { Accessor, Setter, createContext, useContext } from 'solid-js';
-import initialControlPositions from '../other/initialControlPositions';
+import Color from '@thednp/color'
+import { Accessor, Setter, createContext, useContext } from 'solid-js'
+import initialControlPositions from '../other/initialControlPositions'
 
 export const PickerContext = createContext({
   color: (() => {}) as Accessor<Color>,
@@ -23,6 +23,6 @@ export const PickerContext = createContext({
   alpha: (() => 0) as Accessor<number>,
   fill: (() => {}) as Accessor<Color>,
   fillGradient: (() => '') as Accessor<string>,
-});
+})
 
-export const usePickerContext = () => useContext(PickerContext);
+export const usePickerContext = () => useContext(PickerContext)
