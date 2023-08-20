@@ -5,10 +5,11 @@ export type ColorList = string[];
 export type SupportedLanguage = 'en' | 'ru' | 'fr' | 'de' | 'ro' | 'es' | 'pl' | 'pt' | 'zh' | 'ja' | 'ko';
 export type SupportedFormat = 'rgb' | 'hex' | 'hwb' | 'hsl';
 
-export interface LanguagePack {
-  colorNames: ColorNames;
-  colorPickerLabels: ColorPickerLabels;
-}
+// export interface LanguagePack {
+//   colorNames: ColorNames;
+//   colorPickerLabels: ColorPickerLabels;
+// }
+export type LanguagePack = ColorNames & ColorPickerLabels;
 
 export interface ColorPickerLabels {
   pickerLabel: string;
@@ -32,7 +33,7 @@ export interface ColorPickerLabels {
   [key: string]: string;
 }
 
-export type ColorNames = {
+export interface ColorNames {
   white: string;
   black: string;
   grey: string;
@@ -50,7 +51,7 @@ export type ColorNames = {
   violet: string;
   magenta: string;
   pink: string;
-};
+}
 
 /**
  * typical {hue: 0, hueSteps: 12, lightSteps: 10, saturation: 85}

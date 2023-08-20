@@ -8,7 +8,7 @@ const { ColorPalette } = ColorPicker;
 
 const PresetsMenu: Component<MenuProps> = props => {
   const { locale, value, update, format } = usePickerContext();
-  const { colorPickerLabels } = locale();
+  // const { colorPickerLabels } = ;
   const { colorPresets } = props;
   const { hue, hueSteps, lightSteps, saturation } = colorPresets as ColorPresets;
   const { colors } = new ColorPalette(hue, hueSteps, lightSteps, saturation);
@@ -35,7 +35,7 @@ const PresetsMenu: Component<MenuProps> = props => {
       <ul
         class={finalClass}
         role="listbox"
-        aria-label={colorPickerLabels.presetsLabel}
+        aria-label={locale().presetsLabel}
         style={{
           '--grid-item-size': `${optionSize}rem`,
           '--grid-fit': fit,
@@ -72,11 +72,10 @@ const PresetsMenu: Component<MenuProps> = props => {
 const KeywordsMenu: Component<MenuProps> = props => {
   const { colorKeywords } = props;
   const { locale, value, setValue, update, format } = usePickerContext();
-  const { colorPickerLabels } = locale();
 
   return (
     <Suspense>
-      <ul class="color-defaults" role="listbox" aria-label={colorPickerLabels.defaultsLabel}>
+      <ul class="color-defaults" role="listbox" aria-label={locale().defaultsLabel}>
         <For each={colorKeywords}>
           {key => {
             const { label, value: val } =

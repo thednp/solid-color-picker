@@ -23,9 +23,7 @@ const ColorControls: Component<ControlProps> = props => {
           aria-live="polite"
           aria-valuemin={0}
           aria-valuemax={100}
-          aria-label={`${locale().colorPickerLabels.lightnessLabel} &amp; ${
-            locale().colorPickerLabels.saturationLabel
-          }`}
+          aria-label={`${locale().lightnessLabel} &amp; ${locale().saturationLabel}`}
           aria-valuetext={`${lightness()}% &amp; ${saturation()}%`}
           aria-valuenow={lightness()}
           style={{ transform: `translate3d(${controlPositions().c1x - 4}px, ${controlPositions().c1y - 4}px, 0px)` }}
@@ -38,12 +36,10 @@ const ColorControls: Component<ControlProps> = props => {
           aria-live="polite"
           role="slider"
           tabIndex={0}
-          aria-label={locale().colorPickerLabels.hueLabel}
+          aria-label={locale().hueLabel}
           aria-valuemin={0}
           aria-valuemax={360}
-          aria-description={`${locale().colorPickerLabels.valueLabel}: ${stringValue()}. ${
-            locale().colorPickerLabels.appearanceLabel
-          }: ${appearance()}.`}
+          aria-description={`${locale().valueLabel}: ${stringValue()}. ${locale().appearanceLabel}: ${appearance()}.`}
           aria-valuetext={`${roundPart(hue() * 100)}°`}
           aria-valuenow={roundPart(hue() * 100)}
           style={{ transform: `translate3d(0px, ${controlPositions().c2y - 4}px, 0px)` }}
@@ -63,7 +59,7 @@ const ColorControls: Component<ControlProps> = props => {
           aria-live="polite"
           role="slider"
           tabIndex={0}
-          aria-label={locale().colorPickerLabels.alphaLabel}
+          aria-label={locale().alphaLabel}
           aria-valuemin={0}
           aria-valuemax={100}
           aria-valuetext={`${roundPart(alpha() * 100)}%`}
@@ -104,7 +100,7 @@ const RGBForm: Component<PickerProps> = props => {
       <div class="color-form rgb">
         <label for={`color_rgb_red_${id}`}>
           <span aria-hidden={true}>R:</span>
-          <span class="v-hidden">{locale().colorPickerLabels.redLabel}</span>
+          <span class="v-hidden">{locale().redLabel}</span>
         </label>
         <input
           id={`color_rgb_red_${id}`}
@@ -120,7 +116,7 @@ const RGBForm: Component<PickerProps> = props => {
         />
         <label for={`color_rgb_green_${id}`}>
           <span aria-hidden={true}>G:</span>
-          <span class="v-hidden">{locale().colorPickerLabels.greenLabel}</span>
+          <span class="v-hidden">{locale().greenLabel}</span>
         </label>
         <input
           id={`color_rgb_green_${id}`}
@@ -136,7 +132,7 @@ const RGBForm: Component<PickerProps> = props => {
         />
         <label for={`color_rgb_blue_${id}`}>
           <span aria-hidden={true}>B:</span>
-          <span class="v-hidden">{locale().colorPickerLabels.blueLabel}</span>
+          <span class="v-hidden">{locale().blueLabel}</span>
         </label>
         <input
           id={`color_rgb_blue_${id}`}
@@ -152,7 +148,7 @@ const RGBForm: Component<PickerProps> = props => {
         />
         <label for={`color_rgb_alpha_${id}`}>
           <span aria-hidden={true}>A:</span>
-          <span class="v-hidden">{locale().colorPickerLabels.alphaLabel}</span>
+          <span class="v-hidden">{locale().alphaLabel}</span>
         </label>
         <input
           id={`color_rgb_alpha_${id}`}
@@ -201,7 +197,7 @@ const HSLForm: Component<PickerProps> = props => {
       <div class="color-form hsl">
         <label for={`color_hsl_hue_${id}`}>
           <span aria-hidden={true}>H:</span>
-          <span class="v-hidden">{locale().colorPickerLabels.hueLabel}</span>
+          <span class="v-hidden">{locale().hueLabel}</span>
         </label>
         <input
           id={`color_hsl_hue_${id}`}
@@ -217,7 +213,7 @@ const HSLForm: Component<PickerProps> = props => {
         />
         <label for={`color_hsl_saturation_${id}`}>
           <span aria-hidden={true}>S:</span>
-          <span class="v-hidden">{locale().colorPickerLabels.saturationLabel}</span>
+          <span class="v-hidden">{locale().saturationLabel}</span>
         </label>
         <input
           id={`color_hsl_saturation_${id}`}
@@ -233,7 +229,7 @@ const HSLForm: Component<PickerProps> = props => {
         />
         <label for={`color_hsl_lightness_${id}`}>
           <span aria-hidden={true}>L:</span>
-          <span class="v-hidden">{locale().colorPickerLabels.lightnessLabel}</span>
+          <span class="v-hidden">{locale().lightnessLabel}</span>
         </label>
         <input
           id={`color_hsl_lightness_${id}`}
@@ -249,7 +245,7 @@ const HSLForm: Component<PickerProps> = props => {
         />
         <label for={`color_hsl_alpha_${id}`}>
           <span aria-hidden={true}>A:</span>
-          <span class="v-hidden">{locale().colorPickerLabels.alphaLabel}</span>
+          <span class="v-hidden">{locale().alphaLabel}</span>
         </label>
         <input
           id={`color_hsl_alpha_${id}`}
@@ -298,7 +294,7 @@ const HWBForm: Component<PickerProps> = props => {
       <div class="color-form hwb">
         <label for={`color_hwb_hue_${id}`}>
           <span aria-hidden={true}>H:</span>
-          <span class="v-hidden">{locale().colorPickerLabels.hueLabel}</span>
+          <span class="v-hidden">{locale().hueLabel}</span>
         </label>
         <input
           id={`color_hwb_hue_${id}`}
@@ -314,7 +310,7 @@ const HWBForm: Component<PickerProps> = props => {
         />
         <label for={`color_hwb_whiteness_${id}`}>
           <span aria-hidden={true}>W:</span>
-          <span class="v-hidden">{locale().colorPickerLabels.whitenessLabel}</span>
+          <span class="v-hidden">{locale().whitenessLabel}</span>
         </label>
         <input
           id={`color_hwb_whiteness_${id}`}
@@ -330,7 +326,7 @@ const HWBForm: Component<PickerProps> = props => {
         />
         <label for={`color_hwb_blackness-${id}`}>
           <span aria-hidden={true}>B:</span>
-          <span class="v-hidden">{locale().colorPickerLabels.blacknessLabel}</span>
+          <span class="v-hidden">{locale().blacknessLabel}</span>
         </label>
         <input
           id={`color_hwb_blackness-${id}`}
@@ -346,7 +342,7 @@ const HWBForm: Component<PickerProps> = props => {
         />
         <label for={`color_hwb_alpha_${id}`}>
           <span aria-hidden={true}>A:</span>
-          <span class="v-hidden">{locale().colorPickerLabels.alphaLabel}</span>
+          <span class="v-hidden">{locale().alphaLabel}</span>
         </label>
         <input
           id={`color_hwb_alpha_${id}`}
@@ -369,7 +365,7 @@ const HEXForm: Component<PickerProps> = props => {
   const { format, locale, color, update, setValue } = usePickerContext();
   const { id } = props;
   const hex = () => color().toHex();
-  const stringValue = () => `${locale().colorPickerLabels.hexLabel}: ${hex().toUpperCase()}`;
+  const stringValue = () => `${locale().hexLabel}: ${hex().toUpperCase()}`;
   const changeHex = (e: Event & { currentTarget: HTMLInputElement }) => {
     const newValue = e.currentTarget.value;
     const newColor = new Color(newValue, format());
@@ -392,7 +388,7 @@ const HEXForm: Component<PickerProps> = props => {
       <div class={'color-form hex'}>
         <label for="color_hex_hex_1">
           <span aria-hidden={true}>#:</span>
-          <span class="v-hidden">{locale().colorPickerLabels.hexLabel}</span>
+          <span class="v-hidden">{locale().hexLabel}</span>
         </label>
         <input
           id={`color_hex_${id}`}

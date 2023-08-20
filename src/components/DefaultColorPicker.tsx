@@ -34,30 +34,31 @@ import getLanguageStrings from '../locales/getLanguageStrings';
 import '@thednp/color-picker/dist/css/color-picker.css';
 
 let pickerCount = 0;
+const { roundPart } = Color;
+
 const DefaultColorPicker: Component<ColorPickerProps> = props => {
   const id = props.id ? props.id : `color-picker-${pickerCount}`;
   let oldFormat = props.format;
   const lang = () => props.lang || 'en';
   const format = () => props.format || 'rgb';
   const initValue = () => props.value || 'red';
-  const placeholder = () =>
-    props.placeholder ? props.placeholder : locale().colorPickerLabels.placeholder.replace(/%/, format().toUpperCase());
   const locale = createMemo(() => {
     if (props.lang && props.lang !== lang()) {
       return getLanguageStrings(props.lang);
     }
-    const { colorNames, colorPickerLabels } = getLanguageStrings(lang());
+    const langPack = getLanguageStrings(lang());
 
     if (props.colorNames && ObjectKeys(props.colorNames).length === 17) {
-      ObjectAssign(colorNames, props.colorNames);
+      ObjectAssign(langPack, props.colorNames);
     }
     if (props.colorPickerLabels && ObjectKeys(props.colorPickerLabels).length === 17) {
-      ObjectAssign(colorPickerLabels, props.colorPickerLabels);
+      ObjectAssign(langPack, props.colorPickerLabels);
     }
-    return { colorNames, colorPickerLabels };
+    return langPack;
   });
 
-  const { roundPart } = Color;
+  const placeholder = () =>
+    props.placeholder ? props.placeholder : locale().placeholder.replace(/%/g, format().toUpperCase());
   const { offsetHeight, offsetWidth } = useVisualOffset();
   const [value, setValue] = createSignal(initValue());
   const [color, setColor] = createSignal(new Color(value(), format()));
@@ -153,8 +154,6 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
   };
 
   const appearance = () => {
-    const { colorNames } = locale();
-    const { roundPart } = Color;
     const hsl = color().toHsl();
     const hsv = color().toHsv();
 
@@ -169,34 +168,34 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
     // determine color appearance
     /* istanbul ignore else */
     if (lightness === 100 && saturation === 0) {
-      colorName = colorNames.white;
+      colorName = locale().white;
     } else if (lightness === 0) {
-      colorName = colorNames.black;
+      colorName = locale().black;
     } else if (saturation === 0) {
-      colorName = colorNames.grey;
+      colorName = locale().grey;
     } else if (hue < 15 || hue >= 345) {
-      colorName = colorNames.red;
+      colorName = locale().red;
     } else if (hue >= 15 && hue < 45) {
-      colorName = hsvl > 80 && saturation > 80 ? colorNames.orange : colorNames.brown;
+      colorName = hsvl > 80 && saturation > 80 ? locale().orange : locale().brown;
     } else if (hue >= 45 && hue < 75) {
       const isGold = hue > 46 && hue < 54 && hsvl < 80 && saturation > 90;
       const isOlive = hue >= 54 && hue < 75 && hsvl < 80;
-      colorName = isGold ? colorNames.gold : colorNames.yellow;
-      colorName = isOlive ? colorNames.olive : colorName;
+      colorName = isGold ? locale().gold : locale().yellow;
+      colorName = isOlive ? locale().olive : colorName;
     } else if (hue >= 75 && hue < 155) {
-      colorName = hsvl < 68 ? colorNames.green : colorNames.lime;
+      colorName = hsvl < 68 ? locale().green : locale().lime;
     } else if (hue >= 155 && hue < 175) {
-      colorName = colorNames.teal;
+      colorName = locale().teal;
     } else if (hue >= 175 && hue < 195) {
-      colorName = colorNames.cyan;
+      colorName = locale().cyan;
     } else if (hue >= 195 && hue < 255) {
-      colorName = colorNames.blue;
+      colorName = locale().blue;
     } else if (hue >= 255 && hue < 270) {
-      colorName = colorNames.violet;
+      colorName = locale().violet;
     } else if (hue >= 270 && hue < 295) {
-      colorName = colorNames.magenta;
+      colorName = locale().magenta;
     } else if (hue >= 295 && hue < 345) {
-      colorName = colorNames.pink;
+      colorName = locale().pink;
     }
     return colorName;
   };
@@ -622,9 +621,7 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
           aria-haspopup={true}
           onClick={showPicker}
         >
-          <span class="v-hidden">{`${locale().colorPickerLabels.pickerLabel}. ${
-            locale().colorPickerLabels.formatLabel
-          }: ${format().toUpperCase()}`}</span>
+          <span class="v-hidden">{`${locale().pickerLabel}. ${locale().formatLabel}: ${format().toUpperCase()}`}</span>
         </button>
         <input
           ref={input}
@@ -658,7 +655,7 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
             aria-haspopup={true}
             onClick={toggleMenu}
           >
-            <span class="v-hidden">{locale().colorPickerLabels.toggleLabel}</span>
+            <span class="v-hidden">{locale().toggleLabel}</span>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" aria-hidden={true}>
               <path d="M98,158l157,156L411,158l27,27L255,368L71,185L98,158z" fill="#fff"></path>
             </svg>
