@@ -18,11 +18,11 @@ The feature rich **ColorPicker** component for SolidJS, sourced with TypeScript,
 ## Highlights
 
 - Accessibility Focus for WAI-ARIA compliance
+- Built in translations for German, French, Russian, Spanish, Portuguese, Romanian, Chinese, Korean and Japanese
 - TypeScript sourced code base
-- Supporting HEX(a), RGB(a), HSL(a) and HWB, the last three also in CSS4 Color Module flavours
+- Supporting HEX(a), RGB(a), HSL(a) and HWB(a), the last three also in CSS4 Color Module flavours
 - Supports keyboard and touch events as well as responsive design
 - Automatic repositioning of the popup dropdown on show / window scroll
-- SCSS sources with minimal style required
 - Right To Left Languages Supported
 
 

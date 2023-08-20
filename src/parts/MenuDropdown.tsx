@@ -8,7 +8,6 @@ const { ColorPalette } = ColorPicker;
 
 const PresetsMenu: Component<MenuProps> = props => {
   const { locale, value, update, format } = usePickerContext();
-  // const { colorPickerLabels } = ;
   const { colorPresets } = props;
   const { hue, hueSteps, lightSteps, saturation } = colorPresets as ColorPresets;
   const { colors } = new ColorPalette(hue, hueSteps, lightSteps, saturation);

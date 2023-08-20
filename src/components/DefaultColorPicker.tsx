@@ -31,7 +31,7 @@ import useVisualOffset from '../util/useVisualOffset';
 import getLanguageStrings from '../locales/getLanguageStrings';
 
 // import default color picker style
-import '@thednp/color-picker/dist/css/color-picker.css';
+import './color-picker.css';
 
 let pickerCount = 0;
 const { roundPart } = Color;
@@ -40,6 +40,7 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
   const id = props.id ? props.id : `color-picker-${pickerCount}`;
   let oldFormat = props.format;
   const lang = () => props.lang || 'en';
+  const theme = () => props.theme || 'dark';
   const format = () => props.format || 'rgb';
   const initValue = () => props.value || 'red';
   const locale = createMemo(() => {
@@ -78,6 +79,7 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
       'color-picker',
       ...[props.class ? props.class.split(/\s/) : ''],
       isDark() ? 'txt-dark' : 'txt-light',
+      theme() === 'light' ? ' light' : '',
       open() ? 'open' : '',
     ]
       .filter(c => c)
@@ -85,7 +87,6 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
   pickerCount += 1;
 
   let pickerDropdown!: HTMLDivElement;
-  // let menuDropdown = undefined as unknown as HTMLElement;
   let menuDropdown!: HTMLDivElement;
   let input!: HTMLInputElement;
 
@@ -156,7 +157,6 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
   const appearance = () => {
     const hsl = color().toHsl();
     const hsv = color().toHsv();
-
     const hue = roundPart(hsl.h * 360);
     const saturationSource = format() === 'hsl' ? hsl.s : hsv.s;
     const saturation = roundPart(saturationSource * 100);
@@ -489,6 +489,7 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
     [c1, c2, c3].forEach(c => action(c, 'pointerdown', pointerDown as EventListener));
     [k1, k2, k3].forEach(k => action(k, 'keydown', handleKnobs as EventListener));
     if (parent) action(parent, 'focusout', handleBlur as EventListener);
+    // when no presets/keywords, the menu won't be rendered
     if (typeof menuDropdown !== 'undefined') action(menuDropdown, 'keydown', menuKeyHandler as EventListener);
   };
 
@@ -634,7 +635,7 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
           placeholder={placeholder()}
           value={value()}
           tabindex={-1}
-          style={`background-color: ${value()};`}
+          style={`background-color: ${value()}`}
           onFocus={showPicker}
           onInput={handleInput}
           onChange={handleChange}

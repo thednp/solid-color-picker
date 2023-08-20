@@ -68,6 +68,7 @@ export type ColorKeywords = (string | { label: string; value: string })[];
 export type ColorPickerProps = {
   id?: string;
   value?: string;
+  theme?: 'light' | 'dark';
   lang?: SupportedLanguage;
   format?: SupportedFormat;
   class?: string;

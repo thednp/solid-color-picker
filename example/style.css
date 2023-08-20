@@ -114,6 +114,8 @@ pre {
   max-width: 100%;
   border-radius: 0.5rem;
   background-color: var(--bg-color);
+  text-align: left;
+  direction: ltr;
 }
 
 .code {
@@ -322,7 +324,7 @@ header {
 }
 
 .btn-toolbar.scrollable {
-  max-width: 100%;
+  max-width: 70%;
   overflow-x: auto;
 }
 .btn-toolbar.scrollable::-webkit-scrollbar {

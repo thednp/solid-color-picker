@@ -64,7 +64,7 @@ const ColorControls: Component<ControlProps> = props => {
           aria-valuemax={100}
           aria-valuetext={`${roundPart(alpha() * 100)}%`}
           aria-valuenow={roundPart(alpha() * 100)}
-          style={`transform: translate3d(0px, ${controlPositions().c3y - 4}px, 0px);`}
+          style={{ transform: `translate3d(0px, ${controlPositions().c3y - 4}px, 0px)` }}
         ></div>
       </div>
     </div>
