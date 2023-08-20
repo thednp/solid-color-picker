@@ -67,7 +67,11 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
   const [menuShown, setMenuShown] = createSignal(false);
   const [position, setPosition] = createSignal('');
   const [controlPositions, setControlPositions] = createSignal(initialControlPositions);
-  const isDark = () => color().isDark && color().a > 0.33;
+  // allow this to be readily available on typing on inputs
+  const isDark = () => {
+    const temp = new Color(value());
+    return temp.isDark && temp.a > 0.33;
+  };
   const className = () =>
     [
       'color-picker',
@@ -533,6 +537,21 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
     reflow(pickerDropdown);
     emulateTransitionEnd(pickerDropdown, hideTransitionEnd);
   };
+  const handleChange = (e: Event & { currentTarget: HTMLInputElement }) => {
+    const newValue = e.currentTarget.value;
+    const newColor = new Color(newValue, format());
+    if (newValue && newValue.length && newColor.isValid) {
+      update(newColor);
+    }
+  };
+  const handleInput = (e: Event & { currentTarget: HTMLInputElement }) => {
+    const newValue = e.currentTarget.value;
+    const newColor = new Color(newValue, format());
+
+    if (newValue && newValue.length && newColor.isValid) {
+      setValue(newValue);
+    }
+  };
   const update = (newColor: Color) => {
     startTransition(() => {
       setColor(newColor);
@@ -620,13 +639,8 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
           tabindex={-1}
           style={`background-color: ${value()};`}
           onFocus={showPicker}
-          onInput={e => setValue(e.currentTarget.value)}
-          onChange={e => {
-            const newValue = e.currentTarget.value;
-            setValue(newValue);
-            setColor(new Color(newValue, format()));
-            updateControlPositions();
-          }}
+          onInput={handleInput}
+          onChange={handleChange}
         />
         <PickerDropdown id={id} class={pickerClass} ref={pickerDropdown} />
 

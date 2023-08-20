@@ -366,11 +366,24 @@ const HWBForm: Component<PickerProps> = props => {
 };
 
 const HEXForm: Component<PickerProps> = props => {
-  const { format, locale, color, update } = usePickerContext();
+  const { format, locale, color, update, setValue } = usePickerContext();
   const { id } = props;
   const hex = () => color().toHex();
   const stringValue = () => `${locale().colorPickerLabels.hexLabel}: ${hex().toUpperCase()}`;
-  const changeHex = (e: Event) => update(new Color((e.currentTarget as HTMLInputElement).value, format()));
+  const changeHex = (e: Event & { currentTarget: HTMLInputElement }) => {
+    const newValue = e.currentTarget.value;
+    const newColor = new Color(newValue, format());
+    if (newValue && newValue.length && newColor.isValid) {
+      update(newColor);
+    }
+  };
+  const inputHex = (e: Event & { currentTarget: HTMLInputElement }) => {
+    const newValue = e.currentTarget.value;
+    const newColor = new Color(newValue, format());
+    if (newValue && newValue.length && newColor.isValid) {
+      setValue(newValue);
+    }
+  };
 
   return (
     <div class={`color-dropdown picker${props.class()}`} role="group" id={`${id}-picker`} ref={props.ref}>
@@ -391,6 +404,7 @@ const HEXForm: Component<PickerProps> = props => {
           max={100}
           step={1}
           value={hex()}
+          onInput={inputHex}
           onChange={changeHex}
         />
       </div>
