@@ -3,7 +3,7 @@
 
 [build]
   publish = "example/dist"
-  command = "pnpm build && pnpm example:build"
+  command = "pnpm build && pnpm build:example"
 
 [[redirects]]
   from = "/*"
