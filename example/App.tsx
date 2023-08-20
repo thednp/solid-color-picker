@@ -22,7 +22,10 @@ const App = () => {
     document.documentElement.style.setProperty('--color90', new Color(color).spin(90).toRgbString());
     document.documentElement.style.setProperty('--color180', new Color(color).spin(180).toRgbString());
     document.documentElement.style.setProperty('--color270', new Color(color).spin(270).toRgbString());
-    (favicon() as HTMLElement).setAttribute('href', `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="${newColor.toRgbString()}"><path d="M0 32a32 32 0 1 0 64 0a32 32 0 1 0 -64 0M21.83 47.18v-30.3q0 -4.65 2.66 -6.79T33 7.96c2.78 -0.15 5.55 0.42 8.04 1.67c0.23 0.13 0.45 0.28 0.66 0.43q2.85 2.1 2.85 6.9v9.97l-6.37 0.82v-9.22q0 -2.55 -0.98 -3.94t-4.05 -1.39q-2.93 0 -3.86 1.46t-0.94 3.79v27.23q0 1.95 1.05 3.23t3.75 1.27q2.77 0 3.9 -1.27t1.13 -3.23v-8.7l6.38 -0.75v10.95q0 3.98 -2.92 6.15t-8.4 2.17c-2.79 0.17 -5.57 -0.45 -8.03 -1.79C25.01 53.6 24.82 53.47 24.64 53.33q-2.81 -2.17 -2.81 -6.15z"></path></svg>`)
+    (favicon() as HTMLElement).setAttribute(
+      'href',
+      `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="${newColor.toRgbString()}"><path d="M0 32a32 32 0 1 0 64 0a32 32 0 1 0 -64 0M21.83 47.18v-30.3q0 -4.65 2.66 -6.79T33 7.96c2.78 -0.15 5.55 0.42 8.04 1.67c0.23 0.13 0.45 0.28 0.66 0.43q2.85 2.1 2.85 6.9v9.97l-6.37 0.82v-9.22q0 -2.55 -0.98 -3.94t-4.05 -1.39q-2.93 0 -3.86 1.46t-0.94 3.79v27.23q0 1.95 1.05 3.23t3.75 1.27q2.77 0 3.9 -1.27t1.13 -3.23v-8.7l6.38 -0.75v10.95q0 3.98 -2.92 6.15t-8.4 2.17c-2.79 0.17 -5.57 -0.45 -8.03 -1.79C25.01 53.6 24.82 53.47 24.64 53.33q-2.81 -2.17 -2.81 -6.15z"></path></svg>`,
+    );
     document.documentElement.style.setProperty(
       '--text-color',
       newColor.isDark && newColor.a > 0.33 ? 'rgba(255,255,255,0.75)' : 'rgba(0,0,0,0.7)',
@@ -97,15 +100,18 @@ const App = () => {
         <div class="row">
           <div class="col col-lg-6 mx-auto mb-3" style={{ display: 'flex', 'justify-content': 'space-between' }}>
             <div class="btn-toolbar">
-              <button class={`btn${direction() === 'rtl' ? ' active' : ''}`} onClick={() => {
-                if (direction() === 'rtl') {
-                  document.documentElement.removeAttribute('dir');
-                  setDirection(null)
-                } else {
-                  document.documentElement.setAttribute('dir', 'rtl');
-                  setDirection('rtl')
-                }
-              }}>
+              <button
+                class={`btn${direction() === 'rtl' ? ' active' : ''}`}
+                onClick={() => {
+                  if (direction() === 'rtl') {
+                    document.documentElement.removeAttribute('dir');
+                    setDirection(null);
+                  } else {
+                    document.documentElement.setAttribute('dir', 'rtl');
+                    setDirection('rtl');
+                  }
+                }}
+              >
                 {direction() === 'rtl' ? 'RTL' : 'LTR'}
               </button>
             </div>
