@@ -41,7 +41,7 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
   const format = () => props.format || 'rgb';
   const initValue = () => props.value || 'red';
   const placeholder = () =>
-    props.placeholder ? props.placeholder : locale().colorPickerLabels.placeholder.replace('%', format().toUpperCase());
+    props.placeholder ? props.placeholder : locale().colorPickerLabels.placeholder.replace(/%/, format().toUpperCase());
   const locale = createMemo(() => {
     if (props.lang && props.lang !== lang()) {
       return getLanguageStrings(props.lang);
