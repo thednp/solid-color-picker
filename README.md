@@ -36,6 +36,7 @@ yarn add @thednp/solid-color-picker
 pnpm add @thednp/solid-color-picker
 ```
 
+
 ## Usage
 
 ```tsx
@@ -45,6 +46,8 @@ function App() {
   return <DefaultColorPicker value="turquoise" onChange={color => console.log(color)} />;
 }
 ```
+For additional component configuration options, please check the [demo](https://solid-color-picker.netlify.app/).
+
 
 ## License
 

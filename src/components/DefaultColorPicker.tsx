@@ -1,6 +1,5 @@
 import Color from '@thednp/color';
 import { addListener, removeListener } from '@thednp/event-listener';
-import ColorPicker from '@thednp/color-picker';
 import {
   getWindow,
   getElementsByClassName,
@@ -18,36 +17,46 @@ import {
   getElementStyle,
   focus,
   ObjectAssign,
-  isArray,
-  ObjectFromEntries,
+  ObjectKeys,
 } from '@thednp/shorty';
-const { colorPickerLabels, colorNames } = ColorPicker;
 
 import type { Component } from 'solid-js';
 import { createSignal, createEffect, onCleanup, startTransition, createMemo } from 'solid-js';
-import type { ColorNames, ColorPickerProps } from '../types/types';
+import type { ColorPickerProps } from '../types/types';
 import PickerDropdown from '../parts/PickerDropdown';
 import MenuDropdown from '../parts/MenuDropdown';
 import { PickerContext } from '../parts/ColorPickerContext';
-import initialControlPositions from '../other/initialControlPositions';
-import useVisualOffset from '../other/useVisualOffset';
+import initialControlPositions from '../util/initialControlPositions';
+import useVisualOffset from '../util/useVisualOffset';
+import getLanguageStrings from '../locales/getLanguageStrings';
+
+// import default color picker style
 import '@thednp/color-picker/dist/css/color-picker.css';
 
 let pickerCount = 0;
 const DefaultColorPicker: Component<ColorPickerProps> = props => {
   const id = props.id ? props.id : `color-picker-${pickerCount}`;
-  const pickerLabels = props.colorPickerLabels ? props.colorPickerLabels : colorPickerLabels;
-  const colorLabels = ObjectFromEntries(colorNames.map(c => [c, c])) as ColorNames;
-
-  if (props.colorNames && isArray(props.colorNames) && props.colorNames.length === 17) {
-    const translatedLabels = props.colorNames.map((c, i) => [colorNames[i], c]) as [string, string][];
-    const translatedLabelsObject = ObjectFromEntries(translatedLabels) as ColorNames;
-    ObjectAssign(colorLabels, translatedLabelsObject);
-  }
-
   let oldFormat = props.format;
+  const lang = () => props.lang || 'en';
   const format = () => props.format || 'rgb';
   const initValue = () => props.value || 'red';
+  const placeholder = () =>
+    props.placeholder ? props.placeholder : locale().colorPickerLabels.placeholder.replace('%', format().toUpperCase());
+  const locale = createMemo(() => {
+    if (props.lang && props.lang !== lang()) {
+      return getLanguageStrings(props.lang);
+    }
+    const { colorNames, colorPickerLabels } = getLanguageStrings(lang());
+
+    if (props.colorNames && ObjectKeys(props.colorNames).length === 17) {
+      ObjectAssign(colorNames, props.colorNames);
+    }
+    if (props.colorPickerLabels && ObjectKeys(props.colorPickerLabels).length === 17) {
+      ObjectAssign(colorPickerLabels, props.colorPickerLabels);
+    }
+    return { colorNames, colorPickerLabels };
+  });
+
   const { roundPart } = Color;
   const { offsetHeight, offsetWidth } = useVisualOffset();
   const [value, setValue] = createSignal(initValue());
@@ -140,6 +149,7 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
   };
 
   const appearance = () => {
+    const { colorNames } = locale();
     const { roundPart } = Color;
     const hsl = color().toHsl();
     const hsv = color().toHsv();
@@ -155,34 +165,34 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
     // determine color appearance
     /* istanbul ignore else */
     if (lightness === 100 && saturation === 0) {
-      colorName = colorLabels.white;
+      colorName = colorNames.white;
     } else if (lightness === 0) {
-      colorName = colorLabels.black;
+      colorName = colorNames.black;
     } else if (saturation === 0) {
-      colorName = colorLabels.grey;
+      colorName = colorNames.grey;
     } else if (hue < 15 || hue >= 345) {
-      colorName = colorLabels.red;
+      colorName = colorNames.red;
     } else if (hue >= 15 && hue < 45) {
-      colorName = hsvl > 80 && saturation > 80 ? colorLabels.orange : colorLabels.brown;
+      colorName = hsvl > 80 && saturation > 80 ? colorNames.orange : colorNames.brown;
     } else if (hue >= 45 && hue < 75) {
       const isGold = hue > 46 && hue < 54 && hsvl < 80 && saturation > 90;
       const isOlive = hue >= 54 && hue < 75 && hsvl < 80;
-      colorName = isGold ? colorLabels.gold : colorLabels.yellow;
-      colorName = isOlive ? colorLabels.olive : colorName;
+      colorName = isGold ? colorNames.gold : colorNames.yellow;
+      colorName = isOlive ? colorNames.olive : colorName;
     } else if (hue >= 75 && hue < 155) {
-      colorName = hsvl < 68 ? colorLabels.green : colorLabels.lime;
+      colorName = hsvl < 68 ? colorNames.green : colorNames.lime;
     } else if (hue >= 155 && hue < 175) {
-      colorName = colorLabels.teal;
+      colorName = colorNames.teal;
     } else if (hue >= 175 && hue < 195) {
-      colorName = colorLabels.cyan;
+      colorName = colorNames.cyan;
     } else if (hue >= 195 && hue < 255) {
-      colorName = colorLabels.blue;
+      colorName = colorNames.blue;
     } else if (hue >= 255 && hue < 270) {
-      colorName = colorLabels.violet;
+      colorName = colorNames.violet;
     } else if (hue >= 270 && hue < 295) {
-      colorName = colorLabels.magenta;
+      colorName = colorNames.magenta;
     } else if (hue >= 295 && hue < 345) {
-      colorName = colorLabels.pink;
+      colorName = colorNames.pink;
     }
     return colorName;
   };
@@ -562,6 +572,8 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
   return (
     <PickerContext.Provider
       value={{
+        format,
+        locale,
         value,
         setValue,
         color,
@@ -584,15 +596,15 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
         fillGradient,
       }}
     >
-      <div class={className()}>
+      <div class={className()} lang={lang()}>
         <button
           class="picker-toggle btn-appearance"
           aria-expanded={pickerShown()}
           aria-haspopup={true}
           onClick={showPicker}
         >
-          <span class="v-hidden">{`${pickerLabels.pickerLabel}. ${
-            pickerLabels.formatLabel
+          <span class="v-hidden">{`${locale().colorPickerLabels.pickerLabel}. ${
+            locale().colorPickerLabels.formatLabel
           }: ${format().toUpperCase()}`}</span>
         </button>
         <input
@@ -603,7 +615,7 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
           class="color-preview btn-appearance"
           autocomplete="off"
           spellcheck={false}
-          placeholder={props.placeholder ? props.placeholder : `Type colour value in ${format().toUpperCase()} format`}
+          placeholder={placeholder()}
           value={value()}
           tabindex={-1}
           style={`background-color: ${value()};`}
@@ -616,21 +628,12 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
             updateControlPositions();
           }}
         />
-        <PickerDropdown
-          id={id}
-          class={pickerClass}
-          ref={pickerDropdown}
-          format={format}
-          colorNames={colorLabels}
-          colorPickerLabels={pickerLabels}
-        />
+        <PickerDropdown id={id} class={pickerClass} ref={pickerDropdown} />
 
         <MenuDropdown
           id={id}
           class={menuClass}
           ref={menuDropdown}
-          format={format}
-          colorPickerLabels={pickerLabels}
           colorPresets={props.colorPresets}
           colorKeywords={props.colorKeywords}
         >
@@ -641,7 +644,7 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
             aria-haspopup={true}
             onClick={toggleMenu}
           >
-            <span class="v-hidden">{pickerLabels.toggleLabel}</span>
+            <span class="v-hidden">{locale().colorPickerLabels.toggleLabel}</span>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" aria-hidden={true}>
               <path d="M98,158l157,156L411,158l27,27L255,368L71,185L98,158z" fill="#fff"></path>
             </svg>

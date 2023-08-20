@@ -1,0 +1,41 @@
+{
+  "colorNames": {
+    "white": "blanco",
+    "black": "negro",
+    "grey": "gris",
+    "red": "rojo",
+    "orange": "naranja",
+    "brown": "marrón",
+    "gold": "oro",
+    "olive": "aceituna",
+    "yellow": "amarillo",
+    "lime": "lima",
+    "green": "verde",
+    "teal": "cerceta",
+    "cyan": "cian",
+    "blue": "azul",
+    "violet": "violeta",
+    "magenta": "magenta",
+    "pink": "rosado"
+  },
+  "colorPickerLabels": {
+    "pickerLabel": "Selector de color",
+    "appearanceLabel": "Apariencia de color",
+    "valueLabel": "Valor de color",
+    "toggleLabel": "Seleccionar color",
+    "placeholder": "Escriba el valor del color en formato %",
+    "presetsLabel": "Ajustes preestablecidos de color",
+    "defaultsLabel": "Valores predeterminados de color",
+    "formatLabel": "Formato",
+    "alphaLabel": "Alfabeto",
+    "hexLabel": "Hexadecimal",
+    "hueLabel": "Tinte",
+    "whitenessLabel": "Blancura",
+    "blacknessLabel": "Negrura",
+    "saturationLabel": "Saturación",
+    "lightnessLabel": "Ligereza",
+    "redLabel": "Rojo",
+    "greenLabel": "Verde",
+    "blueLabel": "Azul"
+  }
+}

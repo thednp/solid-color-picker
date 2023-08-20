@@ -1,0 +1,7 @@
+extraction:
+  typescript:
+    index:
+      exclude:
+        - example
+        - experiments
+        - node_modules

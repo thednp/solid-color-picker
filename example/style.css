@@ -318,5 +318,13 @@ header {
 .btn.active {
   background-color: var(--color);
   color: var(--heading-color);
-  border-color: var(--color);
+  border-color: var(--text-color);
+}
+
+.btn-toolbar.scrollable {
+  max-width: 100%;
+  overflow-x: auto;
+}
+.btn-toolbar.scrollable::-webkit-scrollbar {
+  display: none;
 }

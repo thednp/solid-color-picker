@@ -1,9 +1,36 @@
 import type { Accessor, JSXElement } from 'solid-js';
-import ColorPicker from '@thednp/color-picker';
 
-const { colorPickerLabels, colorNames } = ColorPicker;
+export type ColorList = string[];
 
+export type SupportedLanguage = 'en' | 'ru' | 'fr' | 'de' | 'ro' | 'es' | 'pl' | 'pt' | 'zh' | 'ja' | 'ko';
 export type SupportedFormat = 'rgb' | 'hex' | 'hwb' | 'hsl';
+
+export interface LanguagePack {
+  colorNames: ColorNames;
+  colorPickerLabels: ColorPickerLabels;
+}
+
+export interface ColorPickerLabels {
+  pickerLabel: string;
+  appearanceLabel: string;
+  valueLabel: string;
+  toggleLabel: string;
+  placeholder: string;
+  presetsLabel: string;
+  defaultsLabel: string;
+  formatLabel: string;
+  alphaLabel: string;
+  hexLabel: string;
+  hueLabel: string;
+  whitenessLabel: string;
+  blacknessLabel: string;
+  saturationLabel: string;
+  lightnessLabel: string;
+  redLabel: string;
+  greenLabel: string;
+  blueLabel: string;
+  [key: string]: string;
+}
 
 export type ColorNames = {
   white: string;
@@ -40,19 +67,18 @@ export type ColorKeywords = (string | { label: string; value: string })[];
 export type ColorPickerProps = {
   id?: string;
   value?: string;
+  lang?: SupportedLanguage;
   format?: SupportedFormat;
   class?: string;
   placeholder?: string;
   onChange?: (color: string) => void;
-  colorPickerLabels?: typeof colorPickerLabels;
-  colorNames?: typeof colorNames;
+  colorPickerLabels?: ColorPickerLabels;
+  colorNames?: ColorNames;
   colorPresets?: ColorPresets;
   colorKeywords?: ColorKeywords;
 };
 
 export type ControlProps = {
-  format: Accessor<SupportedFormat>;
-  colorPickerLabels: typeof ColorPicker.colorPickerLabels;
   stringValue: Accessor<string>;
 };
 
@@ -60,17 +86,12 @@ export type PickerProps = {
   id: string;
   ref: HTMLDivElement;
   class: Accessor<string>;
-  format: Accessor<SupportedFormat>;
-  colorPickerLabels: typeof colorPickerLabels;
-  colorNames: Record<string, string>;
 };
 
 export type MenuProps = {
   id: string;
   ref: HTMLDivElement;
   class: Accessor<string>;
-  format: Accessor<SupportedFormat>;
-  colorPickerLabels: typeof colorPickerLabels;
   colorPresets?: ColorPresets;
   colorKeywords?: ColorKeywords;
   children?: JSXElement;

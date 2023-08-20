@@ -1,0 +1,41 @@
+{
+  "colorNames": {
+    "white": "weiß",
+    "black": "schwarz",
+    "grey": "grau",
+    "red": "rot",
+    "orange": "orange",
+    "brown": "braun",
+    "gold": "gold",
+    "olive": "olivgrün",
+    "yellow": "gelb",
+    "lime": "limone",
+    "green": "grün",
+    "teal": "krickente",
+    "cyan": "zyan",
+    "blue": "blau",
+    "violet": "violett",
+    "magenta": "magenta",
+    "pink": "rosa"
+  },
+  "colorPickerLabels": {
+    "pickerLabel": "Farbauswahl",
+    "appearanceLabel": "Farberscheinung",
+    "valueLabel": "Farbwert",
+    "toggleLabel": "Farbe auswählen",
+    "placeholder": "Geben Sie den Farbwert im %-Format ein",
+    "presetsLabel": "Farbvoreinstellungen",
+    "defaultsLabel": "Farbstandards",
+    "formatLabel": "Format",
+    "alphaLabel": "Alpha",
+    "hexLabel": "Hexadezimal",
+    "hueLabel": "Farbton",
+    "whitenessLabel": "Weißgrad",
+    "blacknessLabel": "Schwarzgrad",
+    "saturationLabel": "Sättigung",
+    "lightnessLabel": "Helligkeit",
+    "redLabel": "Rot",
+    "greenLabel": "Grün",
+    "blueLabel": "Blau"
+  }
+}
