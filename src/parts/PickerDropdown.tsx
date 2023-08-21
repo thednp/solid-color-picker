@@ -9,8 +9,14 @@ const ColorControls: Component<ControlProps> = props => {
   const { locale, format, controlPositions, appearance, hue, saturation, lightness, alpha, fill, fillGradient } =
     usePickerContext();
   const { stringValue } = props;
-  const hueGradient =
-    'linear-gradient(rgb(255, 0, 0) 0%, rgb(255, 255, 0) 16.67%, rgb(0, 255, 0) 33.33%, rgb(0, 255, 255) 50%, rgb(0, 0, 255) 66.67%, rgb(255, 0, 255) 83.33%, rgb(255, 0, 0) 100%)';
+  const hueGradient = `linear-gradient(
+    rgb(255, 0, 0) 0%, rgb(255, 255, 0) 16.67%, 
+    rgb(0, 255, 0) 33.33%, 
+    rgb(0, 255, 255) 50%, 
+    rgb(0, 0, 255) 66.67%, 
+    rgb(255, 0, 255) 83.33%, 
+    rgb(255, 0, 0) 100%
+  )`;
 
   return (
     <div class={`color-controls ${format()}`}>
@@ -396,9 +402,6 @@ const HEXForm: Component<PickerProps> = props => {
           class="color-input hex"
           autocomplete="off"
           spellcheck={false}
-          min={0}
-          max={100}
-          step={1}
           value={hex()}
           onInput={inputHex}
           onChange={changeHex}
