@@ -28,8 +28,17 @@ jobs:
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
 
+      - name: Typecheck & ESLint
+        run: pnpm lint
+
       - name: Build
         run: pnpm build
 
-      - name: Typecheck & ESLint
-        run: pnpm lint
+      - name: Build Docs
+        run: pnpm build:docs
+
+      - name: deploy pages
+        uses: JamesIves/github-pages-deploy-action@v4.4.1
+        with:
+          branch: gh-pages
+          folder: docs
