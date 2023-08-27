@@ -3,6 +3,7 @@ import solidPlugin from 'vite-plugin-solid';
 import solidSVG from 'vite-plugin-solid-svg';
 
 export default defineConfig({
+  base: './',
   plugins: [
     solidPlugin(),
     solidSVG({ defaultAsComponent: true }),
@@ -30,5 +31,6 @@ export default defineConfig({
   build: {
     target: 'esnext',
     outDir: '../docs',
+    emptyOutDir: true,
   },
 });
