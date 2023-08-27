@@ -54,7 +54,7 @@
     "build": "tsup",
     "prepublishOnly": "pnpm lint && pnpm format && tsup",
     "predeploy": "pnpm build:docs",
-    "deploy": "gh-pages -d build",
+    "deploy": "gh-pages -d build:docs",
     "deploy12": "vite preview example",
     "lint": "pnpm lint:types && pnpm lint:code",
     "lint:code": "eslint --max-warnings 0 src/**/*.{ts,tsx}",
