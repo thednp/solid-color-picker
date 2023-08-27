@@ -3,8 +3,8 @@ const copyToClipboard = (e: MouseEvent & { currentTarget: HTMLButtonElement; tar
   const pre = document.getElementById(btn.dataset.target as string);
   if (pre) {
     const textContent = pre.textContent?.replace(/\s\s/g, '\n  ').replace('/>', '\n/>') as string;
-    console.log(textContent);
     navigator.clipboard.writeText(textContent);
+    alert('Copied to clipboard');
   }
 };
 
