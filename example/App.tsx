@@ -284,12 +284,12 @@ const App = () => {
                       if (!newColor.isValid) {
                         const temp = colorValue() || colorLabel();
                         resetKeywordForm();
-                        return alert(appLocale().invalidColor.replace(/\%/, temp));
+                        return alert(appLocale().invalidColor.replace(/\%/g, temp));
                       }
                       if (keywords().some(k => ObjectValues(k)[0] === colorLabel())) {
                         const temp = colorLabel();
                         resetKeywordForm();
-                        return alert(appLocale().invalidLabel.replace(/\%/, temp));
+                        return alert(appLocale().invalidLabel.replace(/\%/g, temp));
                       }
                       setKeywords([
                         ...keywords(),
