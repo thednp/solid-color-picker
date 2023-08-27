@@ -8,7 +8,7 @@
     "color picker",
     "colorpicker"
   ],
-  "homepage": "https://github.com/thednp/solid-color-picker#readme",
+  "homepage": "https://thednp.github.io/solid-color-picker",
   "bugs": {
     "url": "https://github.com/thednp/solid-color-picker/issues"
   },
@@ -52,6 +52,8 @@
     "format": "prettier -w \"src/**/*.{js,ts,json,css,tsx,jsx}\" \"example/**/*.{js,ts,json,css,tsx,jsx}\"",
     "build": "tsup",
     "prepublishOnly": "pnpm lint && pnpm format && tsup",
+    "predeploy": "pnpm build:example",
+    "deploy": "gh-pages -d example/dist",
     "lint": "pnpm lint:types && pnpm lint:code",
     "lint:code": "eslint --max-warnings 0 src/**/*.{ts,tsx}",
     "lint:types": "tsc --noEmit",
@@ -63,6 +65,7 @@
     "solid-js": "^1.6.0"
   },
   "devDependencies": {
+    "@types/node": "^20.5.6",
     "@typescript-eslint/eslint-plugin": "^6.4.0",
     "@typescript-eslint/parser": "^6.4.0",
     "concurrently": "^8.2.0",
@@ -71,6 +74,7 @@
     "eslint": "^8.47.0",
     "eslint-plugin-eslint-comments": "^3.2.0",
     "eslint-plugin-no-only-tests": "^3.1.0",
+    "gh-pages": "^6.0.0",
     "solid-js": "^1.7.11",
     "tsup": "^7.2.0",
     "tsup-preset-solid": "^2.0.2",

@@ -15,41 +15,28 @@
   </defs>
   <defs>
     <linearGradient id="c1" x1=".5" x2=".5" y2="1" gradientUnits="objectBoundingBox">
-      <!-- <stop offset="0" stop-color="#fff" /> -->
-      <!-- <stop offset="1" stop-color="#f7fbff" /> -->
       <stop offset="0" stop-color="var(--heading-color)" />
       <stop offset="1" stop-color="var(--color90)" />
     </linearGradient>
     <linearGradient id="d1" x1=".5" x2=".5" y2="1" gradientUnits="objectBoundingBox">
-      <!-- <stop offset="0" stop-color="#d0deea" />
-      <stop offset="1" stop-color="#dae1e8" /> -->
       <stop offset="0" stop-color="var(--color90)" />
       <stop offset="1" stop-color="var(--color180)" />
     </linearGradient>
     <linearGradient id="e1" x1=".5" x2=".5" y2="1" gradientUnits="objectBoundingBox">
-      <!-- <stop offset="0" stop-color="#bdc2c8" />
-      <stop offset="1" stop-color="#dcedef" /> -->
-      <stop offset="0" stop-color="var(--color180)" />
+      <stop offset="0" stop-color="var(--color270)" />
       <stop offset="1" stop-color="var(--color)" />
     </linearGradient>
     <linearGradient id="f1" x1=".5" x2=".5" y2="1" gradientUnits="objectBoundingBox">
-      <!-- <stop offset="0" stop-color="#adbbca" stop-opacity=".702" />
-      <stop offset="1" stop-color="#e4e8e9" stop-opacity="0" /> -->
       <stop offset="0" stop-color="var(--color270)" stop-opacity=".702" />
       <stop offset="1" stop-color="var(--color90)" stop-opacity="0" />
     </linearGradient>
     <linearGradient id="g1" x1=".5" x2=".5" y2="1" gradientUnits="objectBoundingBox">
-      <!-- <stop offset="0" stop-color="#7692ae" />
-      <stop offset="1" stop-color="#93b0ce" /> -->
       <stop offset="0" stop-color="var(--color)" />
       <stop offset="1" stop-color="var(--color90)" />
     </linearGradient>
     <radialGradient id="b1" cx="-.061" cy="-.082" r="1.895" gradientUnits="objectBoundingBox">
-      <!-- <stop offset="0" stop-color="#002c69" />
-      <stop offset=".748" stop-color="#20569a" />
-      <stop offset="1" stop-color="#28abd8" /> -->
       <stop offset="0" stop-color="var(--color)" />
-      <stop offset=".748" stop-color="var(--color180)" />
+      <stop offset=".748" stop-color="var(--color90)" />
       <stop offset="1" stop-color="var(--color270)" />
     </radialGradient>
   </defs>

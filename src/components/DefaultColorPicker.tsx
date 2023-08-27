@@ -21,14 +21,14 @@ import {
 } from '@thednp/shorty';
 
 import type { Component } from 'solid-js';
-import { createSignal, createEffect, onCleanup, startTransition, createMemo } from 'solid-js';
+import { createSignal, createEffect, onCleanup, startTransition, createMemo, Suspense } from 'solid-js';
 import type { ColorPickerProps } from '../types/types';
 import PickerDropdown from '../parts/PickerDropdown';
 import MenuDropdown from '../parts/MenuDropdown';
 import { PickerContext } from '../parts/ColorPickerContext';
 import initialControlPositions from '../util/initialControlPositions';
-import useVisualOffset from '../util/useVisualOffset';
-import getLanguageStrings from '../locales/getLanguageStrings';
+import { languagePacks, getLanguageStrings } from '../locales/getLanguageStrings';
+import Arrow from '../assets/arrow.svg';
 
 // import default color picker style
 import './color-picker.css';
@@ -38,29 +38,28 @@ const { roundPart } = Color;
 
 const DefaultColorPicker: Component<ColorPickerProps> = props => {
   const id = props.id ? props.id : `color-picker-${pickerCount}`;
-  let oldFormat = props.format;
   const lang = () => props.lang || 'en';
   const theme = () => props.theme || 'dark';
   const format = () => props.format || 'rgb';
   const initValue = () => props.value || 'red';
   const locale = createMemo(() => {
-    if (props.lang && props.lang !== lang()) {
+    if (props.lang && 'en' !== props.lang && ObjectKeys(languagePacks).includes(props.lang)) {
       return getLanguageStrings(props.lang);
     }
     const langPack = getLanguageStrings(lang());
 
-    if (props.colorNames && ObjectKeys(props.colorNames).length === 17) {
-      ObjectAssign(langPack, props.colorNames);
+    if (props.locale && ObjectKeys(props.locale).length === 35) {
+      ObjectAssign(langPack, props.locale);
     }
-    if (props.colorPickerLabels && ObjectKeys(props.colorPickerLabels).length === 17) {
-      ObjectAssign(langPack, props.colorPickerLabels);
-    }
+
     return langPack;
   });
-
+  const colorPresets = () => props.colorPresets;
+  const colorKeywords = () => props.colorKeywords;
   const placeholder = () =>
     props.placeholder ? props.placeholder : locale().placeholder.replace(/%/g, format().toUpperCase());
-  const { offsetHeight, offsetWidth } = useVisualOffset();
+  const [offsetWidth, setOffsetWidth] = createSignal(300);
+  const [offsetHeight, setOffsetHeight] = createSignal(300);
   const [value, setValue] = createSignal(initValue());
   const [color, setColor] = createSignal(new Color(value(), format()));
   const [open, setOpen] = createSignal(undefined as HTMLDivElement | undefined);
@@ -348,7 +347,6 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
 
     const [k1, k2, k3] = knobs();
     /**
-     * this instance must avoid using useVisualOffset()
      * @see https://stackoverflow.com/questions/70373659/solidjs-computations-created-outside-a-createroot-or-render-will-never-be
      */
     const [{ offsetWidth, offsetHeight }] = visuals();
@@ -483,6 +481,7 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
     const [k1, k2, k3] = knobs();
     const parent = c1.closest('.color-picker');
     action(win, 'scroll', handleScroll);
+    action(win, 'resize', handleResize);
     action(doc, 'keyup', handleDismiss as EventListener);
     action(doc, 'pointerup', pointerUp as EventListener);
     action(doc, 'pointermove', pointerMove as EventListener);
@@ -525,6 +524,8 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
     setOpen(pickerDropdown);
     setPosition('bottom');
     reflow(pickerDropdown);
+    // update control positions
+    handleResize();
     startTransition(() => {
       updateDropdownPosition();
       setPickerShown(true);
@@ -544,20 +545,17 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
       update(newColor);
     }
   };
-  const handleInput = (e: Event & { currentTarget: HTMLInputElement }) => {
-    const newValue = e.currentTarget.value;
-    const newColor = new Color(newValue, format());
-
-    if (newValue && newValue.length && newColor.isValid) {
-      setValue(newValue);
-    }
+  const handleResize = () => {
+    const [v1] = visuals();
+    const getHeight = window.innerWidth >= 980 ? 300 : 230;
+    const getWidth = typeof v1 !== 'undefined' && v1.offsetWidth ? v1.offsetWidth : getHeight;
+    setOffsetHeight(getHeight);
+    setOffsetWidth(getWidth);
+    startTransition(updateControlPositions);
   };
   const update = (newColor: Color) => {
-    startTransition(() => {
-      setColor(newColor);
-      setValue(newColor.toString());
-      updateControlPositions();
-    });
+    setColor(newColor);
+    setValue(newColor.toString());
   };
 
   createEffect(() => {
@@ -569,24 +567,15 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
 
     onCleanup(toggleEvents);
   });
-  createEffect(() => {
-    startTransition(() => {
-      if (typeof props.onChange === 'function') {
-        props.onChange(value());
-      }
-    });
-  });
-  createEffect(() => {
-    startTransition(() => {
-      if (oldFormat !== format()) {
-        oldFormat = props.format;
-        update(new Color(color(), oldFormat));
-      }
-    });
-  });
 
-  // on mount, update control positions
-  updateControlPositions();
+  createMemo(() => {
+    if (typeof props.onChange === 'function') {
+      props.onChange(value());
+    }
+  });
+  createMemo(() => {
+    update(new Color(value(), format()));
+  });
 
   return (
     <PickerContext.Provider
@@ -637,7 +626,6 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
           tabindex={-1}
           style={`background-color: ${value()}`}
           onFocus={showPicker}
-          onInput={handleInput}
           onChange={handleChange}
         />
         <PickerDropdown id={id} class={pickerClass} ref={pickerDropdown} />
@@ -646,8 +634,8 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
           id={id}
           class={menuClass}
           ref={menuDropdown}
-          colorPresets={props.colorPresets}
-          colorKeywords={props.colorKeywords}
+          colorPresets={colorPresets}
+          colorKeywords={colorKeywords}
         >
           <button
             class="menu-toggle btn-appearance"
@@ -657,9 +645,7 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
             onClick={toggleMenu}
           >
             <span class="v-hidden">{locale().toggleLabel}</span>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" aria-hidden={true}>
-              <path d="M98,158l157,156L411,158l27,27L255,368L71,185L98,158z" fill="#fff"></path>
-            </svg>
+            <Arrow />
           </button>
         </MenuDropdown>
       </div>

@@ -1,3 +1,8 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
 body {
   --btn-bg-color: #3f0f99;
   --btn-color: rgb(255 255 255 / 70%);
@@ -8,7 +13,12 @@ body {
   font-family: 'Roboto', Arial, sans-serif;
   color: var(--text-color, #555);
   background-color: var(--body-bg, #f6f6f6);
+  line-height: 1.5;
 }
+
+.text-color { color: var(--text-color) }
+.heading-color { color: var(--heading-color) }
+.bg-color { background-color: var(--bg-color) }
 
 .row,
 header,
@@ -62,8 +72,11 @@ ul {
   list-style: circle;
 }
 
-.color-picker {
-  margin: 0.5rem 0;
+.position-relative {
+  position: relative;
+}
+.position-absolute {
+  position: absolute;
 }
 
 @media (min-width: 768px) {
@@ -100,6 +113,59 @@ label {
 
 .mb-5 {
   margin-bottom: 3rem;
+}
+.mt-1 {
+  margin-top: 0.25rem;
+}
+
+.mt-2 {
+  margin-top: 0.5rem;
+}
+
+.mt-3 {
+  margin-top: 1rem;
+}
+
+.mt-4 {
+  margin-top: 1.5rem;
+}
+
+.mt-5 {
+  margin-top: 3rem;
+}
+
+.mx-0 {
+  margin-left: 0;
+  margin-right: 0;
+}
+.my-0 {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+.m-0 {
+  margin: 0;
+}
+.p-0 {
+  padding: 0;
+}
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+html:not([dir='rtl']) .me-auto {
+  margin-right: auto;
+}
+html:not([dir='rtl']) .ms-auto {
+  margin-left: auto;
+}
+
+[dir='rtl'] .me-auto {
+  margin-left: auto;
+}
+
+[dir='rtl'] .ms-auto {
+  margin-right: auto;
 }
 
 pre,
@@ -143,9 +209,9 @@ pre {
   display: flex;
   flex-wrap: wrap;
   max-width: 100%;
-  margin-top: calc(-1 * var(--gutter-y));
+  /* margin-top: calc(-1 * var(--gutter-y));
   margin-right: calc(-0.5 * var(--gutter-x));
-  margin-left: calc(-0.5 * var(--gutter-x));
+  margin-left: calc(-0.5 * var(--gutter-x)); */
 }
 
 .row > * {
@@ -199,11 +265,6 @@ a:focus {
   left: 0;
 }
 
-.mx-auto {
-  margin-left: auto;
-  margin-right: auto;
-}
-
 .logo {
   width: 480px;
   max-width: 100%;
@@ -254,6 +315,9 @@ header {
 .d-block {
   display: block;
 }
+.d-inline {
+  display: inline;
+}
 
 .d-none {
   display: none;
@@ -264,8 +328,32 @@ header {
 .justify-content-between {
   justify-content: space-between;
 }
+.align-items-center {
+  align-items: center;
+}
+.gap-1 {
+  gap: 0.25rem;
+}
+.gap-2 {
+  gap: 0.5rem;
+}
+.gap-3 {
+  gap: 1rem;
+}
 .container {
   position: relative;
+}
+html:not([dir="rtl"]) .text-end {
+  text-align: right;
+}
+html:not([dir="rtl"]) .text-start {
+  text-align: left;
+}
+[dir="rtl"] .text-end {
+  text-align: left;
+}
+[dir="rtl"] .text-start {
+  text-align: right;
 }
 
 .fill-wrapper {
@@ -286,35 +374,51 @@ header {
   overflow: hidden;
 }
 
-.visually-hidden {
-  width: 1px !important;
-  height: 1px !important;
-  padding: 0 !important;
-  margin: -1px !important;
-  overflow: hidden !important;
-  clip: rect(0, 0, 0, 0) !important;
-  white-space: nowrap !important;
-  border: 0 !important;
-}
 .btn-toolbar {
   display: flex;
   gap: 0.2rem;
   /* justify-content: center; */
 }
-.btn {
+.btn,
+.input {
   background-color: var(--bg-color);
   color: var(--text-color);
   border-radius: 3px;
   border: 1px solid var(--bg-color);
+  line-height: 1;
+}
+.btn {
   cursor: pointer;
 }
+.input {
+  width: 100%;
+}
+.input:focus,
+.input:focus {
+  outline: none;
+  border-color: var(--heading-color);
+}
+.input::placeholder {
+  color: var(--text-color);
+}
 
-.btn:hover,
-.btn:active,
-.btn:focus {
+.btn:not([disabled]):hover,
+.btn:not([disabled]):active,
+.btn:not([disabled]):focus {
   background-color: var(--color180);
   color: var(--color);
   border-color: var(--color180);
+}
+
+.btn-option {
+  background-color: transparent;
+  color: var(--text-color);
+  border-width: 0;
+  padding: 0.25rem;
+  cursor: pointer;
+}
+.btn-option:hover {
+  color: var(--heading-color);
 }
 
 .btn.active {
@@ -324,9 +428,30 @@ header {
 }
 
 .btn-toolbar.scrollable {
-  max-width: 70%;
+  max-width: calc(100% - 42px);
   overflow-x: auto;
 }
 .btn-toolbar.scrollable::-webkit-scrollbar {
   display: none;
+}
+
+.collapse:not(.show) {
+  display: none;
+}
+.collapsing {
+  height: 0;
+  overflow: hidden;
+  transition: height .35s ease;
+}
+
+.border-0 { border-width: 0;}
+.bg-transparent {
+  background-color: transparent;
+}
+
+.justify-content-end {
+  justify-content: flex-end;
+}
+.justify-content-start {
+  justify-content: flex-start;
 }

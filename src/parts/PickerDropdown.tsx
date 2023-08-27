@@ -368,7 +368,7 @@ const HWBForm: Component<PickerProps> = props => {
 };
 
 const HEXForm: Component<PickerProps> = props => {
-  const { format, locale, color, update, setValue } = usePickerContext();
+  const { format, locale, color, update } = usePickerContext();
   const { id } = props;
   const hex = () => color().toHex();
   const stringValue = () => `${locale().hexLabel}: ${hex().toUpperCase()}`;
@@ -377,13 +377,6 @@ const HEXForm: Component<PickerProps> = props => {
     const newColor = new Color(newValue, format());
     if (newValue && newValue.length && newColor.isValid) {
       update(newColor);
-    }
-  };
-  const inputHex = (e: Event & { currentTarget: HTMLInputElement }) => {
-    const newValue = e.currentTarget.value;
-    const newColor = new Color(newValue, format());
-    if (newValue && newValue.length && newColor.isValid) {
-      setValue(newValue);
     }
   };
 
@@ -403,7 +396,6 @@ const HEXForm: Component<PickerProps> = props => {
           autocomplete="off"
           spellcheck={false}
           value={hex()}
-          onInput={inputHex}
           onChange={changeHex}
         />
       </div>

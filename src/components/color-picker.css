@@ -1,9 +1,3 @@
-/*!
-* ColorPicker v2.0.0-alpha9 (http://thednp.github.io/color-picker)
-* Copyright 2023 © thednp
-* Licensed under MIT (https://github.com/thednp/color-picker/blob/main/LICENSE)
-*/
-/* :host */
 .color-picker {
   position: relative;
   display: flex;
@@ -40,7 +34,7 @@
   --option-bg-active: var(--white-90);
   --visual-shadow: 0 0 0 1px var(--white-15) inset;
 }
-.light {
+.color-picker.light {
   --dropdown-bg: var(--white-90);
   --dropdown-color: var(--black-75);
   --dropdown-scrollbar-bg: var(--black-33);

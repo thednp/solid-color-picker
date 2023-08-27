@@ -2,13 +2,9 @@ import type { Accessor, JSXElement } from 'solid-js';
 
 export type ColorList = string[];
 
-export type SupportedLanguage = 'en' | 'ru' | 'fr' | 'de' | 'ro' | 'es' | 'pl' | 'pt' | 'zh' | 'ja' | 'ko';
+export type SupportedLanguage = 'en' | 'ru' | 'ar' | 'fr' | 'de' | 'ro' | 'es' | 'pl' | 'pt' | 'zh' | 'ja' | 'ko';
 export type SupportedFormat = 'rgb' | 'hex' | 'hwb' | 'hsl';
 
-// export interface LanguagePack {
-//   colorNames: ColorNames;
-//   colorPickerLabels: ColorPickerLabels;
-// }
 export type LanguagePack = ColorNames & ColorPickerLabels;
 
 export interface ColorPickerLabels {
@@ -63,7 +59,7 @@ export type ColorPresets = {
   saturation?: number;
 };
 
-export type ColorKeywords = (string | { label: string; value: string })[];
+export type ColorKeywords = (string | Record<string, string>)[];
 
 export type ColorPickerProps = {
   id?: string;
@@ -74,10 +70,9 @@ export type ColorPickerProps = {
   class?: string;
   placeholder?: string;
   onChange?: (color: string) => void;
-  colorPickerLabels?: ColorPickerLabels;
-  colorNames?: ColorNames;
   colorPresets?: ColorPresets;
   colorKeywords?: ColorKeywords;
+  locale?: LanguagePack;
 };
 
 export type ControlProps = {
@@ -90,11 +85,24 @@ export type PickerProps = {
   class: Accessor<string>;
 };
 
+export type PresetsProps = {
+  id: string;
+  ref: HTMLDivElement;
+  class: Accessor<string>;
+  colorPresets: Accessor<ColorPresets>;
+  children?: JSXElement;
+};
+
+export type KeyProps = {
+  id: string;
+  colorKeywords: Accessor<ColorKeywords>;
+};
+
 export type MenuProps = {
   id: string;
   ref: HTMLDivElement;
   class: Accessor<string>;
-  colorPresets?: ColorPresets;
-  colorKeywords?: ColorKeywords;
+  colorPresets: Accessor<ColorPresets | undefined>;
+  colorKeywords: Accessor<ColorKeywords | undefined>;
   children?: JSXElement;
 };

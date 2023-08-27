@@ -3,8 +3,7 @@
   "compilerOptions": {
     "types": [
       "vite-plugin-solid-svg/types-component-solid",
-      // "vite-plugin-solid-svg/types",
-      "vite/client"
+      "vite/client",
     ]
   },
   "include": ["./**/*"],

@@ -1,49 +1,52 @@
 import Color from '@thednp/color';
 import ColorPicker from '@thednp/color-picker';
 import { Component, For, Suspense } from 'solid-js';
-import type { ColorPresets, MenuProps } from '../types/types';
+import type { KeyProps, MenuProps, PresetsProps } from '../types/types';
 import { usePickerContext } from './ColorPickerContext';
+import { ObjectEntries } from '@thednp/shorty';
 
 const { ColorPalette } = ColorPicker;
 
-const PresetsMenu: Component<MenuProps> = props => {
+const PresetsMenu: Component<PresetsProps> = props => {
   const { locale, value, update, format } = usePickerContext();
   const { colorPresets } = props;
-  const { hue, hueSteps, lightSteps, saturation } = colorPresets as ColorPresets;
-  const { colors } = new ColorPalette(hue, hueSteps, lightSteps, saturation);
-  const colorsCount = colors.length;
-  const fit = lightSteps || [9, 10].find(x => colorsCount >= x * 2 && !(colorsCount % x)) || 5;
-  const isMultiLine = colorsCount > fit;
-  let rowCountHover = 2;
-  rowCountHover = isMultiLine && colorsCount > fit * 2 ? 3 : rowCountHover;
-  rowCountHover = isMultiLine && colorsCount > fit * 3 ? 4 : rowCountHover;
-  rowCountHover = isMultiLine && colorsCount > fit * 4 ? 5 : rowCountHover;
-  const rowCount = rowCountHover - (colorsCount <= fit * 3 ? 1 : 2);
-  const isScrollable = isMultiLine && colorsCount > rowCount * fit;
-  let finalClass = `color-options`;
-  finalClass += isScrollable ? ' scrollable' : '';
-  finalClass += isMultiLine ? ' multiline' : '';
-  const gap = isMultiLine ? '1px' : '0.25rem';
-  let optionSize = isMultiLine ? 1.75 : 2;
-  optionSize = fit > 5 && isMultiLine ? 1.5 : optionSize;
-  const menuHeight = `${rowCount * optionSize}rem`;
-  const menuHeightHover = `calc(${rowCountHover} * ${optionSize}rem + ${rowCountHover - 1} * ${gap})`;
+  const colors = () =>
+    new ColorPalette(colorPresets().hue, colorPresets().hueSteps, colorPresets().lightSteps, colorPresets().saturation)
+      .colors;
+  const colorsCount = () => colors().length;
+  const fit = () => colorPresets().lightSteps;
+  const isMultiLine = () => colorsCount() > fit();
+  const rowCountHover = () =>{
+      if (isMultiLine() && colorsCount() > fit() * 4) return 5;
+      if (isMultiLine() && colorsCount() > fit() * 3) return 4;
+      if (isMultiLine() && colorsCount() > fit() * 2) return 3
+      return 2;
+    }
+  const rowCount = () => rowCountHover() - (colorsCount() <= fit() * 3 ? 1 : 2);
+  const finalClass = () =>
+    `color-options` +
+    (isMultiLine() && colorsCount() > rowCount() * fit() ? ' scrollable' : '') +
+    (isMultiLine() ? ' multiline' : '');
+
+  const style = () => {
+    const gap = isMultiLine() ? '1px' : '0.25rem';
+    const optionSize = fit() > 5 && isMultiLine() ? 1.5 : isMultiLine() ? 1.75 : 2;
+    const menuHeight = `${rowCount() * optionSize}rem`;
+    const menuHeightHover = `calc(${rowCountHover()} * ${optionSize}rem + ${rowCountHover() - 1} * ${gap})`;
+
+    return {
+      '--grid-item-size': `${optionSize}rem`,
+      '--grid-fit': fit(),
+      '--grid-gap': gap,
+      '--grid-height': menuHeight,
+      '--grid-hover-height': menuHeightHover,
+    };
+  };
 
   return (
     <Suspense>
-      <ul
-        class={finalClass}
-        role="listbox"
-        aria-label={locale().presetsLabel}
-        style={{
-          '--grid-item-size': `${optionSize}rem`,
-          '--grid-fit': fit,
-          '--grid-gap': gap,
-          '--grid-height': menuHeight,
-          '--grid-hover-height': menuHeightHover,
-        }}
-      >
-        <For each={colors}>
+      <ul class={finalClass()} role="listbox" aria-label={locale().presetsLabel} style={style()}>
+        <For each={colors()}>
           {color => {
             const newColor = () => new Color(color, format());
             const newValue = () => newColor().toString();
@@ -68,26 +71,23 @@ const PresetsMenu: Component<MenuProps> = props => {
   );
 };
 
-const KeywordsMenu: Component<MenuProps> = props => {
+const KeywordsMenu: Component<KeyProps> = props => {
   const { colorKeywords } = props;
-  const { locale, value, setValue, update, format } = usePickerContext();
+  const { locale, value, update, format } = usePickerContext();
 
   return (
     <Suspense>
       <ul class="color-defaults" role="listbox" aria-label={locale().defaultsLabel}>
-        <For each={colorKeywords}>
+        <For each={colorKeywords()}>
           {key => {
-            const { label, value: val } =
-              typeof key === 'object' ? key : { label: key, value: new Color(key, format()).toString() };
+            const [label, val] = typeof key === 'string' ? [key, key] : (ObjectEntries(key)[0] as [string, string]);        
             const isActive = () => val === value();
+            const className = () => `color-option${isActive() ? ' active' : ''}`; 
             return (
               <li
-                class={`color-option${isActive() ? ' active' : ''}`}
-                onClick={() => {
-                  setValue(val);
-                  update(new Color(val, format()));
-                }}
-                tabindex="0"
+                class={className()}
+                onClick={() => update(new Color(val, format()))}
+                tabindex={0}
                 role="option"
                 aria-selected={isActive()}
               >
@@ -102,15 +102,22 @@ const KeywordsMenu: Component<MenuProps> = props => {
 };
 
 const MenuDropdown: Component<MenuProps> = props => {
-  return (props.colorKeywords && props.colorKeywords.length) || props.colorPresets ? (
-    <Suspense>
-      {props.children}
-      <div id={`${props.id}-menu`} ref={props.ref} class={`color-dropdown menu${props.class()}`}>
-        {props.colorPresets ? <PresetsMenu {...props} /> : null}
-        {props.colorKeywords && props.colorKeywords.length ? <KeywordsMenu {...props} /> : null}
-      </div>
-    </Suspense>
-  ) : null;
+  const { colorKeywords, colorPresets } = props;
+  const id = () => `${props.id}-menu`;
+  const menuClass = () => `color-dropdown menu${props.class()}`;
+  return (
+    <>
+      {(colorKeywords && colorKeywords()) || (colorPresets && colorPresets()) ? (
+        <>    
+          {props.children}
+          <div id={id()} ref={props.ref} class={menuClass()}>
+            {colorPresets && colorPresets() ? <PresetsMenu {...(props as PresetsProps)} /> : null}
+            {colorKeywords && colorKeywords() ? <KeywordsMenu {...(props as KeyProps)} /> : null}
+          </div>
+        </>
+      ) : null}
+    </>
+  );
 };
 
 export default MenuDropdown;
