@@ -1,4 +1,4 @@
-[<img width="100%" src="banner.svg" alt="solid-color-picker">](https://solid-color-picker.netlify.app/)
+[<img width="100%" src="banner.svg" alt="solid-color-picker">](https://thednp.github.io/solid-color-picker)
 
 # Solid Color Picker
 [![ci](https://github.com/thednp/solid-color-picker/actions/workflows/ci.yml/badge.svg)](https://github.com/thednp/solid-color-picker/actions/workflows/ci.yml)
@@ -12,7 +12,7 @@
 The feature rich **ColorPicker** component for SolidJS, sourced with TypeScript, WAI-ARIA compliant and is mainly based on [ColorPicker](http://github.com/thednp/color-picker).
 
 ## Demo
-[Live Demo](https://solid-color-picker.netlify.app/)
+[Live Demo](https://thednp.github.io/solid-color-picker)
 
 
 ## Highlights
@@ -46,7 +46,7 @@ function App() {
   return <DefaultColorPicker value="turquoise" onChange={color => console.log(color)} />;
 }
 ```
-For additional component configuration options, please check the [demo](https://solid-color-picker.netlify.app/).
+For additional component configuration options, please check the [demo](https://thednp.github.io/solid-color-picker).
 
 
 ## License
