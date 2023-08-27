@@ -107,12 +107,15 @@ const MenuDropdown: Component<MenuProps> = props => {
   const menuClass = () => `color-dropdown menu${props.class()}`;
   return (
     <>
-      {(colorKeywords && colorKeywords()) || (colorPresets && colorPresets()) ? (
+      {(typeof colorKeywords !== 'undefined' && colorKeywords()) ||
+      (typeof colorPresets !== 'undefined' && colorPresets()) ? (
         <>
           {props.children}
           <div id={id()} ref={props.ref} class={menuClass()}>
-            {colorPresets && colorPresets() ? <PresetsMenu {...(props as PresetsProps)} /> : null}
-            {colorKeywords && colorKeywords() ? <KeywordsMenu {...(props as KeyProps)} /> : null}
+            {typeof colorPresets !== 'undefined' && colorPresets() ? (
+              <PresetsMenu {...(props as PresetsProps)} />
+            ) : null}
+            {typeof colorKeywords !== 'undefined' && colorKeywords() ? <KeywordsMenu {...(props as KeyProps)} /> : null}
           </div>
         </>
       ) : null}

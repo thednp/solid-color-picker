@@ -21,7 +21,7 @@ import {
 } from '@thednp/shorty';
 
 import type { Component } from 'solid-js';
-import { createSignal, createEffect, onCleanup, startTransition, createMemo, Suspense } from 'solid-js';
+import { createSignal, createEffect, onCleanup, startTransition, createMemo } from 'solid-js';
 import type { ColorPickerProps } from '../types/types';
 import PickerDropdown from '../parts/PickerDropdown';
 import MenuDropdown from '../parts/MenuDropdown';
