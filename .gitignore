@@ -1,5 +1,5 @@
 .npmignore
-node_modules
-dist
-example/dist
-experiments
+/node_modules
+/dist
+/example/dist
+/experiments
