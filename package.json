@@ -53,7 +53,7 @@
     "build": "tsup",
     "prepublishOnly": "pnpm lint && pnpm format && tsup",
     "predeploy": "pnpm build:example",
-    "deploy": "gh-pages -d example/dist",
+    "deploy": "gh-pages -d example",
     "lint": "pnpm lint:types && pnpm lint:code",
     "lint:code": "eslint --max-warnings 0 src/**/*.{ts,tsx}",
     "lint:types": "tsc --noEmit",
