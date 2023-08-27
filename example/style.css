@@ -16,9 +16,15 @@ body {
   line-height: 1.5;
 }
 
-.text-color { color: var(--text-color) }
-.heading-color { color: var(--heading-color) }
-.bg-color { background-color: var(--bg-color) }
+.text-color {
+  color: var(--text-color);
+}
+.heading-color {
+  color: var(--heading-color);
+}
+.bg-color {
+  background-color: var(--bg-color);
+}
 
 .row,
 header,
@@ -343,16 +349,16 @@ header {
 .container {
   position: relative;
 }
-html:not([dir="rtl"]) .text-end {
+html:not([dir='rtl']) .text-end {
   text-align: right;
 }
-html:not([dir="rtl"]) .text-start {
+html:not([dir='rtl']) .text-start {
   text-align: left;
 }
-[dir="rtl"] .text-end {
+[dir='rtl'] .text-end {
   text-align: left;
 }
-[dir="rtl"] .text-start {
+[dir='rtl'] .text-start {
   text-align: right;
 }
 
@@ -441,10 +447,12 @@ html:not([dir="rtl"]) .text-start {
 .collapsing {
   height: 0;
   overflow: hidden;
-  transition: height .35s ease;
+  transition: height 0.35s ease;
 }
 
-.border-0 { border-width: 0;}
+.border-0 {
+  border-width: 0;
+}
 .bg-transparent {
   background-color: transparent;
 }

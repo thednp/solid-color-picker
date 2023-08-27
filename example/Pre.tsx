@@ -53,19 +53,16 @@ const Pre: Component<PreProps> = props => {
           </span>
           <span class="d-block">{`/>`}</span>
         </pre>
-        <div 
-            class='position-absolute d-flex gap-1'
-            style={{ top: '1rem', right: '1rem' }}
-          >
-            <button class='btn-option' onClick={copyToClipboard} data-target={id()}>
-              <span class='v-hidden'>Copy</span>
-              <Files fill="currentColor"/>
-            </button>
-            <button class='btn-option' onClick={toggleCollapse} data-target="color-picker-settings">
-              <span class='v-hidden'>Settings</span>
-              <Gear fill="currentColor"/>
-            </button>
-          </div>
+        <div class="position-absolute d-flex gap-1" style={{ top: '1rem', right: '1rem' }}>
+          <button class="btn-option" onClick={copyToClipboard} data-target={id()}>
+            <span class="v-hidden">Copy</span>
+            <Files fill="currentColor" />
+          </button>
+          <button class="btn-option" onClick={toggleCollapse} data-target="color-picker-settings">
+            <span class="v-hidden">Settings</span>
+            <Gear fill="currentColor" />
+          </button>
+        </div>
       </div>
     </Suspense>
   );

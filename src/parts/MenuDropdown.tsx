@@ -16,12 +16,12 @@ const PresetsMenu: Component<PresetsProps> = props => {
   const colorsCount = () => colors().length;
   const fit = () => colorPresets().lightSteps;
   const isMultiLine = () => colorsCount() > fit();
-  const rowCountHover = () =>{
-      if (isMultiLine() && colorsCount() > fit() * 4) return 5;
-      if (isMultiLine() && colorsCount() > fit() * 3) return 4;
-      if (isMultiLine() && colorsCount() > fit() * 2) return 3
-      return 2;
-    }
+  const rowCountHover = () => {
+    if (isMultiLine() && colorsCount() > fit() * 4) return 5;
+    if (isMultiLine() && colorsCount() > fit() * 3) return 4;
+    if (isMultiLine() && colorsCount() > fit() * 2) return 3;
+    return 2;
+  };
   const rowCount = () => rowCountHover() - (colorsCount() <= fit() * 3 ? 1 : 2);
   const finalClass = () =>
     `color-options` +
@@ -80,9 +80,9 @@ const KeywordsMenu: Component<KeyProps> = props => {
       <ul class="color-defaults" role="listbox" aria-label={locale().defaultsLabel}>
         <For each={colorKeywords()}>
           {key => {
-            const [label, val] = typeof key === 'string' ? [key, key] : (ObjectEntries(key)[0] as [string, string]);        
+            const [label, val] = typeof key === 'string' ? [key, key] : (ObjectEntries(key)[0] as [string, string]);
             const isActive = () => val === value();
-            const className = () => `color-option${isActive() ? ' active' : ''}`; 
+            const className = () => `color-option${isActive() ? ' active' : ''}`;
             return (
               <li
                 class={className()}
@@ -108,7 +108,7 @@ const MenuDropdown: Component<MenuProps> = props => {
   return (
     <>
       {(colorKeywords && colorKeywords()) || (colorPresets && colorPresets()) ? (
-        <>    
+        <>
           {props.children}
           <div id={id()} ref={props.ref} class={menuClass()}>
             {colorPresets && colorPresets() ? <PresetsMenu {...(props as PresetsProps)} /> : null}

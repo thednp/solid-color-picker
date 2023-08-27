@@ -164,82 +164,82 @@ const App = () => {
                     {appLocale().palette}
                   </label>
                 </div>
-                  <div class="col ms-auto">
-                    <div class="d-flex gap-1">
-                      <div class="col">
-                        <label for="hue_select" class="v-hidden">
-                          {locale().hueLabel}
-                        </label>
-                        <input
-                          id={`hue_select`}
-                          type="number"
-                          class="input"
-                          autocomplete="off"
-                          min={0}
-                          max={359}
-                          step={1}
-                          spellcheck={false}
-                          placeholder={locale().hueLabel}
-                          value={hue()}
-                          onChange={e => setHue(Number(e.target.value))}
-                        />
-                      </div>
-                      <div class="col">
-                        <label for="hueSteps_select" class="v-hidden">
-                          {appLocale().hueSteps}
-                        </label>
-                        <input
-                          id={`hueSteps_select`}
-                          type="number"
-                          class="input"
-                          autocomplete="off"
-                          min={1}
-                          max={24}
-                          step={1}
-                          spellcheck={false}
-                          value={hueSteps()}
-                          placeholder={appLocale().hueSteps}
-                          onChange={e => setHueSteps(Number(e.target.value))}
-                        />
-                      </div>
-                      <div class="col">
-                        <label class="v-hidden" for="lightSteps_select">
-                          {appLocale().ligthSteps}
-                        </label>
-                        <input
-                          id={`lightSteps_select`}
-                          type="number"
-                          class="input"
-                          autocomplete="off"
-                          min={1}
-                          max={24}
-                          step={1}
-                          spellcheck={false}
-                          value={lightSteps()}
-                          placeholder={appLocale().ligthSteps}
-                          onChange={e => setLightSteps(Number(e.target.value))}
-                        />
-                      </div>
-                      <div class="col">
-                        <label for="saturation_select" class="v-hidden">
-                          {locale().saturationLabel}
-                        </label>
-                        <input
-                          id={`saturation_select`}
-                          type="number"
-                          class="input"
-                          autocomplete="off"
-                          min={1}
-                          max={100}
-                          step={1}
-                          spellcheck={false}
-                          value={saturation()}
-                          placeholder={locale().saturationLabel}
-                          onChange={e => setSaturation(Number(e.target.value))}
-                        />
-                      </div>
+                <div class="col ms-auto">
+                  <div class="d-flex gap-1">
+                    <div class="col">
+                      <label for="hue_select" class="v-hidden">
+                        {locale().hueLabel}
+                      </label>
+                      <input
+                        id={`hue_select`}
+                        type="number"
+                        class="input"
+                        autocomplete="off"
+                        min={0}
+                        max={359}
+                        step={1}
+                        spellcheck={false}
+                        placeholder={locale().hueLabel}
+                        value={hue()}
+                        onChange={e => setHue(Number(e.target.value))}
+                      />
+                    </div>
+                    <div class="col">
+                      <label for="hueSteps_select" class="v-hidden">
+                        {appLocale().hueSteps}
+                      </label>
+                      <input
+                        id={`hueSteps_select`}
+                        type="number"
+                        class="input"
+                        autocomplete="off"
+                        min={1}
+                        max={24}
+                        step={1}
+                        spellcheck={false}
+                        value={hueSteps()}
+                        placeholder={appLocale().hueSteps}
+                        onChange={e => setHueSteps(Number(e.target.value))}
+                      />
+                    </div>
+                    <div class="col">
+                      <label class="v-hidden" for="lightSteps_select">
+                        {appLocale().ligthSteps}
+                      </label>
+                      <input
+                        id={`lightSteps_select`}
+                        type="number"
+                        class="input"
+                        autocomplete="off"
+                        min={1}
+                        max={24}
+                        step={1}
+                        spellcheck={false}
+                        value={lightSteps()}
+                        placeholder={appLocale().ligthSteps}
+                        onChange={e => setLightSteps(Number(e.target.value))}
+                      />
+                    </div>
+                    <div class="col">
+                      <label for="saturation_select" class="v-hidden">
+                        {locale().saturationLabel}
+                      </label>
+                      <input
+                        id={`saturation_select`}
+                        type="number"
+                        class="input"
+                        autocomplete="off"
+                        min={1}
+                        max={100}
+                        step={1}
+                        spellcheck={false}
+                        value={saturation()}
+                        placeholder={locale().saturationLabel}
+                        onChange={e => setSaturation(Number(e.target.value))}
+                      />
                     </div>
                   </div>
+                </div>
               </div>
             </div>
           </div>
@@ -298,7 +298,7 @@ const App = () => {
                       resetKeywordForm();
                     }}
                   >
-                    <span class='v-hidden'>Add</span>
+                    <span class="v-hidden">Add</span>
                     <Plus fill="currentColor" />
                   </button>
                 </div>
