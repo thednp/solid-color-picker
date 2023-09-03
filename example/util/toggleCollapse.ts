@@ -26,7 +26,7 @@ export const showCollapse = (collapse: HTMLElement, callback?: Callback) => {
     if (currentOpen) hideCollapse(currentOpen as HTMLElement);
     collapse.classList.add('show');
     collapse.classList.add('collapsing');
-    window.requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
       Object.assign(collapse.style, { height: collapse.scrollHeight + 'px' });
       Timers.set(
         collapse,
@@ -58,7 +58,7 @@ export const hideCollapse = (collapse: HTMLElement, callback?: Callback) => {
 
     clearTimeout(timer);
     Object.assign(collapse.style, { height: collapse.scrollHeight + 'px' });
-    window.requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
       collapse.classList.add('collapsing');
       Object.assign(collapse.style, { height: '0px' });
       Timers.set(

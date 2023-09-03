@@ -1,6 +1,6 @@
 {
   "name": "@thednp/solid-color-picker",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "🎨 Modern Color Picker for SolidJS",
   "keywords": [
     "solid",
@@ -31,32 +31,38 @@
     "src"
   ],
   "exports": {
-    "solid": {
-      "development": "./dist/dev.jsx",
-      "import": "./dist/index.jsx"
-    },
-    "development": {
+    ".": {
+      "solid": {
+        "development": "./dist/dev.jsx",
+        "import": "./dist/index.jsx"
+      },
+      "development": {
+        "import": {
+          "types": "./dist/index.d.ts",
+          "default": "./dist/dev.js"
+        }
+      },
       "import": {
         "types": "./dist/index.d.ts",
-        "default": "./dist/dev.js"
+        "default": "./dist/index.js"
       }
     },
-    "import": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
+    "./style.css": {
+      "import": "./dist/index.css"
     }
   },
   "scripts": {
     "dev": "vite serve example",
-    "build:example": "pnpm lint && pnpm format && vite build example",
+    "build:example": "pnpm format && pnpm lint && vite build example",
     "build:docs": "pnpm lint && pnpm format && vite build example --config example/vite.config.docs.ts",
     "format": "prettier -w \"src/**/*.{js,ts,json,css,tsx,jsx}\" \"example/**/*.{js,ts,json,css,tsx,jsx}\"",
     "build": "tsup",
-    "prepublishOnly": "pnpm lint && pnpm format && tsup",
+    "prepublishOnly": "pnpm update-deps && pnpm format && pnpm lint && tsup",
     "lint": "pnpm lint:types && pnpm lint:code",
     "lint:code": "eslint --max-warnings 0 src/**/*.{ts,tsx}",
     "lint:types": "tsc --noEmit",
     "fix:ts": "eslint src/**/*.{ts,tsx} --fix",
+    "serve": "vite preview example",
     "update-deps": "pnpm up -Li"
   },
   "license": "MIT",
@@ -64,9 +70,9 @@
     "solid-js": "^1.6.0"
   },
   "devDependencies": {
-    "@types/node": "^20.5.6",
-    "@typescript-eslint/eslint-plugin": "^6.4.1",
-    "@typescript-eslint/parser": "^6.4.1",
+    "@types/node": "^20.5.9",
+    "@typescript-eslint/eslint-plugin": "^6.5.0",
+    "@typescript-eslint/parser": "^6.5.0",
     "concurrently": "^8.2.1",
     "esbuild": "^0.19.2",
     "esbuild-plugin-solid": "^0.5.0",
@@ -74,9 +80,10 @@
     "eslint-plugin-eslint-comments": "^3.2.0",
     "eslint-plugin-no-only-tests": "^3.1.0",
     "gh-pages": "^6.0.0",
+    "prettier": "^3.0.3",
     "solid-js": "^1.7.11",
     "tsup": "^7.2.0",
-    "tsup-preset-solid": "^2.0.2",
+    "tsup-preset-solid": "^2.1.0",
     "typescript": "^5.2.2",
     "vite": "^4.4.9",
     "vite-plugin-solid": "^2.7.0",
@@ -86,8 +93,7 @@
     "@thednp/color": "^1.0.8",
     "@thednp/color-picker": "2.0.0-alpha9",
     "@thednp/event-listener": "^2.0.2",
-    "@thednp/shorty": "2.0.0-alpha17",
-    "prettier": "^3.0.2"
+    "@thednp/shorty": "2.0.0-alpha17"
   },
   "packageManager": "pnpm@8.6.12",
   "engines": {

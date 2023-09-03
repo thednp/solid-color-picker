@@ -1,4 +1,4 @@
-import type { Accessor, JSXElement } from 'solid-js';
+import type { Accessor, JSXElement, JSX } from 'solid-js';
 
 export type ColorList = string[];
 
@@ -91,11 +91,13 @@ export type PresetsProps = {
   class: Accessor<string>;
   colorPresets: Accessor<ColorPresets>;
   children?: JSXElement;
+  keyHandler: JSX.EventHandlerUnion<HTMLElement, KeyboardEvent>;
 };
 
 export type KeyProps = {
   id: string;
   colorKeywords: Accessor<ColorKeywords>;
+  keyHandler: JSX.EventHandlerUnion<HTMLElement, KeyboardEvent>;
 };
 
 export type MenuProps = {

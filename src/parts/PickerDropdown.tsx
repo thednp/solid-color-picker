@@ -1,13 +1,17 @@
 import Color from '@thednp/color';
-import { Component, createComponent, createEffect, createSignal, startTransition, Suspense } from 'solid-js';
+import { addListener, removeListener } from '@thednp/event-listener';
+import { keyArrowUp, keyArrowDown, keyArrowLeft, keyArrowRight, getBoundingClientRect } from '@thednp/shorty';
+import { Component, createComponent, createEffect, createSignal, onCleanup, startTransition, Suspense } from 'solid-js';
 import type { ControlProps, PickerProps } from '../types/types';
 import { usePickerContext } from './ColorPickerContext';
+import offsetLength from '../util/offsetLength';
 
 const { roundPart } = Color;
 
 const ColorControls: Component<ControlProps> = props => {
-  const { locale, format, controlPositions, appearance, hue, saturation, lightness, alpha, fill, fillGradient } =
+  const { drag, setDrag, color, setColor, setValue, locale, format, controlPositions, setControlPositions } =
     usePickerContext();
+  let controlsParentRef!: HTMLDivElement;
   const { stringValue } = props;
   const hueGradient = `linear-gradient(
     rgb(255, 0, 0) 0%, rgb(255, 255, 0) 16.67%, 
@@ -17,10 +21,272 @@ const ColorControls: Component<ControlProps> = props => {
     rgb(255, 0, 255) 83.33%, 
     rgb(255, 0, 0) 100%
   )`;
+  const hue = () => controlPositions().c2y / offsetLength();
+  const lightness = () => roundPart(color().toHsv().v * 100);
+  const saturation = () => roundPart(color().toHsv().s * 100);
+  const alpha = () => 1 - controlPositions().c3y / offsetLength();
+  const fill = () => {
+    return new Color({
+      h: hue(),
+      s: 1,
+      l: 0.5,
+      a: alpha(),
+    });
+  };
+  const fillGradient = () => {
+    const roundA = roundPart(alpha() * 100) / 100;
+
+    return `linear-gradient(rgba(0,0,0,0) 0%, rgba(0,0,0,${roundA}) 100%),
+          linear-gradient(to right, rgba(255,255,255,${roundA}) 0%, ${fill().toRgbString()} 100%), 
+          linear-gradient(rgb(255,255,255) 0%, rgb(255,255,255) 100%)`;
+  };
+
+  const appearance = () => {
+    const hsl = color().toHsl();
+    const hsv = color().toHsv();
+    const hue = roundPart(hsl.h * 360);
+    const saturationSource = format() === 'hsl' ? hsl.s : hsv.s;
+    const saturation = roundPart(saturationSource * 100);
+    const lightness = roundPart(hsl.l * 100);
+    const hsvl = hsv.v * 100;
+
+    let colorName = 'black';
+
+    // determine color appearance
+    /* istanbul ignore else */
+    if (lightness === 100 && saturation === 0) {
+      colorName = locale().white;
+    } else if (lightness === 0) {
+      colorName = locale().black;
+    } else if (saturation === 0) {
+      colorName = locale().grey;
+    } else if (hue < 15 || hue >= 345) {
+      colorName = locale().red;
+    } else if (hue >= 15 && hue < 45) {
+      colorName = hsvl > 80 && saturation > 80 ? locale().orange : locale().brown;
+    } else if (hue >= 45 && hue < 75) {
+      const isGold = hue > 46 && hue < 54 && hsvl < 80 && saturation > 90;
+      const isOlive = hue >= 54 && hue < 75 && hsvl < 80;
+      colorName = isGold ? locale().gold : locale().yellow;
+      colorName = isOlive ? locale().olive : colorName;
+    } else if (hue >= 75 && hue < 155) {
+      colorName = hsvl < 68 ? locale().green : locale().lime;
+    } else if (hue >= 155 && hue < 175) {
+      colorName = locale().teal;
+    } else if (hue >= 175 && hue < 195) {
+      colorName = locale().cyan;
+    } else if (hue >= 195 && hue < 255) {
+      colorName = locale().blue;
+    } else if (hue >= 255 && hue < 270) {
+      colorName = locale().violet;
+    } else if (hue >= 270 && hue < 295) {
+      colorName = locale().magenta;
+    } else if (hue >= 295 && hue < 345) {
+      colorName = locale().pink;
+    }
+    return colorName;
+  };
+  const pointerDown = (e: PointerEvent & { target: Node; currentTarget: HTMLElement }) => {
+    if (e.button !== 0) return;
+
+    const { currentTarget, target, pageX, pageY } = e;
+    const elements = [...controlsParentRef.children] as [HTMLElement, HTMLElement, HTMLElement];
+    const [visual] = [...currentTarget.children] as [HTMLElement, HTMLElement];
+
+    const { left, top } = getBoundingClientRect(visual as HTMLDivElement);
+    const { documentElement } = document;
+    const offsetX = pageX - documentElement.scrollLeft - left;
+    const offsetY = pageY - documentElement.scrollTop - top;
+
+    setDrag(visual);
+
+    /* istanbul ignore else */
+    if (elements[0].contains(target)) {
+      changeControl1(offsetX, offsetY);
+    } else if (elements[1].contains(target)) {
+      changeControl2(offsetY);
+    } else if (elements[2].contains(target)) {
+      changeAlpha(offsetY);
+    }
+    e.preventDefault();
+  };
+
+  const pointerMove = (e: PointerEvent): void => {
+    const { pageX, pageY } = e;
+    if (!drag()) return;
+
+    const elements = [...controlsParentRef.children] as [HTMLElement, HTMLElement, HTMLElement];
+    const controlRect = getBoundingClientRect(drag() as HTMLElement);
+    const { documentElement } = document;
+    const offsetX = pageX - documentElement.scrollLeft - controlRect.left;
+    const offsetY = pageY - documentElement.scrollTop - controlRect.top;
+
+    if (elements[0].contains(drag() as Node)) {
+      changeControl1(offsetX, offsetY);
+    } else if (elements[1].contains(drag() as Node)) {
+      changeControl2(offsetY);
+    } else if (elements[2].contains(drag() as Node)) {
+      changeAlpha(offsetY);
+    }
+  };
+  const handleScroll = (e: Event) => {
+    const { activeElement } = document;
+
+    /* istanbul ignore next */
+    if (
+      (['pointermove', 'touchmove'].includes(e.type) && drag()) ||
+      (activeElement && controlsParentRef.contains(activeElement as Node))
+    ) {
+      e.stopPropagation();
+      e.preventDefault();
+    }
+  };
+  const handleKnobs = (e: Event & { code: string; target: Node }) => {
+    const { target, code } = e;
+
+    // only react to arrow buttons
+    if (![keyArrowUp, keyArrowDown, keyArrowLeft, keyArrowRight].includes(code)) return;
+    e.preventDefault();
+
+    const elements = [...controlsParentRef.children] as [HTMLElement, HTMLElement, HTMLElement];
+    /**
+     * @see https://stackoverflow.com/questions/70373659/solidjs-computations-created-outside-a-createroot-or-render-will-never-be
+     */
+    const { activeElement } = document;
+    const yRatio = offsetLength() / 360;
+
+    /* istanbul ignore else */
+    if (activeElement === target) {
+      /* istanbul ignore else */
+      if (elements[0].contains(target)) {
+        const xRatio = offsetLength() / 100;
+
+        /* istanbul ignore else */
+        if ([keyArrowLeft, keyArrowRight].includes(code)) {
+          setControlPositions({
+            ...controlPositions(),
+            c1x: controlPositions().c1x + (code === keyArrowRight ? xRatio : -xRatio),
+          });
+        } else if ([keyArrowUp, keyArrowDown].includes(code)) {
+          setControlPositions({
+            ...controlPositions(),
+            c1y: controlPositions().c1y + (code === keyArrowDown ? yRatio : -yRatio),
+          });
+        }
+
+        changeControl1(controlPositions().c1x, controlPositions().c1y);
+      } else if (elements[1].contains(target)) {
+        setControlPositions({
+          ...controlPositions(),
+          c2y: controlPositions().c2y + ([keyArrowDown, keyArrowRight].includes(code) ? yRatio : -yRatio),
+        });
+        changeControl2(controlPositions().c2y);
+      } else if (elements[2].contains(target)) {
+        setControlPositions({
+          ...controlPositions(),
+          c3y: controlPositions().c3y + ([keyArrowDown, keyArrowRight].includes(code) ? yRatio : -yRatio),
+        });
+        changeAlpha(controlPositions().c3y);
+      }
+      handleScroll(e);
+    }
+  };
+
+  const changeControl1 = (X: number, Y: number) => {
+    let [offsetX, offsetY] = [0, 0];
+
+    if (X > offsetLength()) offsetX = offsetLength();
+    else if (X >= 0) offsetX = X;
+
+    if (Y > offsetLength()) offsetY = offsetLength();
+    else if (Y >= 0) offsetY = Y;
+
+    const hue = controlPositions().c2y / offsetLength();
+    const saturation = offsetX / offsetLength();
+    const lightness = 1 - offsetY / offsetLength();
+    const alpha = 1 - controlPositions().c3y / offsetLength();
+
+    // new color
+    const newColor = new Color(
+      {
+        h: hue,
+        s: saturation,
+        v: lightness,
+        a: alpha,
+      },
+      format(),
+    );
+
+    setValue(newColor.toString());
+    setColor(newColor);
+    setControlPositions({
+      ...controlPositions(),
+      c1x: offsetX,
+      c1y: offsetY,
+    });
+  };
+
+  const changeControl2 = (Y: number) => {
+    let offsetY = 0;
+
+    if (Y > offsetLength()) offsetY = offsetLength();
+    else if (Y >= 0) offsetY = Y;
+
+    const hue = offsetY / offsetLength();
+    const saturation = controlPositions().c1x / offsetLength();
+    const lightness = 1 - controlPositions().c1y / offsetLength();
+    const alpha = 1 - controlPositions().c3y / offsetLength();
+
+    // new color
+    const newColor = new Color(
+      {
+        h: hue,
+        s: saturation,
+        v: lightness,
+        a: alpha,
+      },
+      format(),
+    );
+
+    setValue(newColor.toString());
+    setColor(newColor);
+    setControlPositions({
+      ...controlPositions(),
+      c2y: offsetY,
+    });
+  };
+
+  const changeAlpha = (Y: number) => {
+    let offsetY = 0;
+
+    if (Y > offsetLength()) offsetY = offsetLength();
+    else if (Y >= 0) offsetY = Y;
+
+    // update color alpha
+    const alpha = 1 - offsetY / offsetLength();
+    const newColor = new Color(color().setAlpha(alpha), format());
+
+    setValue(newColor.toString());
+    setColor(newColor);
+    setControlPositions({
+      ...controlPositions(),
+      c3y: offsetY,
+    });
+  };
+
+  const toggleGlobalEvents = (add?: boolean) => {
+    const action = add ? addListener : removeListener;
+    action(document, 'pointermove', pointerMove as EventListener);
+  };
+  createEffect(() => {
+    if (drag()) toggleGlobalEvents(true);
+    else toggleGlobalEvents();
+    onCleanup(toggleGlobalEvents);
+  });
 
   return (
-    <div class={`color-controls ${format()}`}>
-      <div class="color-control" role="presentation" tabIndex={-1}>
+    <div class={`color-controls ${format()}`} ref={controlsParentRef}>
+      <div class="color-control" role="presentation" tabIndex={-1} onPointerDown={pointerDown}>
         <div class="visual-control visual-control1" style={{ background: fillGradient() }}></div>
         <div
           class="color-pointer knob"
@@ -32,10 +298,11 @@ const ColorControls: Component<ControlProps> = props => {
           aria-label={`${locale().lightnessLabel} &amp; ${locale().saturationLabel}`}
           aria-valuetext={`${lightness()}% &amp; ${saturation()}%`}
           aria-valuenow={lightness()}
+          onKeyDown={handleKnobs}
           style={{ transform: `translate3d(${controlPositions().c1x - 4}px, ${controlPositions().c1y - 4}px, 0px)` }}
         ></div>
       </div>
-      <div class="color-control" role="presentation" tabIndex={-1}>
+      <div class="color-control" role="presentation" tabIndex={-1} onPointerDown={pointerDown}>
         <div class="visual-control visual-control2" style={{ background: hueGradient }}></div>
         <div
           class="color-slider knob"
@@ -48,10 +315,11 @@ const ColorControls: Component<ControlProps> = props => {
           aria-description={`${locale().valueLabel}: ${stringValue()}. ${locale().appearanceLabel}: ${appearance()}.`}
           aria-valuetext={`${roundPart(hue() * 100)}°`}
           aria-valuenow={roundPart(hue() * 100)}
+          onKeyDown={handleKnobs}
           style={{ transform: `translate3d(0px, ${controlPositions().c2y - 4}px, 0px)` }}
         ></div>
       </div>
-      <div class="color-control" role="presentation" tabIndex={-1}>
+      <div class="color-control" role="presentation" tabIndex={-1} onPointerDown={pointerDown}>
         <div
           class="visual-control visual-control3"
           style={{
@@ -70,6 +338,7 @@ const ColorControls: Component<ControlProps> = props => {
           aria-valuemax={100}
           aria-valuetext={`${roundPart(alpha() * 100)}%`}
           aria-valuenow={roundPart(alpha() * 100)}
+          onKeyDown={handleKnobs}
           style={{ transform: `translate3d(0px, ${controlPositions().c3y - 4}px, 0px)` }}
         ></div>
       </div>
@@ -78,7 +347,8 @@ const ColorControls: Component<ControlProps> = props => {
 };
 
 const RGBForm: Component<PickerProps> = props => {
-  const { locale, format, color, update, alpha } = usePickerContext();
+  const { locale, format, color, update, controlPositions } = usePickerContext();
+  const alpha = () => 1 - controlPositions().c3y / offsetLength();
   const { id } = props;
   const rgb = () => {
     let { r, g, b, a } = color().toRgb();
@@ -174,7 +444,8 @@ const RGBForm: Component<PickerProps> = props => {
 };
 
 const HSLForm: Component<PickerProps> = props => {
-  const { format, locale, color, update, alpha } = usePickerContext();
+  const { format, locale, color, update, controlPositions } = usePickerContext();
+  const alpha = () => 1 - controlPositions().c3y / offsetLength();
   const { id } = props;
   const hsl = () => {
     let { h, s, l, a } = color().toHsl();
@@ -271,7 +542,8 @@ const HSLForm: Component<PickerProps> = props => {
 };
 
 const HWBForm: Component<PickerProps> = props => {
-  const { locale, format, color, update, alpha } = usePickerContext();
+  const { locale, format, color, update, controlPositions } = usePickerContext();
+  const alpha = () => 1 - controlPositions().c3y / offsetLength();
   const { id } = props;
   const hwb = () => {
     let { h, w, b, a } = color().toHwb();

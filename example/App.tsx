@@ -275,7 +275,7 @@ const App = () => {
                     onChange={e => setColorValue(e.target.value)}
                   />
                   <button
-                    class="btn"
+                    class="btn-option m-0 p-0"
                     onClick={() => {
                       const newColor = new Color(colorValue() || colorLabel());
                       if (!colorValue() && !colorLabel()) {
@@ -299,7 +299,7 @@ const App = () => {
                     }}
                   >
                     <span class="v-hidden">Add</span>
-                    <Plus fill="currentColor" />
+                    <Plus style={{ 'vertical-align': 'middle' }} />
                   </button>
                 </div>
               </div>
