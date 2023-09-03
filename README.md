@@ -41,6 +41,7 @@ pnpm add @thednp/solid-color-picker
 
 ```tsx
 import { DefaultColorPicker } from '@thednp/solid-color-picker'
+import '@thednp/solid-color-picker/style.css'
 
 function App() {
   return <DefaultColorPicker value="turquoise" onChange={color => console.log(color)} />;
