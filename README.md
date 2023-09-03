@@ -5,7 +5,7 @@
 [![Npm Version](https://img.shields.io/npm/v/@thednp/solid-color-picker)](https://www.npmjs.com/package/@thednp/solid-color-picker)
 [![typescript version](https://img.shields.io/badge/typescript-5.2.2-brightgreen)](https://www.typescriptlang.org/)
 [![eslint version](https://img.shields.io/badge/eslint-8.48.0-brightgreen)](https://github.com/eslint)
-[![prettier version](https://img.shields.io/badge/prettier-3.0.2-brightgreen)](https://prettier.io/)
+[![prettier version](https://img.shields.io/badge/prettier-3.0.3-brightgreen)](https://prettier.io/)
 [![solid-js version](https://img.shields.io/badge/solid--js-1.7.11-brightgreen)](https://solidjs.com/)
 [![vite version](https://img.shields.io/badge/vite-4.4.9-brightgreen)](https://github.com/vitejs)
 
