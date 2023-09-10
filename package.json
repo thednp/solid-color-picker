@@ -1,6 +1,6 @@
 {
   "name": "@thednp/solid-color-picker",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "🎨 Modern Color Picker for SolidJS",
   "keywords": [
     "solid",
@@ -57,26 +57,25 @@
     "build:docs": "pnpm lint && pnpm format && vite build example --config example/vite.config.docs.ts",
     "format": "prettier -w \"src/**/*.{js,ts,json,css,tsx,jsx}\" \"example/**/*.{js,ts,json,css,tsx,jsx}\"",
     "build": "tsup",
-    "prepublishOnly": "pnpm update-deps && pnpm format && pnpm lint && tsup",
+    "prepublishOnly": "pnpm up && npm update && pnpm format && pnpm lint && tsup",
     "lint": "pnpm lint:types && pnpm lint:code",
     "lint:code": "eslint --max-warnings 0 src/**/*.{ts,tsx}",
     "lint:types": "tsc --noEmit",
     "fix:ts": "eslint src/**/*.{ts,tsx} --fix",
-    "serve": "vite preview example",
-    "update-deps": "pnpm up -Li"
+    "serve": "vite preview example"
   },
   "license": "MIT",
   "peerDependencies": {
     "solid-js": "^1.6.0"
   },
   "devDependencies": {
-    "@types/node": "^20.5.9",
-    "@typescript-eslint/eslint-plugin": "^6.5.0",
-    "@typescript-eslint/parser": "^6.5.0",
+    "@types/node": "^20.6.0",
+    "@typescript-eslint/eslint-plugin": "^6.6.0",
+    "@typescript-eslint/parser": "^6.6.0",
     "concurrently": "^8.2.1",
     "esbuild": "^0.19.2",
     "esbuild-plugin-solid": "^0.5.0",
-    "eslint": "^8.48.0",
+    "eslint": "^8.49.0",
     "eslint-plugin-eslint-comments": "^3.2.0",
     "eslint-plugin-no-only-tests": "^3.1.0",
     "gh-pages": "^6.0.0",
@@ -91,9 +90,8 @@
   },
   "dependencies": {
     "@thednp/color": "^1.0.8",
-    "@thednp/color-picker": "2.0.0-alpha9",
-    "@thednp/event-listener": "^2.0.2",
-    "@thednp/shorty": "2.0.0-alpha17"
+    "@thednp/color-picker": "2.0.0-alpha10",
+    "@thednp/shorty": "2.0.0-alpha22"
   },
   "packageManager": "pnpm@8.6.12",
   "engines": {

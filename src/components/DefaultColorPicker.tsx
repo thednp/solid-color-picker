@@ -1,6 +1,16 @@
 import Color from '@thednp/color';
-import { addListener, removeListener } from '@thednp/event-listener';
-import { getBoundingClientRect, focus, reflow, emulateTransitionEnd, ObjectAssign, ObjectKeys } from '@thednp/shorty';
+import {
+  getBoundingClientRect,
+  focus,
+  reflow,
+  emulateTransitionEnd,
+  ObjectAssign,
+  ObjectKeys,
+  KeyboardEventHandler,
+  PointerEventHandler,
+  on,
+  off,
+} from '@thednp/shorty';
 
 import { type Component, JSX, createSignal, createEffect, onCleanup, startTransition, createMemo } from 'solid-js';
 import type { ColorPickerProps } from '../types/types';
@@ -131,11 +141,11 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
     }
   };
 
-  const handleDismiss = (e: KeyboardEvent) => {
+  const handleDismiss: KeyboardEventHandler<Document> = e => {
     if (open() && e.code === 'Escape') hideDropdown();
   };
 
-  const pointerUp = (e: PointerEvent) => {
+  const pointerUp: PointerEventHandler = e => {
     const selection = document.getSelection();
 
     if (!drag() && (!selection || !selection.toString().length) && !mainRef.contains(e.target as Node)) {
@@ -179,12 +189,12 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
   });
 
   const toggleGlobalEvents = (add?: boolean) => {
-    const action = add ? addListener : removeListener;
+    const action = add ? on : off;
 
     action(window, 'scroll', updateControlPositions);
     action(window, 'resize', updateControlPositions);
-    action(document, 'keyup', handleDismiss as EventListener);
-    action(document, 'pointerup', pointerUp as EventListener);
+    action(document, 'keyup', handleDismiss);
+    action(document, 'pointerup', pointerUp);
   };
 
   const hideTransitionEnd = () => {
@@ -250,6 +260,7 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
           class="picker-toggle btn-appearance"
           aria-expanded={pickerShown()}
           aria-haspopup={true}
+          type="button"
           onClick={showPicker}
         >
           <span class="v-hidden">{`${locale().pickerLabel}. ${locale().formatLabel}: ${format().toUpperCase()}`}</span>
@@ -280,6 +291,7 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
         >
           <button
             class="menu-toggle btn-appearance"
+            type="button"
             tabIndex={menuShown() || pickerShown() ? 0 : -1}
             aria-expanded={menuShown()}
             aria-haspopup={true}

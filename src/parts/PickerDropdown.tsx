@@ -1,6 +1,5 @@
 import Color from '@thednp/color';
-import { addListener, removeListener } from '@thednp/event-listener';
-import { keyArrowUp, keyArrowDown, keyArrowLeft, keyArrowRight, getBoundingClientRect } from '@thednp/shorty';
+import { keyArrowUp, keyArrowDown, keyArrowLeft, keyArrowRight, getBoundingClientRect, on, off } from '@thednp/shorty';
 import { Component, createComponent, createEffect, createSignal, onCleanup, startTransition, Suspense } from 'solid-js';
 import type { ControlProps, PickerProps } from '../types/types';
 import { usePickerContext } from './ColorPickerContext';
@@ -275,8 +274,8 @@ const ColorControls: Component<ControlProps> = props => {
   };
 
   const toggleGlobalEvents = (add?: boolean) => {
-    const action = add ? addListener : removeListener;
-    action(document, 'pointermove', pointerMove as EventListener);
+    const action = add ? on : off;
+    action(document, 'pointermove', pointerMove);
   };
   createEffect(() => {
     if (drag()) toggleGlobalEvents(true);
