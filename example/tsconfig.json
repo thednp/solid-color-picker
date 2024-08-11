@@ -1,7 +1,7 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
-    "types": ["vite-plugin-solid-svg/types-component-solid", "vite/client"]
+    "types": ["vite-plugin-solid-svg/types", "vite/client"]
   },
   "include": ["./**/*"],
   "exclude": ["node_modules", "dist"]

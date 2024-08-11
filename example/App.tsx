@@ -38,7 +38,8 @@ const App = () => {
     setColorLabel('');
   };
   createEffect(() => {
-    if (lang() === 'ar') {
+    const newLang = lang();
+    if (newLang === 'ar') {
       // setDirection('rtl');
       document.documentElement.setAttribute('dir', 'rtl');
     } else {

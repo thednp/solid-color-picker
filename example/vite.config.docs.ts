@@ -5,8 +5,8 @@ import solidSVG from 'vite-plugin-solid-svg';
 export default defineConfig({
   base: './',
   plugins: [
+    solidSVG({ svgo: { enabled: false }, defaultAsComponent: true }),
     solidPlugin(),
-    solidSVG({ defaultAsComponent: true }),
     {
       name: 'Reaplace env variables',
       transform(code, id) {
