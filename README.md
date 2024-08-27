@@ -6,8 +6,8 @@
 [![typescript version](https://img.shields.io/badge/typescript-5.5.4-brightgreen)](https://www.typescriptlang.org/)
 [![eslint version](https://img.shields.io/badge/eslint-8.57.0-brightgreen)](https://github.com/eslint)
 [![prettier version](https://img.shields.io/badge/prettier-3.3.3-brightgreen)](https://prettier.io/)
-[![solid-js version](https://img.shields.io/badge/solid--js-1.8.20-brightgreen)](https://solidjs.com/)
-[![vite version](https://img.shields.io/badge/vite-5.4.0-brightgreen)](https://github.com/vitejs)
+[![solid-js version](https://img.shields.io/badge/solid--js-1.8.21-brightgreen)](https://solidjs.com/)
+[![vite version](https://img.shields.io/badge/vite-5.4.2-brightgreen)](https://github.com/vitejs)
 
 The feature rich **ColorPicker** component for SolidJS, sourced with TypeScript, WAI-ARIA compliant and is mainly based on [ColorPicker](http://github.com/thednp/color-picker).
 

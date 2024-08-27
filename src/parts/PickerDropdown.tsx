@@ -8,7 +8,7 @@ import offsetLength from '../util/offsetLength';
 const { roundPart } = Color;
 
 const ColorControls: Component<ControlProps> = props => {
-  const { drag, setDrag, color, setColor, setValue, locale, format, controlPositions, setControlPositions } =
+  const { drag, setDrag, color, setColor, locale, setValue, format, controlPositions, setControlPositions } =
     usePickerContext();
   let controlsParentRef!: HTMLDivElement;
   const { stringValue } = props;
@@ -134,7 +134,7 @@ const ColorControls: Component<ControlProps> = props => {
     /* istanbul ignore next */
     if (
       (['pointermove', 'touchmove'].includes(e.type) && drag()) ||
-      (activeElement && controlsParentRef.contains(activeElement as Node))
+      (activeElement && controlsParentRef.contains(activeElement))
     ) {
       e.stopPropagation();
       e.preventDefault();
@@ -162,30 +162,34 @@ const ColorControls: Component<ControlProps> = props => {
 
         /* istanbul ignore else */
         if ([keyArrowLeft, keyArrowRight].includes(code)) {
-          setControlPositions({
-            ...controlPositions(),
-            c1x: controlPositions().c1x + (code === keyArrowRight ? xRatio : -xRatio),
+          setControlPositions(prev => {
+            const c1x = prev.c1x + (code === keyArrowRight ? xRatio : -xRatio);
+            changeControl1(c1x, prev.c1y);
+            return { ...prev, c1x };
           });
         } else if ([keyArrowUp, keyArrowDown].includes(code)) {
-          setControlPositions({
-            ...controlPositions(),
-            c1y: controlPositions().c1y + (code === keyArrowDown ? yRatio : -yRatio),
+          setControlPositions(prev => {
+            const c1y = prev.c1y + (code === keyArrowDown ? yRatio : -yRatio);
+            changeControl1(prev.c1x, c1y);
+            return { ...prev, c1y };
           });
         }
 
-        changeControl1(controlPositions().c1x, controlPositions().c1y);
+        // changeControl1(controlPositions().c1x, controlPositions().c1y);
       } else if (elements[1].contains(target)) {
-        setControlPositions({
-          ...controlPositions(),
-          c2y: controlPositions().c2y + ([keyArrowDown, keyArrowRight].includes(code) ? yRatio : -yRatio),
+        setControlPositions(prev => {
+          const c2y = prev.c2y + ([keyArrowDown, keyArrowRight].includes(code) ? yRatio : -yRatio);
+          changeControl2(c2y);
+
+          return { ...prev, c2y };
         });
-        changeControl2(controlPositions().c2y);
       } else if (elements[2].contains(target)) {
-        setControlPositions({
-          ...controlPositions(),
-          c3y: controlPositions().c3y + ([keyArrowDown, keyArrowRight].includes(code) ? yRatio : -yRatio),
+        setControlPositions(prev => {
+          const c3y = prev.c3y + ([keyArrowDown, keyArrowRight].includes(code) ? yRatio : -yRatio);
+          changeAlpha(c3y);
+
+          return { ...prev, c3y };
         });
-        changeAlpha(controlPositions().c3y);
       }
       handleScroll(e);
     }
@@ -215,14 +219,15 @@ const ColorControls: Component<ControlProps> = props => {
       },
       format(),
     );
+    const newValue = newColor.toString();
 
-    setValue(newColor.toString());
+    setValue(newValue);
     setColor(newColor);
-    setControlPositions({
-      ...controlPositions(),
+    setControlPositions(prev => ({
+      ...prev,
       c1x: offsetX,
       c1y: offsetY,
-    });
+    }));
   };
 
   const changeControl2 = (Y: number) => {
@@ -247,12 +252,13 @@ const ColorControls: Component<ControlProps> = props => {
       format(),
     );
 
-    setValue(newColor.toString());
+    const newValue = newColor.toString();
+    setValue(newValue);
     setColor(newColor);
-    setControlPositions({
-      ...controlPositions(),
+    setControlPositions(prev => ({
+      ...prev,
       c2y: offsetY,
-    });
+    }));
   };
 
   const changeAlpha = (Y: number) => {
@@ -265,12 +271,13 @@ const ColorControls: Component<ControlProps> = props => {
     const alpha = 1 - offsetY / offsetLength();
     const newColor = new Color(color().setAlpha(alpha), format());
 
-    setValue(newColor.toString());
+    const newValue = newColor.toString();
+    setValue(newValue);
     setColor(newColor);
-    setControlPositions({
-      ...controlPositions(),
+    setControlPositions(prev => ({
+      ...prev,
       c3y: offsetY,
-    });
+    }));
   };
 
   const toggleGlobalEvents = (add?: boolean) => {

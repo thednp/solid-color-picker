@@ -174,7 +174,7 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
     }
   };
 
-  const updateControlPositions = createMemo(() => {
+  const updateControlPositions = () => {
     const hsv = color().toHsv();
     const alpha = color().a;
     const hue = hsv.h;
@@ -186,7 +186,7 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
       c2y: hue * offsetLength(),
       c3y: (1 - alpha) * offsetLength(),
     });
-  });
+  };
 
   const toggleGlobalEvents = (add?: boolean) => {
     const action = add ? on : off;
