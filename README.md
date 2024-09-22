@@ -1,13 +1,15 @@
 [<img width="100%" src="banner.svg" alt="solid-color-picker">](https://thednp.github.io/solid-color-picker)
 
 # Solid Color Picker
+[![Coverage Status](https://coveralls.io/repos/github/thednp/solid-color-picker/badge.svg)](https://coveralls.io/github/thednp/solid-color-picker)
 [![ci](https://github.com/thednp/solid-color-picker/actions/workflows/ci.yml/badge.svg)](https://github.com/thednp/solid-color-picker/actions/workflows/ci.yml)
 [![Npm Version](https://img.shields.io/npm/v/@thednp/solid-color-picker)](https://www.npmjs.com/package/@thednp/solid-color-picker)
-[![typescript version](https://img.shields.io/badge/typescript-5.5.4-brightgreen)](https://www.typescriptlang.org/)
-[![eslint version](https://img.shields.io/badge/eslint-8.57.0-brightgreen)](https://github.com/eslint)
+[![typescript version](https://img.shields.io/badge/typescript-5.6.2-brightgreen)](https://www.typescriptlang.org/)
+[![eslint version](https://img.shields.io/badge/eslint-8.57.1-brightgreen)](https://github.com/eslint)
 [![prettier version](https://img.shields.io/badge/prettier-3.3.3-brightgreen)](https://prettier.io/)
-[![solid-js version](https://img.shields.io/badge/solid--js-1.8.21-brightgreen)](https://solidjs.com/)
-[![vite version](https://img.shields.io/badge/vite-5.4.2-brightgreen)](https://github.com/vitejs)
+[![solid-js version](https://img.shields.io/badge/solid--js-1.8.22-brightgreen)](https://solidjs.com/)
+[![vitest version](https://img.shields.io/badge/vitest-2.1.1-brightgreen)](https://vitest.dev/)
+[![vite version](https://img.shields.io/badge/vite-5.4.7-brightgreen)](https://github.com/vitejs)
 
 The feature rich **ColorPicker** component for SolidJS, sourced with TypeScript, WAI-ARIA compliant and is mainly based on [ColorPicker](http://github.com/thednp/color-picker).
 

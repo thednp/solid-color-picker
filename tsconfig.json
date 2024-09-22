@@ -14,10 +14,14 @@
     "skipLibCheck": true,
     "jsx": "preserve",
     "jsxImportSource": "solid-js",
-    "types": ["vite/client", "@thednp/color", "@thednp/color-picker", "@thednp/shorty"],
+    // "types": ["vite/client", "@thednp/color", "@thednp/color-picker", "@thednp/shorty"],
+    "types": ["vite/client", "vitest/globals", "node", "solid-js", "@thednp/color", "@thednp/color-picker", "@thednp/shorty"],
     "noEmit": true,
-    "baseUrl": "."
+    "baseUrl": ".",
+    "paths": {
+      "~/*": ["./src/*"],
+    }
   },
-  "include": ["./src"],
+  "include": ["src", "test", "demo", "vitest.config-ui.ts", "vitest.config.ts"],
   "exclude": ["node_modules", "dist", "example", "experiments"]
 }

@@ -3,19 +3,21 @@ import { Accessor, Setter, createContext, useContext } from 'solid-js';
 import initialControlPositions from '../util/initialControlPositions';
 import type { LanguagePack, SupportedFormat } from '../types/types';
 
-export const PickerContext = createContext({
-  format: (() => {}) as Accessor<SupportedFormat>,
-  color: (() => {}) as Accessor<Color>,
-  setColor: (() => {}) as Setter<Color>,
-  locale: (() => {}) as Accessor<LanguagePack>,
-  drag: (() => {}) as Accessor<HTMLElement | undefined>,
-  setDrag: (() => {}) as Setter<HTMLElement | undefined>,
-  value: (() => '') as Accessor<string>,
-  setValue: (() => {}) as Setter<string>,
-  controlPositions: (() => {}) as Accessor<typeof initialControlPositions>,
-  setControlPositions: (() => {}) as Setter<typeof initialControlPositions>,
-  update: (_newColor: Color) => {},
-  updateControlPositions: () => {},
-});
+export type ColorPickerContext = {
+  format: Accessor<SupportedFormat>;
+  color: Accessor<Color>;
+  setColor: Setter<Color>;
+  locale: Accessor<LanguagePack>;
+  drag: Accessor<HTMLElement | undefined>;
+  setDrag: Setter<HTMLElement | undefined>;
+  value: Accessor<string>;
+  setValue: Setter<string>;
+  controlPositions: Accessor<typeof initialControlPositions>;
+  setControlPositions: Setter<typeof initialControlPositions>;
+  update: (_newColor: Color) => void;
+  updateControlPositions: () => void;
+};
+
+export const PickerContext = createContext({} as ColorPickerContext);
 
 export const usePickerContext = () => useContext(PickerContext);

@@ -28,5 +28,5 @@ export const languagePacks: Record<SupportedLanguage, LanguagePack> = {
 };
 
 export const getLanguageStrings = (lang?: SupportedLanguage) => {
-  return languagePacks[lang || 'en'];
+  return languagePacks[lang || /* istanbul ignore next @preserve */ 'en'];
 };

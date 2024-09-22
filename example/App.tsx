@@ -48,10 +48,10 @@ const App = () => {
     }
   });
   const onChange = (color: string) => {
-    const newColor = new Color(color);
-    const newColor90 = new Color(color).spin(90);
-    const newColor180 = new Color(color).spin(180);
-    const newColor270 = new Color(color).spin(270);
+    const newColor = new Color(color, format());
+    const newColor90 = new Color(color, format()).spin(90);
+    const newColor180 = new Color(color, format()).spin(180);
+    const newColor270 = new Color(color, format()).spin(270);
     setInstanceColor(color);
     document.documentElement.style.setProperty('--color', newColor.toRgbString());
     document.documentElement.style.setProperty('--color90', newColor90.toRgbString());

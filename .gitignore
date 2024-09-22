@@ -4,3 +4,5 @@ dist
 example/dist
 experiments
 docs
+coverage
+test/__screenshots__

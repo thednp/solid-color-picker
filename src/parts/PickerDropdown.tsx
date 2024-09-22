@@ -1,6 +1,6 @@
 import Color from '@thednp/color';
 import { keyArrowUp, keyArrowDown, keyArrowLeft, keyArrowRight, getBoundingClientRect, on, off } from '@thednp/shorty';
-import { Component, createComponent, createEffect, createSignal, onCleanup, startTransition, Suspense } from 'solid-js';
+import { Component, createComponent, createEffect, createSignal, JSX, onCleanup, Suspense } from 'solid-js';
 import type { ControlProps, PickerProps } from '../types/types';
 import { usePickerContext } from './ColorPickerContext';
 import offsetLength from '../util/offsetLength';
@@ -26,9 +26,9 @@ const ColorControls: Component<ControlProps> = props => {
   const alpha = () => 1 - controlPositions().c3y / offsetLength();
   const fill = () => {
     return new Color({
-      h: hue(),
-      s: 1,
-      l: 0.5,
+      h: hue() * 360,
+      s: 100,
+      l: 50,
       a: alpha(),
     });
   };
@@ -52,7 +52,7 @@ const ColorControls: Component<ControlProps> = props => {
     let colorName = 'black';
 
     // determine color appearance
-    /* istanbul ignore else */
+    /* istanbul ignore else @preserve */
     if (lightness === 100 && saturation === 0) {
       colorName = locale().white;
     } else if (lightness === 0) {
@@ -85,21 +85,22 @@ const ColorControls: Component<ControlProps> = props => {
     }
     return colorName;
   };
-  const pointerDown = (e: PointerEvent & { target: Node; currentTarget: HTMLElement }) => {
+  const pointerDown: JSX.EventHandler<HTMLDivElement, PointerEvent> = e => {
+    // istanbul ignore next @preserve
     if (e.button !== 0) return;
 
     const { currentTarget, target, pageX, pageY } = e;
     const elements = [...controlsParentRef.children] as [HTMLElement, HTMLElement, HTMLElement];
     const [visual] = [...currentTarget.children] as [HTMLElement, HTMLElement];
 
-    const { left, top } = getBoundingClientRect(visual as HTMLDivElement);
+    const { left, top } = getBoundingClientRect(visual);
     const { documentElement } = document;
     const offsetX = pageX - documentElement.scrollLeft - left;
     const offsetY = pageY - documentElement.scrollTop - top;
 
     setDrag(visual);
 
-    /* istanbul ignore else */
+    /* istanbul ignore else @preserve */
     if (elements[0].contains(target)) {
       changeControl1(offsetX, offsetY);
     } else if (elements[1].contains(target)) {
@@ -110,8 +111,9 @@ const ColorControls: Component<ControlProps> = props => {
     e.preventDefault();
   };
 
-  const pointerMove = (e: PointerEvent): void => {
+  const pointerMove: JSX.EventHandler<HTMLDivElement, PointerEvent> = (e): void => {
     const { pageX, pageY } = e;
+    // istanbul ignore next @preserve
     if (!drag()) return;
 
     const elements = [...controlsParentRef.children] as [HTMLElement, HTMLElement, HTMLElement];
@@ -120,18 +122,18 @@ const ColorControls: Component<ControlProps> = props => {
     const offsetX = pageX - documentElement.scrollLeft - controlRect.left;
     const offsetY = pageY - documentElement.scrollTop - controlRect.top;
 
-    if (elements[0].contains(drag() as Node)) {
+    if (elements[0].contains(drag()!)) {
       changeControl1(offsetX, offsetY);
-    } else if (elements[1].contains(drag() as Node)) {
+    } else if (elements[1].contains(drag()!)) {
       changeControl2(offsetY);
-    } else if (elements[2].contains(drag() as Node)) {
+    } else if (elements[2].contains(drag()!)) {
       changeAlpha(offsetY);
     }
   };
-  const handleScroll = (e: Event) => {
+  const handleScroll: JSX.EventHandler<HTMLDivElement, Event> = e => {
     const { activeElement } = document;
 
-    /* istanbul ignore next */
+    /* istanbul ignore next @preserve */
     if (
       (['pointermove', 'touchmove'].includes(e.type) && drag()) ||
       (activeElement && controlsParentRef.contains(activeElement))
@@ -140,7 +142,7 @@ const ColorControls: Component<ControlProps> = props => {
       e.preventDefault();
     }
   };
-  const handleKnobs = (e: Event & { code: string; target: Node }) => {
+  const handleKnobs: JSX.EventHandler<HTMLDivElement, KeyboardEvent> = e => {
     const { target, code } = e;
 
     // only react to arrow buttons
@@ -153,43 +155,30 @@ const ColorControls: Component<ControlProps> = props => {
      */
     const { activeElement } = document;
     const yRatio = offsetLength() / 360;
+    const prevControlPositions = controlPositions();
 
-    /* istanbul ignore else */
+    /* istanbul ignore else @preserve */
     if (activeElement === target) {
-      /* istanbul ignore else */
+      /* istanbul ignore else @preserve */
       if (elements[0].contains(target)) {
         const xRatio = offsetLength() / 100;
 
-        /* istanbul ignore else */
+        /* istanbul ignore else @preserve */
         if ([keyArrowLeft, keyArrowRight].includes(code)) {
-          setControlPositions(prev => {
-            const c1x = prev.c1x + (code === keyArrowRight ? xRatio : -xRatio);
-            changeControl1(c1x, prev.c1y);
-            return { ...prev, c1x };
-          });
+          const c1x = prevControlPositions.c1x + (code === keyArrowRight ? xRatio : -xRatio);
+          changeControl1(c1x, prevControlPositions.c1y);
         } else if ([keyArrowUp, keyArrowDown].includes(code)) {
-          setControlPositions(prev => {
-            const c1y = prev.c1y + (code === keyArrowDown ? yRatio : -yRatio);
-            changeControl1(prev.c1x, c1y);
-            return { ...prev, c1y };
-          });
+          const c1y = prevControlPositions.c1y + (code === keyArrowDown ? yRatio : -yRatio);
+          changeControl1(prevControlPositions.c1x, c1y);
         }
 
         // changeControl1(controlPositions().c1x, controlPositions().c1y);
       } else if (elements[1].contains(target)) {
-        setControlPositions(prev => {
-          const c2y = prev.c2y + ([keyArrowDown, keyArrowRight].includes(code) ? yRatio : -yRatio);
-          changeControl2(c2y);
-
-          return { ...prev, c2y };
-        });
+        const c2y = prevControlPositions.c2y + ([keyArrowDown, keyArrowRight].includes(code) ? yRatio : -yRatio);
+        changeControl2(c2y);
       } else if (elements[2].contains(target)) {
-        setControlPositions(prev => {
-          const c3y = prev.c3y + ([keyArrowDown, keyArrowRight].includes(code) ? yRatio : -yRatio);
-          changeAlpha(c3y);
-
-          return { ...prev, c3y };
-        });
+        const c3y = prevControlPositions.c3y + ([keyArrowDown, keyArrowRight].includes(code) ? yRatio : -yRatio);
+        changeAlpha(c3y);
       }
       handleScroll(e);
     }
@@ -204,17 +193,18 @@ const ColorControls: Component<ControlProps> = props => {
     if (Y > offsetLength()) offsetY = offsetLength();
     else if (Y >= 0) offsetY = Y;
 
-    const hue = controlPositions().c2y / offsetLength();
+    const prevControlPositions = controlPositions();
+    const hue = prevControlPositions.c2y / offsetLength();
     const saturation = offsetX / offsetLength();
     const lightness = 1 - offsetY / offsetLength();
-    const alpha = 1 - controlPositions().c3y / offsetLength();
+    const alpha = 1 - prevControlPositions.c3y / offsetLength();
 
     // new color
     const newColor = new Color(
       {
-        h: hue,
-        s: saturation,
-        v: lightness,
+        h: hue * 360,
+        s: saturation * 100,
+        v: lightness * 100,
         a: alpha,
       },
       format(),
@@ -236,17 +226,18 @@ const ColorControls: Component<ControlProps> = props => {
     if (Y > offsetLength()) offsetY = offsetLength();
     else if (Y >= 0) offsetY = Y;
 
+    const prevControlPositions = controlPositions();
     const hue = offsetY / offsetLength();
-    const saturation = controlPositions().c1x / offsetLength();
-    const lightness = 1 - controlPositions().c1y / offsetLength();
-    const alpha = 1 - controlPositions().c3y / offsetLength();
+    const saturation = prevControlPositions.c1x / offsetLength();
+    const lightness = 1 - prevControlPositions.c1y / offsetLength();
+    const alpha = 1 - prevControlPositions.c3y / offsetLength();
 
     // new color
     const newColor = new Color(
       {
-        h: hue,
-        s: saturation,
-        v: lightness,
+        h: hue * 360,
+        s: saturation * 100,
+        v: lightness * 100,
         a: alpha,
       },
       format(),
@@ -353,13 +344,12 @@ const ColorControls: Component<ControlProps> = props => {
 };
 
 const RGBForm: Component<PickerProps> = props => {
-  const { locale, format, color, update, controlPositions } = usePickerContext();
-  const alpha = () => 1 - controlPositions().c3y / offsetLength();
+  const { locale, format, color, update } = usePickerContext();
   const { id } = props;
   const rgb = () => {
     let { r, g, b, a } = color().toRgb();
     [r, g, b] = [r, g, b].map(roundPart) as [number, number, number];
-    a = roundPart(alpha() * 100);
+    a = roundPart(a * 100);
     return { r, g, b, a };
   };
   const stringValue = () => {
@@ -367,14 +357,14 @@ const RGBForm: Component<PickerProps> = props => {
     return `${format().toUpperCase()}: ${r} ${g} ${b}`;
   };
 
-  const changeRed = (e: Event) =>
-    update(new Color({ ...color(), r: Number((e.currentTarget as HTMLInputElement).value) }, format()));
-  const changeGreen = (e: Event) =>
-    update(new Color({ ...color(), g: Number((e.currentTarget as HTMLInputElement).value) }, format()));
-  const changeBlue = (e: Event) =>
-    update(new Color({ ...color(), b: Number((e.currentTarget as HTMLInputElement).value) }, format()));
-  const changeAlpha = (e: Event) =>
-    update(new Color({ ...color(), a: Number((e.currentTarget as HTMLInputElement).value) / 100 }, format()));
+  const changeRed: JSX.ChangeEventHandler<HTMLInputElement, Event> = e =>
+    update(new Color({ ...rgb(), r: Number(e.currentTarget.value) }, format()));
+  const changeGreen: JSX.ChangeEventHandler<HTMLInputElement, Event> = e =>
+    update(new Color({ ...rgb(), g: Number(e.currentTarget.value) }, format()));
+  const changeBlue: JSX.ChangeEventHandler<HTMLInputElement, Event> = e =>
+    update(new Color({ ...rgb(), b: Number(e.currentTarget.value) }, format()));
+  const changeAlpha: JSX.ChangeEventHandler<HTMLInputElement, Event> = e =>
+    update(new Color({ ...rgb(), a: Number(e.currentTarget.value) }, format()));
 
   return (
     <div class={`color-dropdown picker${props.class()}`} role="group" id={`${id}-picker`} ref={props.ref}>
@@ -450,13 +440,12 @@ const RGBForm: Component<PickerProps> = props => {
 };
 
 const HSLForm: Component<PickerProps> = props => {
-  const { format, locale, color, update, controlPositions } = usePickerContext();
-  const alpha = () => 1 - controlPositions().c3y / offsetLength();
+  const { format, locale, color, update } = usePickerContext();
   const { id } = props;
   const hsl = () => {
     let { h, s, l, a } = color().toHsl();
     [h, s, l] = [h, s, l].map((cl, i) => roundPart(cl * (i ? 100 : 360))) as [number, number, number];
-    a = roundPart(alpha() * 100);
+    a = roundPart(a * 100);
     return { h, s, l, a };
   };
   const stringValue = () => {
@@ -464,14 +453,14 @@ const HSLForm: Component<PickerProps> = props => {
     return `${format().toUpperCase()}: ${h}° ${s}% ${l}%`;
   };
 
-  const changeHue = (e: Event) =>
-    update(new Color({ ...color(), h: Number((e.target as HTMLInputElement).value) }, format()));
-  const changeSaturation = (e: Event) =>
-    update(new Color({ ...color(), s: Number((e.target as HTMLInputElement).value) }, format()));
-  const changeLightness = (e: Event) =>
-    update(new Color({ ...color(), l: Number((e.target as HTMLInputElement).value) }, format()));
-  const changeAlpha = (e: Event) =>
-    update(new Color({ ...color(), a: Number((e.target as HTMLInputElement).value) / 100 }, format()));
+  const changeHue: JSX.ChangeEventHandler<HTMLInputElement, Event> = e =>
+    update(new Color({ ...hsl(), h: Number(e.currentTarget.value) }, format()));
+  const changeSaturation: JSX.ChangeEventHandler<HTMLInputElement, Event> = e =>
+    update(new Color({ ...hsl(), s: Number(e.currentTarget.value) }, format()));
+  const changeLightness: JSX.ChangeEventHandler<HTMLInputElement, Event> = e =>
+    update(new Color({ ...hsl(), l: Number(e.currentTarget.value) }, format()));
+  const changeAlpha: JSX.ChangeEventHandler<HTMLInputElement, Event> = e =>
+    update(new Color({ ...hsl(), a: Number(e.currentTarget.value) / 100 }, format()));
 
   return (
     <div class={`color-dropdown picker${props.class()}`} role="group" id={`${id}-picker`} ref={props.ref}>
@@ -548,13 +537,12 @@ const HSLForm: Component<PickerProps> = props => {
 };
 
 const HWBForm: Component<PickerProps> = props => {
-  const { locale, format, color, update, controlPositions } = usePickerContext();
-  const alpha = () => 1 - controlPositions().c3y / offsetLength();
+  const { locale, format, color, update } = usePickerContext();
   const { id } = props;
   const hwb = () => {
     let { h, w, b, a } = color().toHwb();
     [h, w, b] = [h, w, b].map((cl, i) => roundPart(cl * (i ? 100 : 360))) as [number, number, number];
-    a = roundPart(alpha() * 100);
+    a = roundPart(a * 100);
     return { h, w, b, a };
   };
   const stringValue = () => {
@@ -562,14 +550,14 @@ const HWBForm: Component<PickerProps> = props => {
     return `${format().toUpperCase()}: ${h}° ${w}% ${b}%`;
   };
 
-  const changeHue = (e: Event) =>
-    update(new Color({ ...color(), h: Number((e.currentTarget as HTMLInputElement).value) }, format()));
-  const changeWhiteness = (e: Event) =>
-    update(new Color({ ...color(), w: Number((e.currentTarget as HTMLInputElement).value) }, format()));
-  const changeBlackness = (e: Event) =>
-    update(new Color({ ...color(), b: Number((e.currentTarget as HTMLInputElement).value) }, format()));
-  const changeAlpha = (e: Event) =>
-    update(new Color({ ...color(), a: Number((e.currentTarget as HTMLInputElement).value) / 100 }, format()));
+  const changeHue: JSX.ChangeEventHandler<HTMLInputElement, Event> = e =>
+    update(new Color({ ...hwb(), h: Number(e.currentTarget.value) }, format()));
+  const changeWhiteness: JSX.ChangeEventHandler<HTMLInputElement, Event> = e =>
+    update(new Color({ ...hwb(), w: Number(e.currentTarget.value) }, format()));
+  const changeBlackness: JSX.ChangeEventHandler<HTMLInputElement, Event> = e =>
+    update(new Color({ ...hwb(), b: Number(e.currentTarget.value) }, format()));
+  const changeAlpha: JSX.ChangeEventHandler<HTMLInputElement, Event> = e =>
+    update(new Color({ ...hwb(), a: Number(e.currentTarget.value) / 100 }, format()));
 
   return (
     <div class={`color-dropdown picker${props.class()}`} role="group" id={`${id}-picker`} ref={props.ref}>
@@ -650,9 +638,10 @@ const HEXForm: Component<PickerProps> = props => {
   const { id } = props;
   const hex = () => color().toHex();
   const stringValue = () => `${locale().hexLabel}: ${hex().toUpperCase()}`;
-  const changeHex = (e: Event & { currentTarget: HTMLInputElement }) => {
+  const changeHex: JSX.EventHandler<HTMLInputElement, Event> = e => {
     const newValue = e.currentTarget.value;
     const newColor = new Color(newValue, format());
+    // istanbul ignore else @preserve
     if (newValue && newValue.length && newColor.isValid) {
       update(newColor);
     }
@@ -692,11 +681,7 @@ const PickerDropdown: Component<PickerProps> = props => {
   const { format } = usePickerContext();
   const getPart = () => createComponent(PartSelection[format()], props);
   const [part, setPart] = createSignal(getPart());
-  createEffect(() => {
-    startTransition(() => {
-      setPart(getPart());
-    });
-  });
+  createEffect(() => setPart(getPart()));
   return <Suspense>{part()}</Suspense>;
 };
 

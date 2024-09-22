@@ -1,6 +1,6 @@
 {
   "name": "@thednp/solid-color-picker",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "🎨 Modern Color Picker for SolidJS",
   "keywords": [
     "solid",
@@ -52,13 +52,17 @@
     }
   },
   "scripts": {
+    "pre-test": "pnpm clean-coverage",
+    "test": "pnpm pre-test && vitest --config vitest.config.ts",
+    "test-ui": "pnpm pre-test && vitest --config vitest.config-ui.ts",
+    "clean-coverage": "rm -rf coverage .nyc_output",
     "dev": "vite serve example",
     "build:example": "pnpm format && pnpm lint && vite build example",
     "build:docs": "pnpm lint && pnpm format && vite build example --config example/vite.config.docs.ts",
     "format": "prettier -w \"src/**/*.{js,ts,json,css,tsx,jsx}\" \"example/**/*.{js,ts,json,css,tsx,jsx}\"",
-    "badges": "npx -p dependency-version-badge update-badge solid-js typescript eslint prettier vite",
+    "badges": "npx -p dependency-version-badge update-badge solid-js typescript eslint prettier vitest vite",
     "build": "tsup",
-    "prepublishOnly": "pnpm up && npm update && pnpm format && pnpm lint && tsup && pnpm badges",
+    "prepublishOnly": "pnpm up && pnpm format && pnpm lint && tsup && pnpm badges",
     "lint": "pnpm lint:types && pnpm lint:code",
     "lint:code": "eslint --max-warnings 0 src/**/*.{ts,tsx}",
     "lint:types": "tsc --noEmit",
@@ -70,27 +74,34 @@
     "solid-js": "^1.6.0"
   },
   "devDependencies": {
-    "@types/node": "^22.5.0",
+    "@testing-library/jest-dom": "^6.5.0",
+    "@types/node": "^22.5.5",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "@typescript-eslint/parser": "^6.21.0",
+    "@vitest/browser": "^2.1.1",
+    "@vitest/coverage-istanbul": "^2.1.1",
+    "@vitest/ui": "^2.1.1",
     "concurrently": "^8.2.2",
-    "eslint": "^8.57.0",
+    "eslint": "^8.57.1",
     "eslint-plugin-eslint-comments": "^3.2.0",
     "eslint-plugin-no-only-tests": "^3.3.0",
     "gh-pages": "^6.1.1",
+    "jsdom": "^25.0.1",
+    "playwright": "^1.47.2",
     "prettier": "^3.3.3",
-    "solid-js": "^1.8.21",
-    "tsup": "^8.2.4",
+    "solid-js": "^1.8.22",
+    "tsup": "^8.3.0",
     "tsup-preset-solid": "^2.2.0",
-    "typescript": "^5.5.4",
-    "vite": "^5.4.2",
+    "typescript": "^5.6.2",
+    "vite": "^5.4.7",
     "vite-plugin-solid": "^2.10.2",
-    "vite-plugin-solid-svg": "^0.8.1"
+    "vite-plugin-solid-svg": "^0.8.1",
+    "vitest": "^2.1.1"
   },
   "dependencies": {
-    "@thednp/color": "^1.0.9",
-    "@thednp/color-picker": "^2.0.1",
-    "@thednp/shorty": "^2.0.3"
+    "@thednp/color": "^1.0.11",
+    "@thednp/color-picker": "^2.0.2",
+    "@thednp/shorty": "^2.0.4"
   },
   "packageManager": "pnpm@8.6.12",
   "engines": {

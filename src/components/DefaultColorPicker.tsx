@@ -12,7 +12,7 @@ import {
   off,
 } from '@thednp/shorty';
 
-import { type Component, JSX, createSignal, createEffect, onCleanup, startTransition, createMemo } from 'solid-js';
+import { type Component, JSX, createSignal, createEffect, onCleanup, createMemo, on as onState } from 'solid-js';
 import type { ColorPickerProps } from '../types/types';
 import PickerDropdown from '../parts/PickerDropdown';
 import MenuDropdown from '../parts/MenuDropdown';
@@ -20,7 +20,7 @@ import { PickerContext } from '../parts/ColorPickerContext';
 import initialControlPositions from '../util/initialControlPositions';
 import offsetLength from '../util/offsetLength';
 import { languagePacks, getLanguageStrings } from '../locales/getLanguageStrings';
-import Arrow from '../assets/arrow.svg';
+import defaultValues from '../util/defaultValues';
 
 // import default color picker style
 import './color-picker.css';
@@ -29,10 +29,10 @@ let pickerCount = 0;
 
 const DefaultColorPicker: Component<ColorPickerProps> = props => {
   const id = props.id ? props.id : `color-picker-${pickerCount}`;
-  const lang = () => props.lang || 'en';
-  const theme = () => props.theme || 'dark';
-  const format = () => props.format || 'rgb';
-  const initValue = () => props.value || 'red';
+  const lang = () => props.lang || defaultValues.lang;
+  const theme = () => props.theme || defaultValues.theme;
+  const format = () => props.format || defaultValues.format;
+  const initValue = () => props.value || defaultValues.value;
   const colorPresets = () => props.colorPresets;
   const colorKeywords = () => props.colorKeywords;
   const placeholder = () =>
@@ -93,19 +93,20 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
   const showMenu = () => {
     setOpen(menuDropdown);
     setPosition('bottom');
-    reflow(menuDropdown as HTMLElement);
-    startTransition(() => {
-      updateDropdownPosition();
+    setTimeout(() => {
       setMenuShown(true);
+      reflow(menuDropdown);
+      updateDropdownPosition();
       setPickerShown(false);
-    });
+    }, 17);
   };
   const hideMenu = () => {
     setMenuShown(false);
-    reflow(menuDropdown as HTMLElement);
-    emulateTransitionEnd(menuDropdown as HTMLElement, hideTransitionEnd);
+    reflow(menuDropdown);
+    emulateTransitionEnd(menuDropdown, hideTransitionEnd);
   };
   const hideDropdown = () => {
+    // istanbul ignore else @preserve
     if (pickerShown()) hidePicker();
     else if (menuShown()) hideMenu();
   };
@@ -119,14 +120,14 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
   const showPicker = () => {
     setOpen(pickerDropdown);
     setPosition('bottom');
-    reflow(pickerDropdown);
     updateControlPositions();
-    startTransition(() => {
-      updateDropdownPosition();
+    setTimeout(() => {
       setPickerShown(true);
+      reflow(pickerDropdown);
+      updateDropdownPosition();
       setMenuShown(false);
       input.focus();
-    });
+    }, 17);
   };
   const hidePicker = () => {
     setPickerShown(false);
@@ -136,18 +137,21 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
 
   /** Event Listeners */
   const handleBlur: JSX.FocusEventHandlerUnion<HTMLDivElement, FocusEvent> = ({ currentTarget, relatedTarget }) => {
+    // istanbul ignore next @preserve
     if (relatedTarget && !currentTarget.contains(relatedTarget as HTMLElement)) {
       hideDropdown();
     }
   };
 
   const handleDismiss: KeyboardEventHandler<Document> = e => {
+    // istanbul ignore else @preserve
     if (open() && e.code === 'Escape') hideDropdown();
   };
 
   const pointerUp: PointerEventHandler = e => {
     const selection = document.getSelection();
 
+    // istanbul ignore else @preserve
     if (!drag() && (!selection || !selection.toString().length) && !mainRef.contains(e.target as Node)) {
       hideDropdown();
     }
@@ -160,6 +164,7 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
     const { top, bottom } = elRect;
     const { offsetHeight: elHeight } = input;
     const { clientHeight } = document.documentElement;
+    // istanbul ignore next @preserve
     if (!open()) return;
     const { offsetHeight: dropHeight } = open() as HTMLElement;
     const distanceBottom = clientHeight - bottom;
@@ -175,16 +180,13 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
   };
 
   const updateControlPositions = () => {
-    const hsv = color().toHsv();
-    const alpha = color().a;
-    const hue = hsv.h;
-    const saturation = hsv.s;
-    const lightness = hsv.v;
+    const { h, s, v } = color().toHsv();
+    const a = color().a;
     setControlPositions({
-      c1x: saturation * offsetLength(),
-      c1y: (1 - lightness) * offsetLength(),
-      c2y: hue * offsetLength(),
-      c3y: (1 - alpha) * offsetLength(),
+      c1x: s * offsetLength(),
+      c1y: (1 - v) * offsetLength(),
+      c2y: h * offsetLength(),
+      c3y: (1 - a) * offsetLength(),
     });
   };
 
@@ -201,15 +203,19 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
     setPosition('');
     setOpen();
     focus(input.previousElementSibling as HTMLElement);
-
     // reset value if not changed
     setValue(color().toString());
   };
   const handleChange = (e: Event & { currentTarget: HTMLInputElement }) => {
-    const newValue = e.currentTarget.value;
+    let newValue = e.currentTarget.value;
+    setValue(newValue);
+    if (Color.isNonColor(newValue)) {
+      newValue = newValue === 'transparent' ? 'rgba(0,0,0,0)' : 'rgb(0,0,0)';
+    }
     const newColor = new Color(newValue, format());
 
-    if (newValue && newValue.length && newColor.isValid) {
+    // istanbul ignore else @preserve
+    if (newValue.length && newColor.isValid) {
       update(newColor);
     }
   };
@@ -217,6 +223,7 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
   const update = (newColor: Color) => {
     setColor(newColor);
     setValue(newColor.toString());
+    updateControlPositions();
   };
 
   createEffect(() => {
@@ -225,18 +232,23 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
     } else {
       toggleGlobalEvents();
     }
-
     onCleanup(toggleGlobalEvents);
   });
 
-  createMemo(() => {
-    if (typeof props.onChange === 'function') {
-      props.onChange(value());
-    }
-  });
-  createMemo(() => {
-    update(new Color(value(), format()));
-  });
+  createEffect(
+    onState(value, v => {
+      // istanbul ignore else @preserve
+      if (typeof props.onChange === 'function') {
+        props.onChange(v);
+      }
+    }),
+  );
+
+  createEffect(
+    onState(format, f => {
+      update(new Color(value(), f));
+    }),
+  );
 
   return (
     <PickerContext.Provider
@@ -288,19 +300,10 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
           ref={menuDropdown}
           colorPresets={colorPresets}
           colorKeywords={colorKeywords}
-        >
-          <button
-            class="menu-toggle btn-appearance"
-            type="button"
-            tabIndex={menuShown() || pickerShown() ? 0 : -1}
-            aria-expanded={menuShown()}
-            aria-haspopup={true}
-            onClick={toggleMenu}
-          >
-            <span class="v-hidden">{locale().toggleLabel}</span>
-            <Arrow />
-          </button>
-        </MenuDropdown>
+          expanded={menuShown() || pickerShown()}
+          locale={locale}
+          toggleMenu={toggleMenu}
+        ></MenuDropdown>
       </div>
     </PickerContext.Provider>
   );
