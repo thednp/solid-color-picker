@@ -1,10 +1,9 @@
 import { defineConfig } from "vitest/config";
 import solid from "vite-plugin-solid";
-import solidSVG from 'vite-plugin-solid-svg';
 import path from "node:path";
 
 export default defineConfig({
-  plugins: [solid(), solidSVG({ svgo: { enabled: false }, defaultAsComponent: true })],
+  plugins: [solid()],
   resolve: {
     alias: {
       "~": path.resolve(__dirname, "src"),

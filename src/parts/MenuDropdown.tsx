@@ -15,13 +15,13 @@ import ColorPicker from '@thednp/color-picker';
 import { type Component, type JSX, Accessor, For, Show, splitProps } from 'solid-js';
 import type { ColorKeywords, ColorPresets, KeyProps, MenuProps, PresetsProps } from '../types/types';
 import { usePickerContext } from './ColorPickerContext';
-import Arrow from '../assets/arrow.svg';
+import Arrow from '../assets/Arrow';
 
 const { ColorPalette } = ColorPicker;
 
 const PresetsMenu: Component<PresetsProps> = props => {
   const [local, other] = splitProps(props, ['colorPresets']);
-  const { locale, value, update, format } = usePickerContext();
+  const { locale, value, setColor, format } = usePickerContext();
   const colors = () =>
     new ColorPalette(
       local.colorPresets().hue,
@@ -80,7 +80,7 @@ const PresetsMenu: Component<PresetsProps> = props => {
               aria-selected={isActive()}
               class={getClass()}
               data-value={newValue()}
-              onClick={() => update(newColor())}
+              onClick={() => setColor(newColor())}
               style={{ 'background-color': color.toRgbString() }}
             >
               {newValue()}
@@ -94,7 +94,7 @@ const PresetsMenu: Component<PresetsProps> = props => {
 
 const KeywordsMenu: Component<KeyProps> = props => {
   const [local, other] = splitProps(props, ['colorKeywords']);
-  const { locale, value, update, format } = usePickerContext();
+  const { locale, value, setColor, format } = usePickerContext();
 
   return (
     <ul class="color-defaults" role="listbox" aria-label={locale().defaultsLabel} onKeyDown={other.keyHandler}>
@@ -106,7 +106,7 @@ const KeywordsMenu: Component<KeyProps> = props => {
           return (
             <li
               class={className()}
-              onClick={() => update(new Color(val, format()))}
+              onClick={() => setColor(new Color(val, format()))}
               tabIndex={0}
               role="option"
               data-value={val}
@@ -137,7 +137,7 @@ const MenuDropdown: Component<MenuProps> = props => {
     const { previousElementSibling, nextElementSibling, parentElement } = target;
     const isColorOptionsMenu = hasClass(currentTarget, 'color-options');
     const allSiblings = [...parentElement.children] as (EventTarget & HTMLElement)[];
-    const columnsCount = isColorOptionsMenu && Number(getElementStyle(parentElement, '--grid-fit') || 0);
+    const columnsCount = (isColorOptionsMenu && Number(getElementStyle(parentElement, '--grid-fit') || 0)) || 0;
     const currentIndex = allSiblings.indexOf(target as HTMLElement);
     // @eslint-ignore
     const previousElement = currentIndex > -1 && columnsCount && allSiblings[currentIndex - columnsCount];

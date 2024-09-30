@@ -8,8 +8,18 @@ import offsetLength from '../util/offsetLength';
 const { roundPart } = Color;
 
 const ColorControls: Component<ControlProps> = props => {
-  const { drag, setDrag, color, setColor, locale, setValue, format, controlPositions, setControlPositions } =
-    usePickerContext();
+  const {
+    drag,
+    setDrag,
+    color,
+    setColor,
+    locale,
+    setValue,
+    setInputValue,
+    format,
+    controlPositions,
+    setControlPositions,
+  } = usePickerContext();
   let controlsParentRef!: HTMLDivElement;
   const { stringValue } = props;
   const hueGradient = `linear-gradient(
@@ -146,6 +156,7 @@ const ColorControls: Component<ControlProps> = props => {
     const { target, code } = e;
 
     // only react to arrow buttons
+    // istanbul ignore else @preserve
     if (![keyArrowUp, keyArrowDown, keyArrowLeft, keyArrowRight].includes(code)) return;
     e.preventDefault();
 
@@ -212,6 +223,7 @@ const ColorControls: Component<ControlProps> = props => {
     const newValue = newColor.toString();
 
     setValue(newValue);
+    setInputValue(newValue);
     setColor(newColor);
     setControlPositions(prev => ({
       ...prev,
@@ -245,6 +257,7 @@ const ColorControls: Component<ControlProps> = props => {
 
     const newValue = newColor.toString();
     setValue(newValue);
+    setInputValue(newValue);
     setColor(newColor);
     setControlPositions(prev => ({
       ...prev,
@@ -264,6 +277,7 @@ const ColorControls: Component<ControlProps> = props => {
 
     const newValue = newColor.toString();
     setValue(newValue);
+    setInputValue(newValue);
     setColor(newColor);
     setControlPositions(prev => ({
       ...prev,
@@ -344,7 +358,7 @@ const ColorControls: Component<ControlProps> = props => {
 };
 
 const RGBForm: Component<PickerProps> = props => {
-  const { locale, format, color, update } = usePickerContext();
+  const { locale, format, color, setColor } = usePickerContext();
   const { id } = props;
   const rgb = () => {
     let { r, g, b, a } = color().toRgb();
@@ -358,13 +372,13 @@ const RGBForm: Component<PickerProps> = props => {
   };
 
   const changeRed: JSX.ChangeEventHandler<HTMLInputElement, Event> = e =>
-    update(new Color({ ...rgb(), r: Number(e.currentTarget.value) }, format()));
+    setColor(new Color({ ...rgb(), r: Number(e.currentTarget.value) }, format()));
   const changeGreen: JSX.ChangeEventHandler<HTMLInputElement, Event> = e =>
-    update(new Color({ ...rgb(), g: Number(e.currentTarget.value) }, format()));
+    setColor(new Color({ ...rgb(), g: Number(e.currentTarget.value) }, format()));
   const changeBlue: JSX.ChangeEventHandler<HTMLInputElement, Event> = e =>
-    update(new Color({ ...rgb(), b: Number(e.currentTarget.value) }, format()));
+    setColor(new Color({ ...rgb(), b: Number(e.currentTarget.value) }, format()));
   const changeAlpha: JSX.ChangeEventHandler<HTMLInputElement, Event> = e =>
-    update(new Color({ ...rgb(), a: Number(e.currentTarget.value) }, format()));
+    setColor(new Color({ ...rgb(), a: Number(e.currentTarget.value) / 100 }, format()));
 
   return (
     <div class={`color-dropdown picker${props.class()}`} role="group" id={`${id}-picker`} ref={props.ref}>
@@ -440,7 +454,7 @@ const RGBForm: Component<PickerProps> = props => {
 };
 
 const HSLForm: Component<PickerProps> = props => {
-  const { format, locale, color, update } = usePickerContext();
+  const { format, locale, color, setColor } = usePickerContext();
   const { id } = props;
   const hsl = () => {
     let { h, s, l, a } = color().toHsl();
@@ -454,13 +468,13 @@ const HSLForm: Component<PickerProps> = props => {
   };
 
   const changeHue: JSX.ChangeEventHandler<HTMLInputElement, Event> = e =>
-    update(new Color({ ...hsl(), h: Number(e.currentTarget.value) }, format()));
+    setColor(new Color({ ...hsl(), h: Number(e.currentTarget.value) }, format()));
   const changeSaturation: JSX.ChangeEventHandler<HTMLInputElement, Event> = e =>
-    update(new Color({ ...hsl(), s: Number(e.currentTarget.value) }, format()));
+    setColor(new Color({ ...hsl(), s: Number(e.currentTarget.value) }, format()));
   const changeLightness: JSX.ChangeEventHandler<HTMLInputElement, Event> = e =>
-    update(new Color({ ...hsl(), l: Number(e.currentTarget.value) }, format()));
+    setColor(new Color({ ...hsl(), l: Number(e.currentTarget.value) }, format()));
   const changeAlpha: JSX.ChangeEventHandler<HTMLInputElement, Event> = e =>
-    update(new Color({ ...hsl(), a: Number(e.currentTarget.value) / 100 }, format()));
+    setColor(new Color({ ...hsl(), a: Number(e.currentTarget.value) / 100 }, format()));
 
   return (
     <div class={`color-dropdown picker${props.class()}`} role="group" id={`${id}-picker`} ref={props.ref}>
@@ -537,7 +551,7 @@ const HSLForm: Component<PickerProps> = props => {
 };
 
 const HWBForm: Component<PickerProps> = props => {
-  const { locale, format, color, update } = usePickerContext();
+  const { locale, format, color, setColor } = usePickerContext();
   const { id } = props;
   const hwb = () => {
     let { h, w, b, a } = color().toHwb();
@@ -551,13 +565,13 @@ const HWBForm: Component<PickerProps> = props => {
   };
 
   const changeHue: JSX.ChangeEventHandler<HTMLInputElement, Event> = e =>
-    update(new Color({ ...hwb(), h: Number(e.currentTarget.value) }, format()));
+    setColor(new Color({ ...hwb(), h: Number(e.currentTarget.value) }, format()));
   const changeWhiteness: JSX.ChangeEventHandler<HTMLInputElement, Event> = e =>
-    update(new Color({ ...hwb(), w: Number(e.currentTarget.value) }, format()));
+    setColor(new Color({ ...hwb(), w: Number(e.currentTarget.value) }, format()));
   const changeBlackness: JSX.ChangeEventHandler<HTMLInputElement, Event> = e =>
-    update(new Color({ ...hwb(), b: Number(e.currentTarget.value) }, format()));
+    setColor(new Color({ ...hwb(), b: Number(e.currentTarget.value) }, format()));
   const changeAlpha: JSX.ChangeEventHandler<HTMLInputElement, Event> = e =>
-    update(new Color({ ...hwb(), a: Number(e.currentTarget.value) / 100 }, format()));
+    setColor(new Color({ ...hwb(), a: Number(e.currentTarget.value) / 100 }, format()));
 
   return (
     <div class={`color-dropdown picker${props.class()}`} role="group" id={`${id}-picker`} ref={props.ref}>
@@ -634,7 +648,7 @@ const HWBForm: Component<PickerProps> = props => {
 };
 
 const HEXForm: Component<PickerProps> = props => {
-  const { format, locale, color, update } = usePickerContext();
+  const { format, locale, color, setColor } = usePickerContext();
   const { id } = props;
   const hex = () => color().toHex();
   const stringValue = () => `${locale().hexLabel}: ${hex().toUpperCase()}`;
@@ -643,7 +657,7 @@ const HEXForm: Component<PickerProps> = props => {
     const newColor = new Color(newValue, format());
     // istanbul ignore else @preserve
     if (newValue && newValue.length && newColor.isValid) {
-      update(newColor);
+      setColor(newColor);
     }
   };
 

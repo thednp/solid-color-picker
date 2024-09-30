@@ -6,10 +6,10 @@ import {
   emulateTransitionEnd,
   ObjectAssign,
   ObjectKeys,
-  KeyboardEventHandler,
-  PointerEventHandler,
   on,
   off,
+  keyEscape,
+  keyEnter,
 } from '@thednp/shorty';
 
 import { type Component, JSX, createSignal, createEffect, onCleanup, createMemo, on as onState } from 'solid-js';
@@ -37,6 +37,7 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
   const colorKeywords = () => props.colorKeywords;
   const placeholder = () =>
     props.placeholder ? props.placeholder : locale().placeholder.replace(/%/g, format().toUpperCase());
+  const [inputValue, setInputValue] = createSignal(initValue());
   const [value, setValue] = createSignal(initValue());
   const [color, setColor] = createSignal(new Color(initValue(), format()));
   const [open, setOpen] = createSignal(undefined as HTMLDivElement | undefined);
@@ -138,21 +139,23 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
   /** Event Listeners */
   const handleBlur: JSX.FocusEventHandlerUnion<HTMLDivElement, FocusEvent> = ({ currentTarget, relatedTarget }) => {
     // istanbul ignore next @preserve
-    if (relatedTarget && !currentTarget.contains(relatedTarget as HTMLElement)) {
+    if (relatedTarget && !currentTarget.contains(relatedTarget as Node)) {
       hideDropdown();
     }
   };
 
-  const handleDismiss: KeyboardEventHandler<Document> = e => {
+  const handleDismiss: JSX.EventHandler<Document, KeyboardEvent> = e => {
     // istanbul ignore else @preserve
-    if (open() && e.code === 'Escape') hideDropdown();
+    if (open() && e.key === keyEscape) {
+      hideDropdown();
+    }
   };
 
-  const pointerUp: PointerEventHandler = e => {
+  const pointerUp: JSX.EventHandler<HTMLInputElement, KeyboardEvent> = e => {
     const selection = document.getSelection();
 
     // istanbul ignore else @preserve
-    if (!drag() && (!selection || !selection.toString().length) && !mainRef.contains(e.target as Node)) {
+    if (!drag() && (!selection || !selection.toString().length) && !mainRef.contains(e.target)) {
       hideDropdown();
     }
 
@@ -164,15 +167,16 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
     const { top, bottom } = elRect;
     const { offsetHeight: elHeight } = input;
     const { clientHeight } = document.documentElement;
+    const dropdown = open();
     // istanbul ignore next @preserve
-    if (!open()) return;
-    const { offsetHeight: dropHeight } = open() as HTMLElement;
+    if (!dropdown) return;
+    const { offsetHeight: dropHeight } = dropdown;
     const distanceBottom = clientHeight - bottom;
     const distanceTop = top;
     const bottomExceed = top + dropHeight + elHeight > clientHeight; // show
     const topExceed = top - dropHeight < 0; // show-top
 
-    if ((open() === pickerDropdown || !topExceed) && distanceBottom < distanceTop && bottomExceed) {
+    if ((!topExceed && bottomExceed) || distanceBottom < distanceTop) {
       setPosition('top');
     } else {
       setPosition('bottom');
@@ -193,7 +197,7 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
   const toggleGlobalEvents = (add?: boolean) => {
     const action = add ? on : off;
 
-    action(window, 'scroll', updateControlPositions);
+    action(window, 'scroll', updateDropdownPosition);
     action(window, 'resize', updateControlPositions);
     action(document, 'keyup', handleDismiss);
     action(document, 'pointerup', pointerUp);
@@ -202,28 +206,29 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
   const hideTransitionEnd = () => {
     setPosition('');
     setOpen();
-    focus(input.previousElementSibling as HTMLElement);
-    // reset value if not changed
-    setValue(color().toString());
-  };
-  const handleChange = (e: Event & { currentTarget: HTMLInputElement }) => {
-    let newValue = e.currentTarget.value;
-    setValue(newValue);
-    if (Color.isNonColor(newValue)) {
-      newValue = newValue === 'transparent' ? 'rgba(0,0,0,0)' : 'rgb(0,0,0)';
-    }
-    const newColor = new Color(newValue, format());
 
+    focus(input.previousElementSibling as HTMLButtonElement);
+    // reset value if not changed or invalid
+    // this should be used here for consistency
+    setInputValue(value());
+  };
+  const handleChange: JSX.EventHandler<HTMLInputElement, Event> = e => {
+    setInputValue(e.currentTarget.value);
+  };
+  const handleKeyUp: JSX.EventHandler<HTMLInputElement, KeyboardEvent> = e => {
     // istanbul ignore else @preserve
-    if (newValue.length && newColor.isValid) {
-      update(newColor);
+    if (keyEnter === e.key) {
+      let newValue = e.currentTarget.value;
+      // istanbul ignore else @preserve
+      if (Color.isNonColor(newValue)) {
+        newValue = newValue === 'transparent' ? 'rgba(0,0,0,0)' : /* istanbul ignore next @preserve */ 'rgb(0,0,0)';
+      }
+      const newColor = new Color(newValue, format());
+      // istanbul ignore else @preserve
+      if (newValue.length && newColor.isValid) {
+        setColor(newColor);
+      }
     }
-  };
-
-  const update = (newColor: Color) => {
-    setColor(newColor);
-    setValue(newColor.toString());
-    updateControlPositions();
   };
 
   createEffect(() => {
@@ -246,7 +251,16 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
 
   createEffect(
     onState(format, f => {
-      update(new Color(value(), f));
+      setColor(new Color(value(), f));
+    }),
+  );
+
+  createEffect(
+    onState(color, f => {
+      const newValue = f.toString();
+      setValue(newValue);
+      setInputValue(newValue);
+      updateControlPositions();
     }),
   );
 
@@ -257,6 +271,7 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
         locale,
         value,
         setValue,
+        setInputValue,
         color,
         setColor,
         drag,
@@ -264,7 +279,6 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
         controlPositions,
         setControlPositions,
         updateControlPositions,
-        update,
       }}
     >
       <div class={className()} lang={lang()} ref={mainRef} onBlur={handleBlur}>
@@ -283,14 +297,15 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
           name={id}
           id={id}
           class="color-preview btn-appearance"
-          autocomplete={'off'}
+          autocomplete="off"
           spellcheck={false}
           tabIndex={pickerShown() ? -1 : 0}
           placeholder={placeholder()}
-          value={value()}
+          value={inputValue()}
           style={{ 'background-color': value() }}
           onFocus={showPicker}
           onChange={handleChange}
+          onKeyUp={handleKeyUp}
         />
         <PickerDropdown id={id} class={pickerClass} ref={pickerDropdown} />
 

@@ -1,5 +1,5 @@
-import { createSignal, Show } from 'solid-js';
-import { render } from "solid-js/web";
+import { type JSX } from "solid-js";
+import { render as solidRender } from "solid-js/web";
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 
 import DefaultPicker from './fixtures/DefaultPicker';
@@ -7,17 +7,24 @@ import { DefaultColorPicker } from '~/index';
 import write from './fixtures/write';
 import swipe from './fixtures/swipe';
 
+
 describe("Test <DefaultColorPicker />", () => {
   const container = document.createElement('div');
+  Object.assign(container.style, { overflow: 'auto', minHeight: '100vh' });
   document.body.append(container);
+  const render = (accesChildren: () => JSX.Element) => {
+    solidRender(accesChildren, container);
+  }
 
   beforeEach(() => {
     container.innerHTML = '';
   })
 
   it("renders in page", async () => {
-    render(() => <DefaultColorPicker />, container);
+    render(() => <DefaultColorPicker />);
+    await vi.waitUntil(() =>  container.querySelector('input') !== null, 350);
     const input = container.querySelector('input');
+
     expect(input).to.exist;
   });
 
@@ -36,7 +43,9 @@ describe("Test <DefaultColorPicker />", () => {
         { yellow: 'yellow' },
         { textColor: 'currentColor' },
       ]}
-    />, container);
+    />);
+    await vi.waitUntil(() => container.querySelector('input') !== null, 350);
+
     const input = container.querySelector('input');
     const colorMenu = container.querySelector('.color-dropdown');
     const toggleMenu = container.querySelector<HTMLButtonElement>('button.menu-toggle');
@@ -50,7 +59,9 @@ describe("Test <DefaultColorPicker />", () => {
   it("simple presets single line", async () => {
     render(() => <DefaultPicker
       colorPresets={{ hue: 0, hueSteps: 1, lightSteps: 5}}
-    />, container);
+    />);
+    await vi.waitUntil(() => container.querySelector<HTMLInputElement>('input') !== null, 350);
+
     const colorMenu = container.querySelector('.color-dropdown.menu');
     const presets = colorMenu!.getElementsByTagName('LI');
 
@@ -61,8 +72,9 @@ describe("Test <DefaultColorPicker />", () => {
   it("simple presets double line", async () => {
     render(() => <DefaultPicker
       colorPresets={{ hue: 0, hueSteps: 2, lightSteps: 5}}
-    />, container);
-    const input = container.querySelector('input');
+    />);
+    await vi.waitUntil(() => container.querySelector<HTMLInputElement>('input') !== null, 350);
+
     const colorMenu = container.querySelector('.color-dropdown.menu');
     const presets = colorMenu!.getElementsByTagName('LI');
 
@@ -73,8 +85,9 @@ describe("Test <DefaultColorPicker />", () => {
   it("simple presets triple line", async () => {
     render(() => <DefaultPicker
       colorPresets={{ hue: 0, hueSteps: 3, lightSteps: 5}}
-    />, container);
-    const input = container.querySelector('input');
+    />);
+    await vi.waitUntil(() => container.querySelector<HTMLInputElement>('input') !== null, 350);
+
     const colorMenu = container.querySelector('.color-dropdown.menu');
     const presets = colorMenu!.getElementsByTagName('LI');
 
@@ -85,8 +98,9 @@ describe("Test <DefaultColorPicker />", () => {
   it("simple presets multi line", async () => {
     render(() => <DefaultPicker
       colorPresets={{ hue: 0, hueSteps: 4, lightSteps: 5}}
-    />, container);
-    const input = container.querySelector('input');
+    />);
+    await vi.waitUntil(() => container.querySelector<HTMLInputElement>('input') !== null, 350);
+
     const colorMenu = container.querySelector('.color-dropdown.menu');
     const presets = colorMenu!.getElementsByTagName('LI');
 
@@ -97,8 +111,9 @@ describe("Test <DefaultColorPicker />", () => {
   it("uses an array of color keywords", async () => {
     render(() => <DefaultPicker
       colorKeywords={["red", "green", "blue"]}
-    />, container);
-    const input = container.querySelector('input');
+    />);
+    await vi.waitUntil(() => container.querySelector<HTMLInputElement>('input') !== null, 350);
+
     const colorMenu = container.querySelector('.color-dropdown.menu');
     const presets = colorMenu!.getElementsByTagName('LI');
 
@@ -146,7 +161,9 @@ describe("Test <DefaultColorPicker />", () => {
         "greenLabel": "Grün",
         "blueLabel": "Blau"
       }}
-    />, container);
+    />);
+    await vi.waitUntil(() => container.querySelector<HTMLInputElement>('input') !== null, 350);
+
     const input = container.querySelector('input');
     const pickerToggle = container.querySelector<HTMLButtonElement>('.picker-toggle');
 
@@ -155,7 +172,6 @@ describe("Test <DefaultColorPicker />", () => {
   });
 
   it('can show / hide `colorPicker` / `presetsMenu`', async function () {
-    vi.useFakeTimers();
     render(() => <>
       <a style="z-index: 1; opacity:0.01; position:absolute; top:0; right:0;" href="#" id="myLink">My Link</a>
       <DefaultPicker
@@ -168,7 +184,8 @@ describe("Test <DefaultColorPicker />", () => {
           { textColor: 'currentColor' },
         ]}
       />
-    </>, container);
+    </>);
+    await vi.waitUntil(() => container.querySelector<HTMLInputElement>('input') !== null, 350);
 
     const input = container.querySelector<HTMLInputElement>('input')!;
     const pickerToggle = container.querySelector<HTMLButtonElement>('.picker-toggle')!;
@@ -178,75 +195,67 @@ describe("Test <DefaultColorPicker />", () => {
     const myLink = container.querySelector<HTMLAnchorElement>('#myLink')!;
 
     pickerToggle.click();
-    vi.advanceTimersByTime(350);
-    expect(colorPicker.className).to.contain('show');
+    await vi.waitFor(() => expect(colorPicker.className).to.contain('show'), 350);
 
-    input.dispatchEvent(new KeyboardEvent('keyup', { code: 'Escape', bubbles: true }));
-    vi.advanceTimersByTime(350);
-    expect(colorPicker.className).to.not.contain('show');
+    input.dispatchEvent(new KeyboardEvent('keyup', { key: 'Escape', bubbles: true }));
+    await vi.waitFor(() => expect(colorPicker.className).to.not.contain('show'), 350);
 
     menuToggle.click();
-    vi.advanceTimersByTime(350);
-    expect(colorMenu.className).to.contain('show');
+    await vi.waitFor(() => expect(colorMenu.className).to.contain('show'), 350);
     
-    input.dispatchEvent(new KeyboardEvent('keyup', { code: 'Escape', bubbles: true }));
-    vi.advanceTimersByTime(350);
-    expect(colorMenu.className).to.not.contain('show');
+    input.dispatchEvent(new KeyboardEvent('keyup', { key: 'Escape', bubbles: true }));
+    await vi.waitFor(() => expect(colorMenu.className).to.not.contain('show'), 350);
 
     write(pickerToggle, "Space");
-    vi.advanceTimersByTime(350);
-    expect(colorPicker.className).to.contain('show');
+    await vi.waitFor(() => expect(colorPicker.className).to.contain('show'), 350);
 
     write(menuToggle, 'Enter');
-    vi.advanceTimersByTime(350);
-    expect(colorPicker.className).to.not.contain('show');
-    expect(colorMenu.className).to.contain('show');
+    await vi.waitFor(() => {
+      expect(colorPicker.className).to.not.contain('show');
+      expect(colorMenu.className).to.contain('show');
+    }, 350);
 
     write(menuToggle, 'Space');
-    vi.advanceTimersByTime(350);
-    expect(colorMenu.className).to.not.contain('show');
+    await vi.waitFor(() => expect(colorMenu.className).to.not.contain('show'), 350);
 
     pickerToggle.click();
-    vi.advanceTimersByTime(350);
-    expect(colorPicker.className).to.contain('show');
-    expect(input).to.equal(document.activeElement);
+    await vi.waitFor(() => {
+      expect(input).to.equal(document.activeElement);
+      expect(colorPicker.className).to.contain('show');
+    }, 350);
 
     input.dispatchEvent(new Event('blur', { bubbles: true }));
     myLink.focus();
     myLink.dispatchEvent(new PointerEvent('pointerup', { bubbles: true }));
-    vi.advanceTimersByTime(550);
-    expect(colorPicker.className).to.not.contain('show');
+    await vi.waitFor(() => expect(colorPicker.className).to.not.contain('show'), 350);
   });
 
   it('can do some keyboard events', async function () {
-    vi.useFakeTimers();
-    render(() => <DefaultPicker />, container);
+    render(() => <DefaultPicker />);
 
     const input = container.querySelector<HTMLInputElement>('input')!;
     const pickerToggle = container.querySelector<HTMLButtonElement>('.picker-toggle')!;
     const colorPicker = container.querySelector<HTMLDivElement>('.color-dropdown.picker')!;
 
     pickerToggle.click();
-    vi.advanceTimersByTime(350);
-    expect(colorPicker.className).to.contain('show');
+    await vi.waitFor(() => expect(colorPicker.className).to.contain('show'), 350);
 
     write(input, 'transparentEnter');
-    vi.advanceTimersByTime(350);
-    expect(input.value).to.equal("rgba(0, 0, 0, 0)");
+    await vi.waitFor(() => expect(input.value).to.equal("rgba(0, 0, 0, 0)"), 150);
 
     write(input, 'blackEnter');
-    vi.advanceTimersByTime(350);
-    expect(input.value).to.equal('rgb(0, 0, 0)');
+    await vi.waitFor(() => expect(input.value).to.equal('rgb(0, 0, 0)'), 150);
 
     write(input, 'hsl 0 0 100Enter');
-    vi.advanceTimersByTime(350);
-    expect(input.value).to.equal("rgb(255, 255, 255)");
-    expect(input.value).to.not.equal('hsl 0 0 100');
+    await vi.waitFor(() => {
+      expect(input.value).to.equal("rgb(255, 255, 255)");
+      expect(input.value).to.not.equal('hsl 0 0 100');
+    }, 150);
   });
 
   it('can do `pointer` event listeners', async () => {
-    vi.useFakeTimers();
-    render(() => <DefaultPicker onChange={(newValue) => expect(newValue).to.have.length} />, container);
+    render(() => <DefaultPicker onChange={(newValue) => expect(newValue).to.have.length} />);
+    await vi.waitUntil(() => container.querySelector<HTMLInputElement>('input') !== null, 350);
 
     const input = container.querySelector<HTMLInputElement>('input')!;
     const pickerToggle = container.querySelector<HTMLButtonElement>('.picker-toggle')!;
@@ -254,36 +263,25 @@ describe("Test <DefaultColorPicker />", () => {
     const visuals = [...colorPicker.getElementsByClassName('visual-control')] as [HTMLElement, HTMLElement, HTMLElement];
 
     pickerToggle.click();
-    vi.advanceTimersByTime(350);
-    expect(colorPicker.className).to.include('show');
+    await vi.waitFor(() => expect(colorPicker.className).to.include('show'), 350);
 
     write(input, 'greenEnter');
-    vi.advanceTimersByTime(350);
-    expect(input.value).to.equal('rgb(0, 128, 0)');
+    await vi.waitFor(() => expect(input.value).to.equal('rgb(0, 128, 0)'), 150);
     let lastRgb = input.value;
 
-    vi.advanceTimersByTime(350);
     swipe(visuals[0], [[5, 5], [-5, -5], [500, 500], [100, 100], [100, 100]]);
-    vi.advanceTimersByTime(350);
-    expect(input.value).to.not.equal(lastRgb);
+    await vi.waitFor(() => expect(input.value).to.not.equal(lastRgb), 350);
     lastRgb = input.value;
 
-    vi.advanceTimersByTime(350);
     swipe(visuals[1], [[5, 5], [5, 0], [5, -5], [5, 500], [5, 100], [5, 100]]);
-    vi.advanceTimersByTime(350);
-    expect(input.value).to.not.equal(lastRgb);
+    await vi.waitFor(() => expect(input.value).to.not.equal(lastRgb), 150);
     lastRgb = input.value;
 
-
-    vi.advanceTimersByTime(350);
     swipe(visuals[2], [[5, 5], [5, -5], [5, 200], [5, 500], [5, 100], [5, 100]]);
-    vi.advanceTimersByTime(350);
-    expect(input.value).to.not.equal(lastRgb);
-    vi.advanceTimersByTime(350);
+    await vi.waitFor(() => expect(input.value).to.not.equal(lastRgb), 150);
   });
 
   it('uses `keyboard` event listeners', async () => {
-    vi.useFakeTimers();
     render(() => <DefaultPicker
       colorPresets={{ hue: 120, hueSteps: 2, lightSteps: 10}}
       colorKeywords={[
@@ -293,7 +291,8 @@ describe("Test <DefaultColorPicker />", () => {
         { empty: 'empty' },
         { default: 'red' },
       ]}
-    />, container);
+    />);
+    await vi.waitUntil(() => container.querySelector<HTMLInputElement>('input') !== null, 350);
 
     const input = container.querySelector<HTMLInputElement>('input')!;
     const pickerToggle = container.querySelector<HTMLButtonElement>('.picker-toggle')!;
@@ -304,108 +303,90 @@ describe("Test <DefaultColorPicker />", () => {
     const options = colorMenu.children[0]!.getElementsByTagName('LI') as HTMLCollectionOf<HTMLLIElement>;
 
     pickerToggle.click();
-    vi.advanceTimersByTime(350);
-    expect(colorPicker.className).to.include('show');
+    await vi.waitFor(() => expect(colorPicker.className).to.include('show'), 350);
 
     write(input, "whiteEscape");
-    vi.advanceTimersByTime(350);
-    expect(input.value).to.not.equal("white");
-    expect(input.value).to.equal("rgb(255, 255, 255)");
+    await vi.waitFor(() => {
+      expect(input.value).to.not.equal("white");
+      expect(input.value).to.not.equal("rgb(255, 255, 255)");
+    }, 250);
 
     menuToggle.click();
-    vi.advanceTimersByTime(350);
-    expect(colorMenu.className).to.contain('show');
+    await vi.waitFor(() => expect(colorMenu.className).to.contain('show'), 350);
     defaults[0]!.focus();
     defaults[0]!.dispatchEvent(new KeyboardEvent('keydown', { bubbles: true, key: 'ArrowRight', code: 'ArrowRight' }));
-    vi.advanceTimersByTime(350);
-    expect(defaults[1]).to.equal(document.activeElement);
+    await vi.waitFor(() => expect(defaults[1]).to.equal(document.activeElement), 150);
 
-    vi.advanceTimersByTime(350);
     defaults[1]!.dispatchEvent(new KeyboardEvent('keydown', { bubbles: true, key: 'ArrowLeft', code: 'ArrowLeft' }));
-    vi.advanceTimersByTime(350);
-    expect(defaults[0]).to.equal(document.activeElement);
+    await vi.waitFor(() => expect(defaults[0]).to.equal(document.activeElement), 150);
 
-    vi.advanceTimersByTime(350);
     defaults[0]!.dispatchEvent(new KeyboardEvent('keydown', { bubbles: true, key: 'ArrowDown', code: 'ArrowDown' }));
-    vi.advanceTimersByTime(350);
-    expect(defaults[1]).to.equal(document.activeElement);
+    await vi.waitFor(() => expect(defaults[1]).to.equal(document.activeElement), 150);
 
-    vi.advanceTimersByTime(350);
     defaults[1]!.dispatchEvent(new KeyboardEvent('keydown', { bubbles: true, key: 'ArrowUp', code: 'ArrowUp' }));
-    vi.advanceTimersByTime(350);
-    expect(defaults[0]).to.equal(document.activeElement);
+    await vi.waitFor(() => expect(defaults[0]).to.equal(document.activeElement), 150);
 
     let prevValue = input.value;
-    vi.advanceTimersByTime(350);
-    // defaults[0]!.dispatchEvent(new KeyboardEvent('keydown', { bubbles: true, key: 'Enter', code: 'Enter' }));
     defaults[0]!.click();
-    vi.advanceTimersByTime(350);
-    expect(defaults[0]!.className).to.contain('active');
-    expect(input.value).to.not.equal(prevValue);
+    await vi.waitFor(() => {
+      expect(defaults[0]!.className).to.contain('active');
+      expect(input.value).to.not.equal(prevValue);
+    }, 150);
 
-    vi.advanceTimersByTime(350);
     const transparent = colorMenu.querySelector<HTMLLIElement>('[data-value="transparent"]');
     if (transparent) {
       transparent.click();
-      vi.advanceTimersByTime(350);
       prevValue = input.value;
 
-      expect(transparent.className).to.contain('active');
-      expect(input.value).to.equal('rgba(0, 0, 0, 0)');
+      await vi.waitFor(() => {
+        expect(transparent.className).to.contain('active');
+        expect(input.value).to.equal('rgba(0, 0, 0, 0)');
+      }, 150);
     }
 
-    vi.advanceTimersByTime(350);
     const empty = colorMenu.querySelector<HTMLLIElement>('[data-value="empty"]');
     if (empty) {
       empty.click();
-      vi.advanceTimersByTime(350);
       prevValue = input.value;
-
-      expect(empty.className).to.not.contain('active');
-      expect(input.value).to.not.equal('empty');
-      expect(input.value).to.equal('rgb(0, 0, 0)');
+      await vi.waitFor(() => {
+        expect(empty.className).to.not.contain('active');
+        expect(input.value).to.not.equal('empty');
+        expect(input.value).to.equal('rgb(0, 0, 0)');
+      }, 150);
     }
 
-    vi.advanceTimersByTime(350);
     options[0]!.focus();
     options[0]!.dispatchEvent(new KeyboardEvent('keydown', { bubbles: true, key: 'ArrowRight', code: 'ArrowRight' }));
-    vi.advanceTimersByTime(350);
-    expect(options[1]).to.equal(document.activeElement);
+    await vi.waitFor(() => expect(options[1]).to.equal(document.activeElement), 150);
 
-    vi.advanceTimersByTime(350);
     options[1]!.dispatchEvent(new KeyboardEvent('keydown', { bubbles: true, key: 'ArrowLeft', code: 'ArrowLeft' }));
-    vi.advanceTimersByTime(350);
-    expect(options[0]).to.equal(document.activeElement);
+    await vi.waitFor(() => expect(options[0]).to.equal(document.activeElement), 150);
 
-    vi.advanceTimersByTime(350);
     options[0]!.dispatchEvent(new KeyboardEvent('keydown', { bubbles: true, key: 'ArrowDown', code: 'ArrowDown' }));
-    vi.advanceTimersByTime(350);
-    expect(options[10]).to.equal(document.activeElement);
+    await vi.waitFor(() => expect(options[10]).to.equal(document.activeElement), 150);
 
-    vi.advanceTimersByTime(350);
     options[10]!.dispatchEvent(new KeyboardEvent('keydown', { bubbles: true, key: 'ArrowUp', code: 'ArrowUp' }));
-    vi.advanceTimersByTime(350);
-    expect(options[0]).to.equal(document.activeElement);
+    await vi.waitFor(() => expect(options[0]).to.equal(document.activeElement), 150);
 
     prevValue = input.value;
     options[0]!.dispatchEvent(new KeyboardEvent('keydown', { bubbles: true, key: 'Enter', code: 'Enter' }));
-    vi.advanceTimersByTime(350);
-    expect(options[0]!.className).to.contain('active');
-    expect(input.value).to.not.equal(prevValue);
+    await vi.waitFor(() => {
+      expect(options[0]!.className).to.contain('active');
+      expect(input.value).to.not.equal(prevValue);
+    }, 150);
 
     prevValue = input.value;
     options[1]!.click();
-    vi.advanceTimersByTime(350);
-    expect(options[1]!.className).to.contain('active');
-    expect(input.value).to.not.equal(prevValue);
+    await vi.waitFor(() => {
+      expect(options[1]!.className).to.contain('active');
+      expect(input.value).to.not.equal(prevValue);
+    }, 150);
 
-    document.dispatchEvent(new KeyboardEvent('keyup', { bubbles: true, code: 'Escape' }))
-    vi.advanceTimersByTime(350);
-    expect(colorMenu.className).to.not.contain('show');
+    document.dispatchEvent(new KeyboardEvent('keyup', { bubbles: true, key: 'Escape' }))
+    await vi.waitFor(() => expect(colorMenu.className).to.not.contain('show'), 350);
   });
 
   it('uses `scroll` event listeners', async () => {
-    vi.useFakeTimers();
     render(() => <DefaultPicker
       colorPresets={{ hue: 120, hueSteps: 2, lightSteps: 10}}
       colorKeywords={[
@@ -415,7 +396,8 @@ describe("Test <DefaultColorPicker />", () => {
         { empty: 'empty' },
         { default: 'red' },
       ]}
-    />, container);
+    />);
+    await vi.waitUntil(() => container.querySelector<HTMLInputElement>('input') !== null, 350);
 
     const input = container.querySelector<HTMLInputElement>('input')!;
     const pickerToggle = container.querySelector<HTMLButtonElement>('.picker-toggle')!;
@@ -425,37 +407,18 @@ describe("Test <DefaultColorPicker />", () => {
     const win = input.ownerDocument.defaultView!;
 
     pickerToggle.click();
-    vi.advanceTimersByTime(350);
-    expect(colorPicker.className).to.contain('show');
+    await vi.waitFor(() => expect(colorPicker.className).to.contain('show'), 350);
 
-    vi.advanceTimersByTime(350);
-    win.scrollTo({ left: 0, top: 10, behavior: "smooth" });
+    win.scrollTo({ left: 0, top: 10, behavior: "instant" });
     win.dispatchEvent(new Event('scroll'));
-    await Promise.resolve(() =>
-      new Promise((resolve) => {
-        setTimeout(() => {
-          expect(colorPicker.className).to.contain('top');
-          resolve('done')
-        }, 550)
-        vi.advanceTimersByTime(550);
-      })
-    );
+    await vi.waitFor(() => expect(colorPicker.className).to.contain('top'), 350);
 
     win.scrollTo({ left: 0, top: document.body.scrollHeight, behavior: "smooth" });
     win.dispatchEvent(new Event('scroll'));
-    await Promise.resolve(() =>
-      new Promise((resolve) => {
-        setTimeout(() => {
-          expect(colorPicker.className).to.not.contain('top');
-          resolve('done')
-        }, 550)
-        vi.advanceTimersByTime(550);
-      })
-    );
+    await vi.waitFor(() => expect(colorPicker.className).to.not.contain('top'), 350);
   });
 
   it('uses visual controls and knobs', async () => {
-    vi.useFakeTimers();
     render(() => <DefaultPicker
       colorPresets={{ hue: 120, hueSteps: 2, lightSteps: 10}}
       colorKeywords={[
@@ -465,7 +428,8 @@ describe("Test <DefaultColorPicker />", () => {
         { empty: 'empty' },
         { default: 'red' },
       ]}
-    />, container);
+    />);
+    await vi.waitUntil(() => container.querySelector('input') !== null, 350);
 
     const input = container.querySelector<HTMLInputElement>('input')!;
     const pickerToggle = container.querySelector<HTMLButtonElement>('.picker-toggle')!;
@@ -474,64 +438,51 @@ describe("Test <DefaultColorPicker />", () => {
     const knobs = [...colorPicker.getElementsByClassName('knob')] as [HTMLElement, HTMLElement, HTMLElement];
 
     pickerToggle.click();
-    vi.advanceTimersByTime(350);
-    write(input, "hsl 0 100 50 Enter");
-    vi.advanceTimersByTime(350);
+    await vi.waitFor(() => expect(colorPicker.className).to.contain('show'), 350);
 
     // test visuals click, but we're using pointerdown more reliably
+    write(input, "hsl 0 100 50 Enter");
     const v0rect = visuals[0].getBoundingClientRect();
     visuals[0].dispatchEvent(new PointerEvent('pointerdown', {
       bubbles: true, cancelable: true,
       clientX: v0rect.left + v0rect.width / 2,
       clientY: v0rect.top + v0rect.height / 2,
     }));
-    vi.advanceTimersByTime(350);
-    expect(input.value).to.not.equal('rgb(255, 0, 0)');
+    await vi.waitFor(() => expect(input.value).to.not.equal('rgb(255, 0, 0)'), 350);
 
     write(input, "hsl 300 100 50 Enter");
-    vi.advanceTimersByTime(350);
     const v1rect = visuals[1].getBoundingClientRect();
     visuals[1].dispatchEvent(new PointerEvent('pointerdown', {
       bubbles: true, cancelable: true,
       clientX: v1rect.left + v1rect.width / 2,
       clientY: v1rect.top + v1rect.height / 2,
     }));
-    vi.advanceTimersByTime(350);
-    expect(input.value).to.not.equal("rgb(255, 0, 255)");
+    await vi.waitFor(() => expect(input.value).to.not.equal("rgb(255, 0, 255)"), 350);
 
     write(input, "hsl 120 100 50 Enter");
-    vi.advanceTimersByTime(350);
     const v2rect = visuals[2].getBoundingClientRect();
     visuals[2].dispatchEvent(new PointerEvent('pointerdown', {
       bubbles: true, cancelable: true,
       clientX: v2rect.left + v2rect.width / 2,
       clientY: v2rect.top + v2rect.height / 2,
     }));
-    vi.advanceTimersByTime(350);
-    expect(input.value).to.equal("rgba(0, 255, 0, 0.5)");
+    await vi.waitFor(() => expect(input.value).to.equal("rgba(0, 255, 0, 0.5)"), 350);
 
     // test control knobs pointer events
     write(input, "hsl 0 100 100 Enter");
-    vi.advanceTimersByTime(350);
     swipe(knobs[0], [[2, 2], [-v0rect.left, -v0rect.top], [300, 300], [v0rect.width / 2, v0rect.height / 2]], { x: v0rect.left, y: v0rect.top });
-    vi.advanceTimersByTime(350);
-    expect(input.value).to.not.equal("rgb(255, 0, 0)");
+    await vi.waitFor(() => expect(input.value).to.not.equal("rgb(255, 0, 0)"), 350);
 
     write(input, "hsl 0 100 100 Enter");
-    vi.advanceTimersByTime(350);
     swipe(knobs[1], [[2, 2], [-v1rect.left, -v1rect.top], [2, 300], [v1rect.width / 2, v1rect.height / 2]], { x: v1rect.left, y: v1rect.top });
-    vi.advanceTimersByTime(350);
-    expect(input.value).to.not.equal("rgb(255, 0, 0)");
+    await vi.waitFor(() => expect(input.value).to.not.equal("rgb(255, 0, 0)"), 350);
 
     write(input, "hsl 0 100 100 Enter");
-    vi.advanceTimersByTime(350);
     swipe(knobs[2], [[2, 2], [-v2rect.left, -v2rect.top], [2, 300], [v2rect.width / 2, v2rect.height / 2]], { x: v2rect.left, y: v2rect.top });
-    vi.advanceTimersByTime(350);
-    expect(input.value).to.not.equal("rgb(255, 0, 0)");
+    await vi.waitFor(() => expect(input.value).to.not.equal("rgb(255, 0, 0)"), 350);
 
     // test control knobs keyboard events
     write(input, 'hsl 300 100 50 Enter');
-    vi.advanceTimersByTime(350);
     let currentRgb = input.value;
     knobs[0].focus();
     knobs[0].dispatchEvent(new KeyboardEvent('keydown', { bubbles: true, key: "ArrowDown", code: 'ArrowDown' }));
@@ -540,11 +491,9 @@ describe("Test <DefaultColorPicker />", () => {
     knobs[0].dispatchEvent(new KeyboardEvent('keydown', { bubbles: true, key: "ArrowRight", code: 'ArrowRight' }));
     knobs[0].dispatchEvent(new KeyboardEvent('keydown', { bubbles: true, key: "ArrowRight", code: 'ArrowRight' }));
     knobs[0].dispatchEvent(new KeyboardEvent('keydown', { bubbles: true, key: "ArrowLeft", code: 'ArrowLeft' }));
-    vi.advanceTimersByTime(350);
-    expect(input.value).to.not.equal(currentRgb);
+    await vi.waitFor(() => expect(input.value).to.not.equal(currentRgb), 350);
 
     write(input, 'hsl 180 100 50 Enter');
-    vi.advanceTimersByTime(350);
     currentRgb = input.value;
     knobs[1].focus();
     knobs[1].dispatchEvent(new KeyboardEvent('keydown', { bubbles: true, key: "ArrowDown", code: 'ArrowDown' }));
@@ -553,11 +502,9 @@ describe("Test <DefaultColorPicker />", () => {
     knobs[1].dispatchEvent(new KeyboardEvent('keydown', { bubbles: true, key: "ArrowRight", code: 'ArrowRight' }));
     knobs[1].dispatchEvent(new KeyboardEvent('keydown', { bubbles: true, key: "ArrowRight", code: 'ArrowRight' }));
     knobs[1].dispatchEvent(new KeyboardEvent('keydown', { bubbles: true, key: "ArrowLeft", code: 'ArrowLeft' }));
-    vi.advanceTimersByTime(350);
-    expect(input.value).to.not.deep.equal(currentRgb);
+    await vi.waitFor(() => expect(input.value).to.not.deep.equal(currentRgb), 350);
 
     write(input, 'hsl 0 100 50');
-    vi.advanceTimersByTime(350);
     currentRgb = input.value;
     knobs[2].focus();
     knobs[2].dispatchEvent(new KeyboardEvent('keydown', { bubbles: true, key: "ArrowDown", code: 'ArrowDown' }));
@@ -566,21 +513,21 @@ describe("Test <DefaultColorPicker />", () => {
     knobs[2].dispatchEvent(new KeyboardEvent('keydown', { bubbles: true, key: "ArrowRight", code: 'ArrowRight' }));
     knobs[2].dispatchEvent(new KeyboardEvent('keydown', { bubbles: true, key: "ArrowRight", code: 'ArrowRight' }));
     knobs[2].dispatchEvent(new KeyboardEvent('keydown', { bubbles: true, key: "ArrowLeft", code: 'ArrowLeft' }));
-    vi.advanceTimersByTime(350);
-    expect(input.value).to.not.deep.equal(currentRgb);
+    await vi.waitFor(() => expect(input.value).to.not.deep.equal(currentRgb), 350);
   });
 
   const colorNameValues = ['#fff', '#000', '#808080', '#f00', '#ffa500', '#653c24', '#c8af00', '#808000', '#ff0', '#0f0', '#080', '#075', '#0ff', '#05f', '#a7f', '#b0f', '#f0d'];
   const colorNamesFrench = 'blanc,noir,gris,rouge,orange,marron,or,olive,jaune,citron,vert,sarcelle,cyan,bleu,violet,magenta,rose';
   const frenchColors = colorNamesFrench.split(',');
-  frenchColors.forEach((color) => {
-    it(`shows color appearance ${color}`, () => {
-      vi.useFakeTimers();
+  for (let i = 0; i < frenchColors.length; i += 1) {
+    const color = frenchColors[i]!;
+    it(`shows color appearance ${color}`, async () => {
       render(() => <DefaultPicker
         // colorPresets={colorPresets}
         colorKeywords={['olive', 'green', 'red', 'transparent']}
         lang="fr"
-      />, container);
+      />);
+      await vi.waitUntil(() => container.querySelector('input') !== null, 350);
   
       const input = container.querySelector<HTMLInputElement>('input')!;
       const pickerToggle = container.querySelector<HTMLButtonElement>('.picker-toggle')!;
@@ -590,107 +537,99 @@ describe("Test <DefaultColorPicker />", () => {
       const webcolor = colorNameValues[frenchColors.indexOf(color)];
 
       pickerToggle.click();
-      vi.advanceTimersByTime(350);
+      await vi.waitFor(() => expect(colorPicker.className).to.contain('show'), 350);
       write(input, webcolor + "Enter");
-      vi.advanceTimersByTime(350);
-      expect(knobs[1].getAttribute('aria-description')).to.include(color);
-      vi.advanceTimersByTime(350);
+      await vi.waitFor(() => expect(knobs[1].getAttribute('aria-description')).to.include(color), 350);
     });
-  });
+  }
 
-  ['hsl', 'rgb', 'hwb', 'hex'].forEach((format) => {
+  const FORMAT = ['hsl', 'rgb', 'hwb', 'hex'];
+  for (let i = 0; i < FORMAT.length; i += 1) {
+    const format = FORMAT[i]!;
     it(`uses format - ${format.toUpperCase()}`, async () => {
-      vi.useFakeTimers();
       render(() => <DefaultPicker
         // colorPresets={colorPresets}
         format={format as any}
         colorKeywords={['olive', 'green', 'red', 'transparent']}
-      />, container);
-  
+      />);
+      await vi.waitUntil(() => container.querySelector('input') !== null, 350);
+
       const input = container.querySelector<HTMLInputElement>('input')!;
       const pickerToggle = container.querySelector<HTMLButtonElement>('.picker-toggle')!;
       const colorPicker = container.querySelector<HTMLDivElement>('.color-dropdown.picker')!;
       const inputs = [...colorPicker.getElementsByClassName('color-input')] as [HTMLInputElement, HTMLInputElement, HTMLInputElement, HTMLInputElement];
-      const knobs = [...colorPicker.getElementsByClassName('knob')] as [HTMLElement, HTMLElement, HTMLElement];
 
       pickerToggle.click();
-      vi.advanceTimersByTime(350);
+      await vi.waitFor(() => expect(colorPicker.className).to.contain('show'), 350);
       let rgb = input.value;
 
       // Test typing a valid value and press `Enter`
       write(input, 'hsl 0 100 50 Enter');
-      vi.advanceTimersByTime(350);
-      if (format === 'hsl') {
-        expect(input.value).to.be.equal('hsl(0, 100%, 50%)');
-      } else if (format === 'rgb') {
-        expect(input.value).to.be.equal('rgb(255, 0, 0)');
-      } else if (format === 'hex') {
-        expect(input.value).to.be.equal('#ff0000');
-      } else if (format === 'hwb') {
-        expect(input.value).to.be.equal('hwb(0deg 0% 0%)');
-      }
+      await vi.waitFor(() => {
+        if (format === 'hsl') {
+          expect(input.value).to.be.equal('hsl(0, 100%, 50%)');
+        } else if (format === 'rgb') {
+          expect(input.value).to.be.equal('rgb(255, 0, 0)');
+        } else if (format === 'hex') {
+          expect(input.value).to.be.equal('#ff0000');
+        } else if (format === 'hwb') {
+          expect(input.value).to.be.equal('hwb(0deg 0% 0%)');
+        }
+      }, 350);
 
       // Test keyboard event listeners on `inputs`
       if (format === 'hex') {
         write(input, "hsl 300 100 50 Enter");
-        vi.advanceTimersByTime(350);
+        await new Promise((res) => setTimeout(res, 150));
         rgb = input.value;
         write(inputs[0], 'hsl 100 100 50 Enter');
-        vi.advanceTimersByTime(350);
-        expect(input.value).to.not.equal(rgb);
+        await vi.waitFor(() => expect(input.value).to.not.equal(rgb), 350);
       } else if (format === 'rgb') {
         write(input, "hsl 300 100 50 Enter");
-        vi.advanceTimersByTime(350);
-        let rgb = input.value;
+        await new Promise((res) => setTimeout(res, 150));
+        rgb = input.value;
         write(inputs[0], '150Enter');
-        vi.advanceTimersByTime(350);
-        expect(input.value).to.not.equal(rgb);
-
+        await vi.waitFor(() => expect(input.value).to.not.equal(rgb), 350);
+        
         write(input, "hsl 100 100 50 Enter");
-        vi.advanceTimersByTime(350);
+        await new Promise((res) => setTimeout(res, 150));
         rgb = input.value;
         write(inputs[1], '150Enter');
-        vi.advanceTimersByTime(350);
-        expect(input.value).to.not.equal(rgb);
-
+        await vi.waitFor(() => expect(input.value).to.not.equal(rgb), 350);
+        
         write(input, "hsl 300 100 50 Enter");
-        vi.advanceTimersByTime(350);
+        await new Promise((res) => setTimeout(res, 150));
         rgb = input.value;
         write(inputs[2], '150Enter');
-        vi.advanceTimersByTime(350);
-        expect(input.value).to.not.equal(rgb);
-
+        await vi.waitFor(() => expect(input.value).to.not.equal(rgb), 350);
+        
       } else if (format === 'hsl' || format === 'hwb') {
         write(input, "hsl 270 100 50 Enter");
-        vi.advanceTimersByTime(350);
+        await new Promise((res) => setTimeout(res, 150));
         rgb = input.value;
         write(inputs[0], '0Enter');
-        vi.advanceTimersByTime(350);
-        expect(input.value).to.not.equal(rgb);
-
+        await vi.waitFor(() => expect(input.value).to.not.equal(rgb), 350);
+        
         write(input, "hsl 330 100 50 Enter");
-        vi.advanceTimersByTime(350);
+        await new Promise((res) => setTimeout(res, 150));
         rgb = input.value;
         write(inputs[1], '50Enter');
-        vi.advanceTimersByTime(350);
-        expect(input.value).to.not.equal(rgb);
-
+        await vi.waitFor(() => expect(input.value).to.not.equal(rgb), 350);
+        
         write(input, "hsl 300 100 50 Enter");
-        vi.advanceTimersByTime(350);
+        await new Promise((res) => setTimeout(res, 150));
         rgb = input.value;
         write(inputs[2], '25Enter');
-        vi.advanceTimersByTime(350);
-        expect(input.value).to.not.equal(rgb);
+        await vi.waitFor(() => expect(input.value).to.not.equal(rgb), 350);
       }
-
+      
       if (format !== 'hex') {
         write(input, "hsl 240 100 50 Enter");
-        vi.advanceTimersByTime(350);
+        await new Promise((res) => setTimeout(res, 150));
         rgb = input.value;
         write(inputs[3], '25Enter');
-        vi.advanceTimersByTime(350);
-        expect(input.value).to.not.equal(rgb);
+        await vi.waitFor(() => expect(input.value).to.not.equal(rgb), 350);
       }
     });
-  });
+  }
 });

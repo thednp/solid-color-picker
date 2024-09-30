@@ -1,3 +1,9 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 .color-picker {
   position: relative;
   display: flex;
@@ -50,11 +56,6 @@
   --option-color-active: var(--white-75);
   --option-bg-active: var(--black-90);
   --visual-shadow: 0 0 0 1px var(--black-15) inset;
-}
-.color-picker *,
-.color-picker *::before,
-.color-picker *::after {
-  box-sizing: border-box;
 }
 
 .color-picker:focus {

@@ -12,9 +12,9 @@ export type ColorPickerContext = {
   setDrag: Setter<HTMLElement | undefined>;
   value: Accessor<string>;
   setValue: Setter<string>;
+  setInputValue: Setter<string>;
   controlPositions: Accessor<typeof initialControlPositions>;
   setControlPositions: Setter<typeof initialControlPositions>;
-  update: (_newColor: Color) => void;
   updateControlPositions: () => void;
 };
 

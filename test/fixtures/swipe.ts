@@ -11,7 +11,7 @@ const swipe = <T extends HTMLElement = HTMLElement>(target: T, points: [number, 
     const offsetY = Number.isInteger(offset?.y) ? offset!.y : rect.top;
     if (points.length === 1) points.push([0,0]);
 
-    points.forEach(([x,y], i) => {
+    points.forEach(([x, y], i) => {
         // first is a pointerdown, last is a pointerup and all pointermove in between
         const ev = i === 0 ? 'pointerdown' : i === points.length - 1 ? 'pointerup' : 'pointermove';
         const point = new PointerEvent(ev, {

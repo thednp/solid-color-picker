@@ -39,14 +39,14 @@ jobs:
       - name: ViTest
         run: pnpm test
 
+      - name: Upload coverage report on to coveralls.io...
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Deploy pages
         uses: JamesIves/github-pages-deploy-action@v4.4.1
         with:
           branch: gh-pages
           node-version: 20.x
           folder: docs
-
-      - name: Upload coverage report on to coveralls.io...
-        uses: coverallsapp/github-action@master
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}

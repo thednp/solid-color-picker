@@ -1,6 +1,6 @@
 {
   "name": "@thednp/solid-color-picker",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "🎨 Modern Color Picker for SolidJS",
   "keywords": [
     "solid",
@@ -75,7 +75,7 @@
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.5.0",
-    "@types/node": "^22.5.5",
+    "@types/node": "^22.7.4",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "@typescript-eslint/parser": "^6.21.0",
     "@vitest/browser": "^2.1.1",
@@ -89,11 +89,11 @@
     "jsdom": "^25.0.1",
     "playwright": "^1.47.2",
     "prettier": "^3.3.3",
-    "solid-js": "^1.8.22",
+    "solid-js": "^1.9.1",
     "tsup": "^8.3.0",
     "tsup-preset-solid": "^2.2.0",
     "typescript": "^5.6.2",
-    "vite": "^5.4.7",
+    "vite": "^5.4.8",
     "vite-plugin-solid": "^2.10.2",
     "vite-plugin-solid-svg": "^0.8.1",
     "vitest": "^2.1.1"
