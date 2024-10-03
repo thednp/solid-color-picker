@@ -15,7 +15,6 @@ import ColorPicker from '@thednp/color-picker';
 import { type Component, type JSX, Accessor, For, Show, splitProps } from 'solid-js';
 import type { ColorKeywords, ColorPresets, KeyProps, MenuProps, PresetsProps } from '../types/types';
 import { usePickerContext } from './ColorPickerContext';
-import Arrow from '../assets/Arrow';
 
 const { ColorPalette } = ColorPicker;
 
@@ -183,7 +182,9 @@ const MenuDropdown: Component<MenuProps> = props => {
         onClick={local.toggleMenu}
       >
         <span class="v-hidden">{local.locale().toggleLabel}</span>
-        <Arrow />
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" aria-hidden="true">
+          <path d="M98,158l157,156L411,158l27,27L255,368L71,185L98,158z" fill="#fff"></path>
+        </svg>
       </button>
       <div id={id()} ref={local.ref} class={menuClass()}>
         <Show when={typeof other.colorPresets !== 'undefined' && other.colorPresets()}>

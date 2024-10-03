@@ -137,7 +137,7 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
   };
 
   /** Event Listeners */
-  const handleBlur: JSX.FocusEventHandlerUnion<HTMLDivElement, FocusEvent> = ({ currentTarget, relatedTarget }) => {
+  const handleBlur: JSX.FocusEventHandler<HTMLDivElement, FocusEvent> = ({ currentTarget, relatedTarget }) => {
     // istanbul ignore next @preserve
     if (relatedTarget && !currentTarget.contains(relatedTarget as Node)) {
       hideDropdown();
@@ -217,7 +217,7 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
   };
   const handleKeyUp: JSX.EventHandler<HTMLInputElement, KeyboardEvent> = e => {
     // istanbul ignore else @preserve
-    if (keyEnter === e.key) {
+    if (e.key === keyEnter) {
       let newValue = e.currentTarget.value;
       // istanbul ignore else @preserve
       if (Color.isNonColor(newValue)) {
@@ -227,6 +227,7 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
       // istanbul ignore else @preserve
       if (newValue.length && newColor.isValid) {
         setColor(newColor);
+        updateControlPositions();
       }
     }
   };
@@ -241,17 +242,9 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
   });
 
   createEffect(
-    onState(value, v => {
-      // istanbul ignore else @preserve
-      if (typeof props.onChange === 'function') {
-        props.onChange(v);
-      }
-    }),
-  );
-
-  createEffect(
     onState(format, f => {
       setColor(new Color(value(), f));
+      updateControlPositions();
     }),
   );
 
@@ -260,7 +253,10 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
       const newValue = f.toString();
       setValue(newValue);
       setInputValue(newValue);
-      updateControlPositions();
+      // istanbul ignore else @preserve
+      if (typeof props.onChange === 'function') {
+        props.onChange(newValue);
+      }
     }),
   );
 

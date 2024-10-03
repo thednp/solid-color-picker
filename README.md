@@ -8,7 +8,7 @@
 [![eslint version](https://img.shields.io/badge/eslint-8.57.1-brightgreen)](https://github.com/eslint)
 [![prettier version](https://img.shields.io/badge/prettier-3.3.3-brightgreen)](https://prettier.io/)
 [![solid-js version](https://img.shields.io/badge/solid--js-1.9.1-brightgreen)](https://solidjs.com/)
-[![vitest version](https://img.shields.io/badge/vitest-2.1.1-brightgreen)](https://vitest.dev/)
+[![vitest version](https://img.shields.io/badge/vitest-2.1.2-brightgreen)](https://vitest.dev/)
 [![vite version](https://img.shields.io/badge/vite-5.4.8-brightgreen)](https://github.com/vitejs)
 
 The feature rich **ColorPicker** component for SolidJS, sourced with TypeScript, WAI-ARIA compliant and is mainly based on [ColorPicker](http://github.com/thednp/color-picker).
@@ -50,6 +50,11 @@ function App() {
 }
 ```
 For additional component configuration options, please check the [demo](https://thednp.github.io/solid-color-picker).
+
+
+## Some notes
+* The SolidJS version for [ColorPicer](https://github.com/thednp/color-picker) was implemented with minor differences to accomodate the declarative nature of the modern JavaScript framework, especially with event listeners.
+* Tests powered by Vitest make use of a real browser environment for consistent and realistic results.
 
 
 ## License
