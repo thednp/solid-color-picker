@@ -1,25 +1,38 @@
 import {
   focus,
-  ObjectEntries,
   getElementStyle,
   hasClass,
   keyArrowDown,
-  keyArrowUp,
-  keySpace,
   keyArrowLeft,
   keyArrowRight,
+  keyArrowUp,
   keyEnter,
-} from '@thednp/shorty';
-import Color from '@thednp/color';
-import ColorPicker from '@thednp/color-picker';
-import { type Component, type JSX, Accessor, For, Show, splitProps } from 'solid-js';
-import type { ColorKeywords, ColorPresets, KeyProps, MenuProps, PresetsProps } from '../types/types';
-import { usePickerContext } from './ColorPickerContext';
+  keySpace,
+  ObjectEntries,
+} from "@thednp/shorty";
+import Color from "@thednp/color";
+import ColorPicker from "@thednp/color-picker";
+import {
+  Accessor,
+  type Component,
+  For,
+  type JSX,
+  Show,
+  splitProps,
+} from "solid-js";
+import type {
+  ColorKeywords,
+  ColorPresets,
+  KeyProps,
+  MenuProps,
+  PresetsProps,
+} from "../types/types";
+import { usePickerContext } from "./ColorPickerContext";
 
 const { ColorPalette } = ColorPicker;
 
-const PresetsMenu: Component<PresetsProps> = props => {
-  const [local, other] = splitProps(props, ['colorPresets']);
+const PresetsMenu: Component<PresetsProps> = (props) => {
+  const [local, other] = splitProps(props, ["colorPresets"]);
   const { locale, value, setColor, format } = usePickerContext();
   const colors = () =>
     new ColorPalette(
@@ -40,21 +53,27 @@ const PresetsMenu: Component<PresetsProps> = props => {
   const rowCount = () => rowCountHover() - (colorsCount() <= fit() * 3 ? 1 : 2);
   const finalClass = () =>
     `color-options` +
-    (isMultiLine() && colorsCount() > rowCount() * fit() ? ' scrollable' : '') +
-    (isMultiLine() ? ' multiline' : '');
+    (isMultiLine() && colorsCount() > rowCount() * fit() ? " scrollable" : "") +
+    (isMultiLine() ? " multiline" : "");
 
   const style = () => {
-    const gap = isMultiLine() ? '1px' : '0.25rem';
-    const optionSize = fit() > 5 && isMultiLine() ? 1.5 : isMultiLine() ? 1.75 : 2;
+    const gap = isMultiLine() ? "1px" : "0.25rem";
+    const optionSize = fit() > 5 && isMultiLine()
+      ? 1.5
+      : isMultiLine()
+      ? 1.75
+      : 2;
     const menuHeight = `${rowCount() * optionSize}rem`;
-    const menuHeightHover = `calc(${rowCountHover()} * ${optionSize}rem + ${rowCountHover() - 1} * ${gap})`;
+    const menuHeightHover = `calc(${rowCountHover()} * ${optionSize}rem + ${
+      rowCountHover() - 1
+    } * ${gap})`;
 
     return {
-      '--grid-item-size': `${optionSize}rem`,
-      '--grid-fit': fit(),
-      '--grid-gap': gap,
-      '--grid-height': menuHeight,
-      '--grid-hover-height': menuHeightHover,
+      "--grid-item-size": `${optionSize}rem`,
+      "--grid-fit": fit(),
+      "--grid-gap": gap,
+      "--grid-height": menuHeight,
+      "--grid-hover-height": menuHeightHover,
     };
   };
 
@@ -67,11 +86,11 @@ const PresetsMenu: Component<PresetsProps> = props => {
       onKeyDown={other.keyHandler}
     >
       <For each={colors()}>
-        {color => {
+        {(color) => {
           const newColor = () => new Color(color, format());
           const newValue = () => newColor().toString();
           const isActive = () => newValue() === value();
-          const getClass = () => `color-option${isActive() ? ' active' : ''}`;
+          const getClass = () => `color-option${isActive() ? " active" : ""}`;
           return (
             <li
               tabIndex={0}
@@ -80,7 +99,7 @@ const PresetsMenu: Component<PresetsProps> = props => {
               class={getClass()}
               data-value={newValue()}
               onClick={() => setColor(newColor())}
-              style={{ 'background-color': color.toRgbString() }}
+              style={{ "background-color": color.toRgbString() }}
             >
               {newValue()}
             </li>
@@ -91,17 +110,24 @@ const PresetsMenu: Component<PresetsProps> = props => {
   );
 };
 
-const KeywordsMenu: Component<KeyProps> = props => {
-  const [local, other] = splitProps(props, ['colorKeywords']);
+const KeywordsMenu: Component<KeyProps> = (props) => {
+  const [local, other] = splitProps(props, ["colorKeywords"]);
   const { locale, value, setColor, format } = usePickerContext();
 
   return (
-    <ul class="color-defaults" role="listbox" aria-label={locale().defaultsLabel} onKeyDown={other.keyHandler}>
+    <ul
+      class="color-defaults"
+      role="listbox"
+      aria-label={locale().defaultsLabel}
+      onKeyDown={other.keyHandler}
+    >
       <For each={local.colorKeywords()}>
-        {key => {
-          const [label, val] = typeof key === 'string' ? [key, key] : (ObjectEntries(key)[0] as [string, string]);
-          const isActive = () => [key, val].some(x => x === value());
-          const className = () => `color-option${isActive() ? ' active' : ''}`;
+        {(key) => {
+          const [label, val] = typeof key === "string"
+            ? [key, key]
+            : (ObjectEntries(key)[0] as [string, string]);
+          const isActive = () => [key, val].some((x) => x === value());
+          const className = () => `color-option${isActive() ? " active" : ""}`;
           return (
             <li
               class={className()}
@@ -120,28 +146,43 @@ const KeywordsMenu: Component<KeyProps> = props => {
   );
 };
 
-const MenuDropdown: Component<MenuProps> = props => {
-  const [local, other] = splitProps(props, ['id', 'class', 'ref', 'toggleMenu', 'expanded', 'locale']);
+const MenuDropdown: Component<MenuProps> = (props) => {
+  const [local, other] = splitProps(props, [
+    "id",
+    "class",
+    "ref",
+    "toggleMenu",
+    "expanded",
+    "locale",
+  ]);
   const id = () => `${local.id}-menu`;
   const menuClass = () => `color-dropdown menu${local.class()}`;
-  const keyHandler: JSX.EventHandlerUnion<HTMLElement, KeyboardEvent> = e => {
+  const keyHandler: JSX.EventHandlerUnion<HTMLElement, KeyboardEvent> = (e) => {
     const { target, currentTarget, code } = e as typeof e & {
-      target: EventTarget &
-        HTMLElement & {
+      target:
+        & EventTarget
+        & HTMLElement
+        & {
           previousElementSibling: HTMLElement | null;
           nextElementSibling?: HTMLElement | null;
           parentElement: HTMLElement;
         };
     };
-    const { previousElementSibling, nextElementSibling, parentElement } = target;
-    const isColorOptionsMenu = hasClass(currentTarget, 'color-options');
-    const allSiblings = [...parentElement.children] as (EventTarget & HTMLElement)[];
-    const columnsCount = (isColorOptionsMenu && Number(getElementStyle(parentElement, '--grid-fit') || 0)) || 0;
+    const { previousElementSibling, nextElementSibling, parentElement } =
+      target;
+    const isColorOptionsMenu = hasClass(currentTarget, "color-options");
+    const allSiblings = [
+      ...parentElement.children,
+    ] as (EventTarget & HTMLElement)[];
+    const columnsCount = (isColorOptionsMenu &&
+      Number(getElementStyle(parentElement, "--grid-fit") || 0)) || 0;
     const currentIndex = allSiblings.indexOf(target as HTMLElement);
     // @eslint-ignore
-    const previousElement = currentIndex > -1 && columnsCount && allSiblings[currentIndex - columnsCount];
+    const previousElement = currentIndex > -1 && columnsCount &&
+      allSiblings[currentIndex - columnsCount];
     // @eslint-ignore
-    const nextElement = currentIndex > -1 && columnsCount && allSiblings[currentIndex + columnsCount];
+    const nextElement = currentIndex > -1 && columnsCount &&
+      allSiblings[currentIndex + columnsCount];
 
     // @eslint-ignore
     if ([keyArrowDown, keyArrowUp, keySpace].includes(code)) {
@@ -160,13 +201,17 @@ const MenuDropdown: Component<MenuProps> = props => {
       } else if (nextElementSibling && code === keyArrowRight) {
         focus(nextElementSibling);
       }
-    } else if (previousElementSibling && [keyArrowLeft, keyArrowUp].includes(code)) {
+    } else if (
+      previousElementSibling && [keyArrowLeft, keyArrowUp].includes(code)
+    ) {
       focus(previousElementSibling);
-    } else if (nextElementSibling && [keyArrowRight, keyArrowDown].includes(code)) {
+    } else if (
+      nextElementSibling && [keyArrowRight, keyArrowDown].includes(code)
+    ) {
       focus(nextElementSibling);
     }
 
-    if ([keyEnter, keySpace, 'NumpadEnter'].includes(code)) {
+    if ([keyEnter, keySpace, "NumpadEnter"].includes(code)) {
       target.click();
     }
   };
@@ -182,16 +227,36 @@ const MenuDropdown: Component<MenuProps> = props => {
         onClick={local.toggleMenu}
       >
         <span class="v-hidden">{local.locale().toggleLabel}</span>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" aria-hidden="true">
-          <path d="M98,158l157,156L411,158l27,27L255,368L71,185L98,158z" fill="#fff"></path>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 512 512"
+          aria-hidden="true"
+        >
+          <path
+            d="M98,158l157,156L411,158l27,27L255,368L71,185L98,158z"
+            fill="#fff"
+          >
+          </path>
         </svg>
       </button>
       <div id={id()} ref={local.ref} class={menuClass()}>
-        <Show when={typeof other.colorPresets !== 'undefined' && other.colorPresets()}>
-          <PresetsMenu colorPresets={other.colorPresets as Accessor<ColorPresets>} keyHandler={keyHandler} />
+        <Show
+          when={typeof other.colorPresets !== "undefined" &&
+            other.colorPresets()}
+        >
+          <PresetsMenu
+            colorPresets={other.colorPresets as Accessor<ColorPresets>}
+            keyHandler={keyHandler}
+          />
         </Show>
-        <Show when={typeof other.colorKeywords !== 'undefined' && other.colorKeywords()}>
-          <KeywordsMenu colorKeywords={other.colorKeywords as Accessor<ColorKeywords>} keyHandler={keyHandler} />
+        <Show
+          when={typeof other.colorKeywords !== "undefined" &&
+            other.colorKeywords()}
+        >
+          <KeywordsMenu
+            colorKeywords={other.colorKeywords as Accessor<ColorKeywords>}
+            keyHandler={keyHandler}
+          />
         </Show>
       </div>
     </Show>

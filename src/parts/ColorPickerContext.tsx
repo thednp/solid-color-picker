@@ -1,7 +1,7 @@
-import Color from '@thednp/color';
-import { Accessor, Setter, createContext, useContext } from 'solid-js';
-import initialControlPositions from '../util/initialControlPositions';
-import type { LanguagePack, SupportedFormat } from '../types/types';
+import Color from "@thednp/color";
+import { Accessor, createContext, Setter, useContext } from "solid-js";
+import initialControlPositions from "../util/initialControlPositions";
+import type { LanguagePack, SupportedFormat } from "../types/types";
 
 export type ColorPickerContext = {
   format: Accessor<SupportedFormat>;

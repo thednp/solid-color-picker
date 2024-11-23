@@ -1,14 +1,39 @@
-import Color from '@thednp/color';
-import { keyArrowUp, keyArrowDown, keyArrowLeft, keyArrowRight, getBoundingClientRect, on, off } from '@thednp/shorty';
-import { Component, createComponent, createEffect, createSignal, JSX, onCleanup, Suspense } from 'solid-js';
-import type { ControlProps, PickerProps } from '../types/types';
-import { usePickerContext } from './ColorPickerContext';
-import offsetLength from '../util/offsetLength';
+import Color from "@thednp/color";
+import {
+  getBoundingClientRect,
+  keyArrowDown,
+  keyArrowLeft,
+  keyArrowRight,
+  keyArrowUp,
+  off,
+  on,
+} from "@thednp/shorty";
+import {
+  Component,
+  createComponent,
+  createEffect,
+  createSignal,
+  JSX,
+  onCleanup,
+  Suspense,
+} from "solid-js";
+import type { ControlProps, PickerProps } from "../types/types";
+import { usePickerContext } from "./ColorPickerContext";
+import offsetLength from "../util/offsetLength";
 
 const { roundPart } = Color;
 
-const ColorControls: Component<ControlProps> = props => {
-  const { drag, setDrag, color, setColor, locale, format, controlPositions, setControlPositions } = usePickerContext();
+const ColorControls: Component<ControlProps> = (props) => {
+  const {
+    drag,
+    setDrag,
+    color,
+    setColor,
+    locale,
+    format,
+    controlPositions,
+    setControlPositions,
+  } = usePickerContext();
   let controlsParentRef!: HTMLDivElement;
   const { stringValue } = props;
   const hueGradient = `linear-gradient(
@@ -43,12 +68,12 @@ const ColorControls: Component<ControlProps> = props => {
     const hsl = color().toHsl();
     const hsv = color().toHsv();
     const hue = roundPart(hsl.h * 360);
-    const saturationSource = format() === 'hsl' ? hsl.s : hsv.s;
+    const saturationSource = format() === "hsl" ? hsl.s : hsv.s;
     const saturation = roundPart(saturationSource * 100);
     const lightness = roundPart(hsl.l * 100);
     const hsvl = hsv.v * 100;
 
-    let colorName = 'black';
+    let colorName = "black";
 
     // determine color appearance
     /* istanbul ignore else @preserve */
@@ -61,7 +86,9 @@ const ColorControls: Component<ControlProps> = props => {
     } else if (hue < 15 || hue >= 345) {
       colorName = locale().red;
     } else if (hue >= 15 && hue < 45) {
-      colorName = hsvl > 80 && saturation > 80 ? locale().orange : locale().brown;
+      colorName = hsvl > 80 && saturation > 80
+        ? locale().orange
+        : locale().brown;
     } else if (hue >= 45 && hue < 75) {
       const isGold = hue > 46 && hue < 54 && hsvl < 80 && saturation > 90;
       const isOlive = hue >= 54 && hue < 75 && hsvl < 80;
@@ -84,12 +111,16 @@ const ColorControls: Component<ControlProps> = props => {
     }
     return colorName;
   };
-  const pointerDown: JSX.EventHandler<HTMLDivElement, PointerEvent> = e => {
+  const pointerDown: JSX.EventHandler<HTMLDivElement, PointerEvent> = (e) => {
     // istanbul ignore next @preserve
     if (e.button !== 0) return;
 
     const { currentTarget, target, pageX, pageY } = e;
-    const elements = [...controlsParentRef.children] as [HTMLElement, HTMLElement, HTMLElement];
+    const elements = [...controlsParentRef.children] as [
+      HTMLElement,
+      HTMLElement,
+      HTMLElement,
+    ];
     const [visual] = [...currentTarget.children] as [HTMLElement, HTMLElement];
 
     const { left, top } = getBoundingClientRect(visual);
@@ -110,12 +141,18 @@ const ColorControls: Component<ControlProps> = props => {
     e.preventDefault();
   };
 
-  const pointerMove: JSX.EventHandler<HTMLDivElement, PointerEvent> = (e): void => {
+  const pointerMove: JSX.EventHandler<HTMLDivElement, PointerEvent> = (
+    e,
+  ): void => {
     const { pageX, pageY } = e;
     // istanbul ignore next @preserve
     if (!drag()) return;
 
-    const elements = [...controlsParentRef.children] as [HTMLElement, HTMLElement, HTMLElement];
+    const elements = [...controlsParentRef.children] as [
+      HTMLElement,
+      HTMLElement,
+      HTMLElement,
+    ];
     const controlRect = getBoundingClientRect(drag()!);
     const { documentElement } = document;
     const offsetX = pageX - documentElement.scrollLeft - controlRect.left;
@@ -129,27 +166,33 @@ const ColorControls: Component<ControlProps> = props => {
       changeAlpha(offsetY);
     }
   };
-  const handleScroll: JSX.EventHandler<HTMLDivElement, Event> = e => {
+  const handleScroll: JSX.EventHandler<HTMLDivElement, Event> = (e) => {
     const { activeElement } = document;
 
     /* istanbul ignore next @preserve */
     if (
-      (['pointermove', 'touchmove'].includes(e.type) && drag()) ||
+      (["pointermove", "touchmove"].includes(e.type) && drag()) ||
       (activeElement && controlsParentRef.contains(activeElement))
     ) {
       e.stopPropagation();
       e.preventDefault();
     }
   };
-  const handleKnobs: JSX.EventHandler<HTMLDivElement, KeyboardEvent> = e => {
+  const handleKnobs: JSX.EventHandler<HTMLDivElement, KeyboardEvent> = (e) => {
     const { target, code } = e;
 
     // only react to arrow buttons
     // istanbul ignore else @preserve
-    if (![keyArrowUp, keyArrowDown, keyArrowLeft, keyArrowRight].includes(code)) return;
+    if (
+      ![keyArrowUp, keyArrowDown, keyArrowLeft, keyArrowRight].includes(code)
+    ) return;
     e.preventDefault();
 
-    const elements = [...controlsParentRef.children] as [HTMLElement, HTMLElement, HTMLElement];
+    const elements = [...controlsParentRef.children] as [
+      HTMLElement,
+      HTMLElement,
+      HTMLElement,
+    ];
     /**
      * @see https://stackoverflow.com/questions/70373659/solidjs-computations-created-outside-a-createroot-or-render-will-never-be
      */
@@ -165,19 +208,23 @@ const ColorControls: Component<ControlProps> = props => {
 
         /* istanbul ignore else @preserve */
         if ([keyArrowLeft, keyArrowRight].includes(code)) {
-          const c1x = prevControlPositions.c1x + (code === keyArrowRight ? xRatio : -xRatio);
+          const c1x = prevControlPositions.c1x +
+            (code === keyArrowRight ? xRatio : -xRatio);
           changeControl1(c1x, prevControlPositions.c1y);
         } else if ([keyArrowUp, keyArrowDown].includes(code)) {
-          const c1y = prevControlPositions.c1y + (code === keyArrowDown ? yRatio : -yRatio);
+          const c1y = prevControlPositions.c1y +
+            (code === keyArrowDown ? yRatio : -yRatio);
           changeControl1(prevControlPositions.c1x, c1y);
         }
 
         // changeControl1(controlPositions().c1x, controlPositions().c1y);
       } else if (elements[1].contains(target)) {
-        const c2y = prevControlPositions.c2y + ([keyArrowDown, keyArrowRight].includes(code) ? yRatio : -yRatio);
+        const c2y = prevControlPositions.c2y +
+          ([keyArrowDown, keyArrowRight].includes(code) ? yRatio : -yRatio);
         changeControl2(c2y);
       } else if (elements[2].contains(target)) {
-        const c3y = prevControlPositions.c3y + ([keyArrowDown, keyArrowRight].includes(code) ? yRatio : -yRatio);
+        const c3y = prevControlPositions.c3y +
+          ([keyArrowDown, keyArrowRight].includes(code) ? yRatio : -yRatio);
         changeAlpha(c3y);
       }
       handleScroll(e);
@@ -211,7 +258,7 @@ const ColorControls: Component<ControlProps> = props => {
     );
 
     setColor(newColor);
-    setControlPositions(prev => ({
+    setControlPositions((prev) => ({
       ...prev,
       c1x: offsetX,
       c1y: offsetY,
@@ -242,7 +289,7 @@ const ColorControls: Component<ControlProps> = props => {
     );
 
     setColor(newColor);
-    setControlPositions(prev => ({
+    setControlPositions((prev) => ({
       ...prev,
       c2y: offsetY,
     }));
@@ -259,7 +306,7 @@ const ColorControls: Component<ControlProps> = props => {
     const newColor = new Color(color().setAlpha(alpha), format());
 
     setColor(newColor);
-    setControlPositions(prev => ({
+    setControlPositions((prev) => ({
       ...prev,
       c3y: offsetY,
     }));
@@ -267,7 +314,7 @@ const ColorControls: Component<ControlProps> = props => {
 
   const toggleGlobalEvents = (add?: boolean) => {
     const action = add ? on : off;
-    action(document, 'pointermove', pointerMove);
+    action(document, "pointermove", pointerMove);
   };
   createEffect(() => {
     if (drag()) toggleGlobalEvents(true);
@@ -277,8 +324,17 @@ const ColorControls: Component<ControlProps> = props => {
 
   return (
     <div class={`color-controls ${format()}`} ref={controlsParentRef}>
-      <div class="color-control" role="presentation" tabIndex={-1} onPointerDown={pointerDown}>
-        <div class="visual-control visual-control1" style={{ background: fillGradient() }}></div>
+      <div
+        class="color-control"
+        role="presentation"
+        tabIndex={-1}
+        onPointerDown={pointerDown}
+      >
+        <div
+          class="visual-control visual-control1"
+          style={{ background: fillGradient() }}
+        >
+        </div>
         <div
           class="color-pointer knob"
           role="slider"
@@ -290,11 +346,25 @@ const ColorControls: Component<ControlProps> = props => {
           aria-valuetext={`${lightness()}% &amp; ${saturation()}%`}
           aria-valuenow={lightness()}
           onKeyDown={handleKnobs}
-          style={{ transform: `translate3d(${controlPositions().c1x - 4}px, ${controlPositions().c1y - 4}px, 0px)` }}
-        ></div>
+          style={{
+            transform: `translate3d(${controlPositions().c1x - 4}px, ${
+              controlPositions().c1y - 4
+            }px, 0px)`,
+          }}
+        >
+        </div>
       </div>
-      <div class="color-control" role="presentation" tabIndex={-1} onPointerDown={pointerDown}>
-        <div class="visual-control visual-control2" style={{ background: hueGradient }}></div>
+      <div
+        class="color-control"
+        role="presentation"
+        tabIndex={-1}
+        onPointerDown={pointerDown}
+      >
+        <div
+          class="visual-control visual-control2"
+          style={{ background: hueGradient }}
+        >
+        </div>
         <div
           class="color-slider knob"
           aria-live="polite"
@@ -307,18 +377,31 @@ const ColorControls: Component<ControlProps> = props => {
           aria-valuetext={`${roundPart(hue() * 100)}°`}
           aria-valuenow={roundPart(hue() * 100)}
           onKeyDown={handleKnobs}
-          style={{ transform: `translate3d(0px, ${controlPositions().c2y - 4}px, 0px)` }}
-        ></div>
+          style={{
+            transform: `translate3d(0px, ${controlPositions().c2y - 4}px, 0px)`,
+          }}
+        >
+        </div>
       </div>
-      <div class="color-control" role="presentation" tabIndex={-1} onPointerDown={pointerDown}>
+      <div
+        class="color-control"
+        role="presentation"
+        tabIndex={-1}
+        onPointerDown={pointerDown}
+      >
         <div
           class="visual-control visual-control3"
           style={{
-            background: `linear-gradient(${fill().setAlpha(1).toRgbString()} 0%, ${fill()
-              .setAlpha(0)
-              .toRgbString()} 100%)`,
+            background: `linear-gradient(${
+              fill().setAlpha(1).toRgbString()
+            } 0%, ${
+              fill()
+                .setAlpha(0)
+                .toRgbString()
+            } 100%)`,
           }}
-        ></div>
+        >
+        </div>
         <div
           class="color-slider knob"
           aria-live="polite"
@@ -330,15 +413,19 @@ const ColorControls: Component<ControlProps> = props => {
           aria-valuetext={`${roundPart(alpha() * 100)}%`}
           aria-valuenow={roundPart(alpha() * 100)}
           onKeyDown={handleKnobs}
-          style={{ transform: `translate3d(0px, ${controlPositions().c3y - 4}px, 0px)` }}
-        ></div>
+          style={{
+            transform: `translate3d(0px, ${controlPositions().c3y - 4}px, 0px)`,
+          }}
+        >
+        </div>
       </div>
     </div>
   );
 };
 
-const RGBForm: Component<PickerProps> = props => {
-  const { locale, format, color, setColor, updateControlPositions } = usePickerContext();
+const RGBForm: Component<PickerProps> = (props) => {
+  const { locale, format, color, setColor, updateControlPositions } =
+    usePickerContext();
   const { id } = props;
   const rgb = () => {
     let { r, g, b, a } = color().toRgb();
@@ -355,17 +442,30 @@ const RGBForm: Component<PickerProps> = props => {
     updateControlPositions();
   };
 
-  const changeRed: JSX.ChangeEventHandler<HTMLInputElement, Event> = e =>
-    setColorProxy(new Color({ ...rgb(), r: Number(e.currentTarget.value) }, format()));
-  const changeGreen: JSX.ChangeEventHandler<HTMLInputElement, Event> = e =>
-    setColorProxy(new Color({ ...rgb(), g: Number(e.currentTarget.value) }, format()));
-  const changeBlue: JSX.ChangeEventHandler<HTMLInputElement, Event> = e =>
-    setColorProxy(new Color({ ...rgb(), b: Number(e.currentTarget.value) }, format()));
-  const changeAlpha: JSX.ChangeEventHandler<HTMLInputElement, Event> = e =>
-    setColorProxy(new Color({ ...rgb(), a: Number(e.currentTarget.value) / 100 }, format()));
+  const changeRed: JSX.ChangeEventHandler<HTMLInputElement, Event> = (e) =>
+    setColorProxy(
+      new Color({ ...rgb(), r: Number(e.currentTarget.value) }, format()),
+    );
+  const changeGreen: JSX.ChangeEventHandler<HTMLInputElement, Event> = (e) =>
+    setColorProxy(
+      new Color({ ...rgb(), g: Number(e.currentTarget.value) }, format()),
+    );
+  const changeBlue: JSX.ChangeEventHandler<HTMLInputElement, Event> = (e) =>
+    setColorProxy(
+      new Color({ ...rgb(), b: Number(e.currentTarget.value) }, format()),
+    );
+  const changeAlpha: JSX.ChangeEventHandler<HTMLInputElement, Event> = (e) =>
+    setColorProxy(
+      new Color({ ...rgb(), a: Number(e.currentTarget.value) / 100 }, format()),
+    );
 
   return (
-    <div class={`color-dropdown picker${props.class()}`} role="group" id={`${id}-picker`} ref={props.ref}>
+    <div
+      class={`color-dropdown picker${props.class()}`}
+      role="group"
+      id={`${id}-picker`}
+      ref={props.ref}
+    >
       <ColorControls stringValue={stringValue} />
       <div class="color-form rgb">
         <label for={`color_rgb_red_${id}`}>
@@ -437,12 +537,17 @@ const RGBForm: Component<PickerProps> = props => {
   );
 };
 
-const HSLForm: Component<PickerProps> = props => {
-  const { format, locale, color, setColor, updateControlPositions } = usePickerContext();
+const HSLForm: Component<PickerProps> = (props) => {
+  const { format, locale, color, setColor, updateControlPositions } =
+    usePickerContext();
   const { id } = props;
   const hsl = () => {
     let { h, s, l, a } = color().toHsl();
-    [h, s, l] = [h, s, l].map((cl, i) => roundPart(cl * (i ? 100 : 360))) as [number, number, number];
+    [h, s, l] = [h, s, l].map((cl, i) => roundPart(cl * (i ? 100 : 360))) as [
+      number,
+      number,
+      number,
+    ];
     a = roundPart(a * 100);
     return { h, s, l, a };
   };
@@ -455,17 +560,34 @@ const HSLForm: Component<PickerProps> = props => {
     updateControlPositions();
   };
 
-  const changeHue: JSX.ChangeEventHandler<HTMLInputElement, Event> = e =>
-    setColorProxy(new Color({ ...hsl(), h: Number(e.currentTarget.value) }, format()));
-  const changeSaturation: JSX.ChangeEventHandler<HTMLInputElement, Event> = e =>
-    setColorProxy(new Color({ ...hsl(), s: Number(e.currentTarget.value) }, format()));
-  const changeLightness: JSX.ChangeEventHandler<HTMLInputElement, Event> = e =>
-    setColorProxy(new Color({ ...hsl(), l: Number(e.currentTarget.value) }, format()));
-  const changeAlpha: JSX.ChangeEventHandler<HTMLInputElement, Event> = e =>
-    setColorProxy(new Color({ ...hsl(), a: Number(e.currentTarget.value) / 100 }, format()));
+  const changeHue: JSX.ChangeEventHandler<HTMLInputElement, Event> = (e) =>
+    setColorProxy(
+      new Color({ ...hsl(), h: Number(e.currentTarget.value) }, format()),
+    );
+  const changeSaturation: JSX.ChangeEventHandler<HTMLInputElement, Event> = (
+    e,
+  ) =>
+    setColorProxy(
+      new Color({ ...hsl(), s: Number(e.currentTarget.value) }, format()),
+    );
+  const changeLightness: JSX.ChangeEventHandler<HTMLInputElement, Event> = (
+    e,
+  ) =>
+    setColorProxy(
+      new Color({ ...hsl(), l: Number(e.currentTarget.value) }, format()),
+    );
+  const changeAlpha: JSX.ChangeEventHandler<HTMLInputElement, Event> = (e) =>
+    setColorProxy(
+      new Color({ ...hsl(), a: Number(e.currentTarget.value) / 100 }, format()),
+    );
 
   return (
-    <div class={`color-dropdown picker${props.class()}`} role="group" id={`${id}-picker`} ref={props.ref}>
+    <div
+      class={`color-dropdown picker${props.class()}`}
+      role="group"
+      id={`${id}-picker`}
+      ref={props.ref}
+    >
       <ColorControls stringValue={stringValue} />
 
       <div class="color-form hsl">
@@ -538,12 +660,17 @@ const HSLForm: Component<PickerProps> = props => {
   );
 };
 
-const HWBForm: Component<PickerProps> = props => {
-  const { locale, format, color, setColor, updateControlPositions } = usePickerContext();
+const HWBForm: Component<PickerProps> = (props) => {
+  const { locale, format, color, setColor, updateControlPositions } =
+    usePickerContext();
   const { id } = props;
   const hwb = () => {
     let { h, w, b, a } = color().toHwb();
-    [h, w, b] = [h, w, b].map((cl, i) => roundPart(cl * (i ? 100 : 360))) as [number, number, number];
+    [h, w, b] = [h, w, b].map((cl, i) => roundPart(cl * (i ? 100 : 360))) as [
+      number,
+      number,
+      number,
+    ];
     a = roundPart(a * 100);
     return { h, w, b, a };
   };
@@ -556,17 +683,34 @@ const HWBForm: Component<PickerProps> = props => {
     updateControlPositions();
   };
 
-  const changeHue: JSX.ChangeEventHandler<HTMLInputElement, Event> = e =>
-    setColorProxy(new Color({ ...hwb(), h: Number(e.currentTarget.value) }, format()));
-  const changeWhiteness: JSX.ChangeEventHandler<HTMLInputElement, Event> = e =>
-    setColorProxy(new Color({ ...hwb(), w: Number(e.currentTarget.value) }, format()));
-  const changeBlackness: JSX.ChangeEventHandler<HTMLInputElement, Event> = e =>
-    setColorProxy(new Color({ ...hwb(), b: Number(e.currentTarget.value) }, format()));
-  const changeAlpha: JSX.ChangeEventHandler<HTMLInputElement, Event> = e =>
-    setColorProxy(new Color({ ...hwb(), a: Number(e.currentTarget.value) / 100 }, format()));
+  const changeHue: JSX.ChangeEventHandler<HTMLInputElement, Event> = (e) =>
+    setColorProxy(
+      new Color({ ...hwb(), h: Number(e.currentTarget.value) }, format()),
+    );
+  const changeWhiteness: JSX.ChangeEventHandler<HTMLInputElement, Event> = (
+    e,
+  ) =>
+    setColorProxy(
+      new Color({ ...hwb(), w: Number(e.currentTarget.value) }, format()),
+    );
+  const changeBlackness: JSX.ChangeEventHandler<HTMLInputElement, Event> = (
+    e,
+  ) =>
+    setColorProxy(
+      new Color({ ...hwb(), b: Number(e.currentTarget.value) }, format()),
+    );
+  const changeAlpha: JSX.ChangeEventHandler<HTMLInputElement, Event> = (e) =>
+    setColorProxy(
+      new Color({ ...hwb(), a: Number(e.currentTarget.value) / 100 }, format()),
+    );
 
   return (
-    <div class={`color-dropdown picker${props.class()}`} role="group" id={`${id}-picker`} ref={props.ref}>
+    <div
+      class={`color-dropdown picker${props.class()}`}
+      role="group"
+      id={`${id}-picker`}
+      ref={props.ref}
+    >
       <ColorControls stringValue={stringValue} />
 
       <div class="color-form hwb">
@@ -639,12 +783,13 @@ const HWBForm: Component<PickerProps> = props => {
   );
 };
 
-const HEXForm: Component<PickerProps> = props => {
-  const { format, locale, color, setColor, updateControlPositions } = usePickerContext();
+const HEXForm: Component<PickerProps> = (props) => {
+  const { format, locale, color, setColor, updateControlPositions } =
+    usePickerContext();
   const { id } = props;
   const hex = () => color().toHex();
   const stringValue = () => `${locale().hexLabel}: ${hex().toUpperCase()}`;
-  const changeHex: JSX.EventHandler<HTMLInputElement, Event> = e => {
+  const changeHex: JSX.EventHandler<HTMLInputElement, Event> = (e) => {
     const newValue = e.currentTarget.value;
     const newColor = new Color(newValue, format());
     // istanbul ignore else @preserve
@@ -655,10 +800,15 @@ const HEXForm: Component<PickerProps> = props => {
   };
 
   return (
-    <div class={`color-dropdown picker${props.class()}`} role="group" id={`${id}-picker`} ref={props.ref}>
+    <div
+      class={`color-dropdown picker${props.class()}`}
+      role="group"
+      id={`${id}-picker`}
+      ref={props.ref}
+    >
       <ColorControls stringValue={stringValue} />
 
-      <div class={'color-form hex'}>
+      <div class={"color-form hex"}>
         <label for="color_hex_hex_1">
           <span aria-hidden={true}>#:</span>
           <span class="v-hidden">{locale().hexLabel}</span>
@@ -684,7 +834,7 @@ const PartSelection = {
   hwb: HWBForm,
 };
 
-const PickerDropdown: Component<PickerProps> = props => {
+const PickerDropdown: Component<PickerProps> = (props) => {
   const { format } = usePickerContext();
   const getPart = () => createComponent(PartSelection[format()], props);
   const [part, setPart] = createSignal(getPart());

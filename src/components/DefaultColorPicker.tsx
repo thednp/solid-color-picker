@@ -1,33 +1,44 @@
-import Color from '@thednp/color';
+import Color from "@thednp/color";
 import {
-  getBoundingClientRect,
-  focus,
-  reflow,
   emulateTransitionEnd,
+  focus,
+  getBoundingClientRect,
+  keyEnter,
+  keyEscape,
   ObjectAssign,
   ObjectKeys,
-  on,
   off,
-  keyEscape,
-  keyEnter,
-} from '@thednp/shorty';
+  on,
+  reflow,
+} from "@thednp/shorty";
 
-import { type Component, JSX, createSignal, createEffect, onCleanup, createMemo, on as onState } from 'solid-js';
-import type { ColorPickerProps } from '../types/types';
-import PickerDropdown from '../parts/PickerDropdown';
-import MenuDropdown from '../parts/MenuDropdown';
-import { PickerContext } from '../parts/ColorPickerContext';
-import initialControlPositions from '../util/initialControlPositions';
-import offsetLength from '../util/offsetLength';
-import { languagePacks, getLanguageStrings } from '../locales/getLanguageStrings';
-import defaultValues from '../util/defaultValues';
+import {
+  type Component,
+  createEffect,
+  createMemo,
+  createSignal,
+  JSX,
+  on as onState,
+  onCleanup,
+} from "solid-js";
+import type { ColorPickerProps } from "../types/types";
+import PickerDropdown from "../parts/PickerDropdown";
+import MenuDropdown from "../parts/MenuDropdown";
+import { PickerContext } from "../parts/ColorPickerContext";
+import initialControlPositions from "../util/initialControlPositions";
+import offsetLength from "../util/offsetLength";
+import {
+  getLanguageStrings,
+  languagePacks,
+} from "../locales/getLanguageStrings";
+import defaultValues from "../util/defaultValues";
 
 // import default color picker style
-import './color-picker.css';
+import "./color-picker.css";
 
 let pickerCount = 0;
 
-const DefaultColorPicker: Component<ColorPickerProps> = props => {
+const DefaultColorPicker: Component<ColorPickerProps> = (props) => {
   const id = props.id ? props.id : `color-picker-${pickerCount}`;
   const lang = () => props.lang || defaultValues.lang;
   const theme = () => props.theme || defaultValues.theme;
@@ -36,7 +47,9 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
   const colorPresets = () => props.colorPresets;
   const colorKeywords = () => props.colorKeywords;
   const placeholder = () =>
-    props.placeholder ? props.placeholder : locale().placeholder.replace(/%/g, format().toUpperCase());
+    props.placeholder
+      ? props.placeholder
+      : locale().placeholder.replace(/%/g, format().toUpperCase());
   const [inputValue, setInputValue] = createSignal(initValue());
   const [value, setValue] = createSignal(initValue());
   const [color, setColor] = createSignal(new Color(initValue(), format()));
@@ -44,10 +57,12 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
   const [drag, setDrag] = createSignal<HTMLElement | undefined>(undefined);
   const [pickerShown, setPickerShown] = createSignal(false);
   const [menuShown, setMenuShown] = createSignal(false);
-  const [position, setPosition] = createSignal('');
-  const [controlPositions, setControlPositions] = createSignal(initialControlPositions);
+  const [position, setPosition] = createSignal("");
+  const [controlPositions, setControlPositions] = createSignal(
+    initialControlPositions,
+  );
   const locale = createMemo(() => {
-    if ('en' !== lang() && ObjectKeys(languagePacks).includes(lang())) {
+    if ("en" !== lang() && ObjectKeys(languagePacks).includes(lang())) {
       return getLanguageStrings(lang());
     }
     const langPack = getLanguageStrings(lang());
@@ -66,14 +81,14 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
   };
   const className = () =>
     [
-      'color-picker',
-      ...[props.class ? props.class.split(/\s/) : ''],
-      isDark() ? 'txt-dark' : 'txt-light',
-      theme() === 'light' ? ' light' : '',
-      open() ? 'open' : '',
+      "color-picker",
+      ...[props.class ? props.class.split(/\s/) : ""],
+      isDark() ? "txt-dark" : "txt-light",
+      theme() === "light" ? " light" : "",
+      open() ? "open" : "",
     ]
-      .filter(c => c)
-      .join(' ');
+      .filter((c) => c)
+      .join(" ");
 
   // update id
   pickerCount += 1;
@@ -84,16 +99,20 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
   let input!: HTMLInputElement;
 
   const pickerClass = () => {
-    return `${open() === pickerDropdown ? ' ' + position() : ''}${pickerShown() ? ' show' : ''}`;
+    return `${open() === pickerDropdown ? " " + position() : ""}${
+      pickerShown() ? " show" : ""
+    }`;
   };
   const menuClass = () => {
-    return `${open() === menuDropdown ? ' ' + position() : ''}${menuShown() ? ' show' : ''}`;
+    return `${open() === menuDropdown ? " " + position() : ""}${
+      menuShown() ? " show" : ""
+    }`;
   };
 
   // toggle visibility
   const showMenu = () => {
     setOpen(menuDropdown);
-    setPosition('bottom');
+    setPosition("bottom");
     setTimeout(() => {
       setMenuShown(true);
       reflow(menuDropdown);
@@ -120,7 +139,7 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
   };
   const showPicker = () => {
     setOpen(pickerDropdown);
-    setPosition('bottom');
+    setPosition("bottom");
     updateControlPositions();
     setTimeout(() => {
       setPickerShown(true);
@@ -137,25 +156,30 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
   };
 
   /** Event Listeners */
-  const handleBlur: JSX.FocusEventHandler<HTMLDivElement, FocusEvent> = ({ currentTarget, relatedTarget }) => {
+  const handleBlur: JSX.FocusEventHandler<HTMLDivElement, FocusEvent> = (
+    { currentTarget, relatedTarget },
+  ) => {
     // istanbul ignore next @preserve
     if (relatedTarget && !currentTarget.contains(relatedTarget as Node)) {
       hideDropdown();
     }
   };
 
-  const handleDismiss: JSX.EventHandler<Document, KeyboardEvent> = e => {
+  const handleDismiss: JSX.EventHandler<Document, KeyboardEvent> = (e) => {
     // istanbul ignore else @preserve
     if (open() && e.key === keyEscape) {
       hideDropdown();
     }
   };
 
-  const pointerUp: JSX.EventHandler<HTMLInputElement, KeyboardEvent> = e => {
+  const pointerUp: JSX.EventHandler<HTMLInputElement, KeyboardEvent> = (e) => {
     const selection = document.getSelection();
 
     // istanbul ignore else @preserve
-    if (!drag() && (!selection || !selection.toString().length) && !mainRef.contains(e.target)) {
+    if (
+      !drag() && (!selection || !selection.toString().length) &&
+      !mainRef.contains(e.target)
+    ) {
       hideDropdown();
     }
 
@@ -177,9 +201,9 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
     const topExceed = top - dropHeight < 0; // show-top
 
     if ((!topExceed && bottomExceed) || distanceBottom < distanceTop) {
-      setPosition('top');
+      setPosition("top");
     } else {
-      setPosition('bottom');
+      setPosition("bottom");
     }
   };
 
@@ -197,14 +221,14 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
   const toggleGlobalEvents = (add?: boolean) => {
     const action = add ? on : off;
 
-    action(window, 'scroll', updateDropdownPosition);
-    action(window, 'resize', updateControlPositions);
-    action(document, 'keyup', handleDismiss);
-    action(document, 'pointerup', pointerUp);
+    action(window, "scroll", updateDropdownPosition);
+    action(window, "resize", updateControlPositions);
+    action(document, "keyup", handleDismiss);
+    action(document, "pointerup", pointerUp);
   };
 
   const hideTransitionEnd = () => {
-    setPosition('');
+    setPosition("");
     setOpen();
 
     focus(input.previousElementSibling as HTMLButtonElement);
@@ -212,16 +236,20 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
     // this should be used here for consistency
     setInputValue(value());
   };
-  const handleChange: JSX.EventHandler<HTMLInputElement, Event> = e => {
+  const handleChange: JSX.EventHandler<HTMLInputElement, Event> = (e) => {
     setInputValue(e.currentTarget.value);
   };
-  const handleKeyUp: JSX.EventHandler<HTMLInputElement, KeyboardEvent> = e => {
+  const handleKeyUp: JSX.EventHandler<HTMLInputElement, KeyboardEvent> = (
+    e,
+  ) => {
     // istanbul ignore else @preserve
     if (e.key === keyEnter) {
       let newValue = e.currentTarget.value;
       // istanbul ignore else @preserve
       if (Color.isNonColor(newValue)) {
-        newValue = newValue === 'transparent' ? 'rgba(0,0,0,0)' : /* istanbul ignore next @preserve */ 'rgb(0,0,0)';
+        newValue = newValue === "transparent"
+          ? "rgba(0,0,0,0)"
+          : /* istanbul ignore next @preserve */ "rgb(0,0,0)";
       }
       const newColor = new Color(newValue, format());
       // istanbul ignore else @preserve
@@ -242,19 +270,19 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
   });
 
   createEffect(
-    onState(format, f => {
+    onState(format, (f) => {
       setColor(new Color(value(), f));
       updateControlPositions();
     }),
   );
 
   createEffect(
-    onState(color, f => {
+    onState(color, (f) => {
       const newValue = f.toString();
       setValue(newValue);
       setInputValue(newValue);
       // istanbul ignore else @preserve
-      if (typeof props.onChange === 'function') {
+      if (typeof props.onChange === "function") {
         props.onChange(newValue);
       }
     }),
@@ -285,7 +313,9 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
           type="button"
           onClick={showPicker}
         >
-          <span class="v-hidden">{`${locale().pickerLabel}. ${locale().formatLabel}: ${format().toUpperCase()}`}</span>
+          <span class="v-hidden">
+            {`${locale().pickerLabel}. ${locale().formatLabel}: ${format().toUpperCase()}`}
+          </span>
         </button>
         <input
           ref={input}
@@ -298,7 +328,7 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
           tabIndex={pickerShown() ? -1 : 0}
           placeholder={placeholder()}
           value={inputValue()}
-          style={{ 'background-color': value() }}
+          style={{ "background-color": value() }}
           onFocus={showPicker}
           onChange={handleChange}
           onKeyUp={handleKeyUp}
@@ -314,7 +344,8 @@ const DefaultColorPicker: Component<ColorPickerProps> = props => {
           expanded={menuShown() || pickerShown()}
           locale={locale}
           toggleMenu={toggleMenu}
-        ></MenuDropdown>
+        >
+        </MenuDropdown>
       </div>
     </PickerContext.Provider>
   );

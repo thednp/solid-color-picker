@@ -22,6 +22,6 @@
       "~/*": ["./src/*"],
     }
   },
-  "include": ["src", "test", "example", "vitest.config-ui.ts", "vitest.config.ts"],
+  "include": ["src", "test", "example"],
   "exclude": ["node_modules", "dist", "example", "experiments"]
 }

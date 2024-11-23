@@ -1,4 +1,4 @@
-import DefaultColorPicker from './components/DefaultColorPicker';
-import type { ColorPickerProps } from '~/types/types';
+import DefaultColorPicker from "./components/DefaultColorPicker";
+import type { ColorPickerProps } from "~/types/types";
 
-export { DefaultColorPicker, type ColorPickerProps };
+export { type ColorPickerProps, DefaultColorPicker };
