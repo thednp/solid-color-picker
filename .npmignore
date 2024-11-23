@@ -14,8 +14,8 @@ example
 experiments
 coverage
 *.local
-
 # Editor directories and files
+.editorconfig
 .vscode/*
 .github/*
 !.vscode/extensions.json
