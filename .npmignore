@@ -23,6 +23,8 @@ coverage
 .DS_Store
 .gitignore
 
+src
+test
 tsconfig.json
 tsup.config.ts
 vitest.config.mts
