@@ -9,11 +9,19 @@ on:
       - test
       - package.json
       - .github/workflows/ci.yml
+  pull_request:
+    branches:
+      - master
+    paths:
+      - src
+      - test
+      - package.json
+      - .github/workflows/ci.yml
 
 jobs:
   build:
     runs-on: ubuntu-24.04
-    name: Test on Node v22
+    name: Test on Node
 
     steps:
       - name: Checkout repo
@@ -62,5 +70,5 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@v4.4.1
         with:
           branch: gh-pages
-          node-version: 20.x
+          node-version: 22.x
           folder: docs

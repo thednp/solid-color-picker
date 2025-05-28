@@ -223,7 +223,7 @@ const MenuDropdown: Component<MenuProps> = (props) => {
         type="button"
         tabIndex={local.expanded ? 0 : -1}
         aria-expanded={local.expanded}
-        aria-haspopup={true}
+        aria-haspopup
         onClick={local.toggleMenu}
       >
         <span class="v-hidden">{local.locale().toggleLabel}</span>

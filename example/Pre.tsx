@@ -1,7 +1,7 @@
 import { Suspense, type Accessor, type Component } from 'solid-js';
 import { ColorKeywords } from '../src/types/types';
-import Files from './assets/files.svg';
-import Gear from './assets/gear.svg';
+import Files from './assets/files.svg?solid';
+import Gear from './assets/gear.svg?solid';
 import { toggleCollapse } from './util/toggleCollapse';
 import copyToClipboard from './util/copyToClipboard';
 

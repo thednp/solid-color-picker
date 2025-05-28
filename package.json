@@ -1,6 +1,6 @@
 {
   "name": "@thednp/solid-color-picker",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "description": "🎨 Modern Color Picker for SolidJS",
   "keywords": [
     "solid",
@@ -53,8 +53,8 @@
   },
   "scripts": {
     "pre-test": "pnpm clean-coverage",
-    "test": "pnpm pre-test && vitest --config vitest.config.mts",
-    "test-ui": "pnpm pre-test && vitest --config vitest.config-ui.mts",
+    "test": "pnpm pre-test && vitest --config vitest.config.ts",
+    "test-ui": "pnpm pre-test && vitest --config vitest.config-ui.ts",
     "clean-coverage": "rm -rf coverage .nyc_output",
     "dev": "vite serve example",
     "build:example": "pnpm format && pnpm lint && vite build example",
@@ -62,11 +62,11 @@
     "format": "deno fmt src",
     "badges": "npx -p dependency-version-badge update-badge solid-js typescript vitest vite",
     "build": "tsup",
-    "prepublishOnly": "pnpm up && pnpm format && pnpm lint && tsup && pnpm badges",
+    "prepublishOnly": "pnpm up --latest && pnpm format && pnpm lint && tsup && pnpm badges",
     "lint": "pnpm lint:types && pnpm lint:code",
     "lint:code": "deno lint src",
     "lint:types": "tsc --noEmit",
-    "fix:ts": "eslint src/**/*.{ts,tsx} --fix",
+    "fix:ts": "deno lint src --fix",
     "serve": "vite --open docs/index.html"
   },
   "license": "MIT",
@@ -75,27 +75,27 @@
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.6.3",
-    "@types/node": "^22.9.3",
-    "@vitest/browser": "^2.1.5",
-    "@vitest/coverage-istanbul": "^2.1.5",
-    "@vitest/ui": "^2.1.5",
-    "concurrently": "^8.2.2",
-    "gh-pages": "^6.2.0",
-    "jsdom": "^25.0.1",
-    "playwright": "^1.49.0",
-    "solid-js": "^1.9.3",
-    "tsup": "^8.3.5",
+    "@types/node": "^22.15.23",
+    "@vitest/browser": "^3.1.4",
+    "@vitest/coverage-istanbul": "^3.1.4",
+    "@vitest/ui": "^3.1.4",
+    "concurrently": "^9.1.2",
+    "gh-pages": "^6.3.0",
+    "jsdom": "^26.1.0",
+    "playwright": "^1.52.0",
+    "solid-js": "^1.9.7",
+    "tsup": "^8.5.0",
     "tsup-preset-solid": "^2.2.0",
-    "typescript": "^5.7.2",
-    "vite": "^5.4.11",
-    "vite-plugin-solid": "^2.10.2",
-    "vite-plugin-solid-svg": "^0.8.1",
-    "vitest": "^2.1.5"
+    "typescript": "^5.8.3",
+    "vite": "^6.3.5",
+    "vite-plugin-solid": "^2.11.6",
+    "vite-solid-svg": "^0.0.4",
+    "vitest": "^3.1.4"
   },
   "dependencies": {
-    "@thednp/color": "^1.0.13",
-    "@thednp/color-picker": "^2.0.3",
-    "@thednp/shorty": "^2.0.9"
+    "@thednp/color": "^1.0.14",
+    "@thednp/color-picker": "^2.0.4",
+    "@thednp/shorty": "^2.0.11"
   },
   "packageManager": "pnpm@8.6.12",
   "engines": {

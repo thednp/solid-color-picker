@@ -309,7 +309,7 @@ const DefaultColorPicker: Component<ColorPickerProps> = (props) => {
         <button
           class="picker-toggle btn-appearance"
           aria-expanded={pickerShown()}
-          aria-haspopup={true}
+          aria-haspopup
           type="button"
           onClick={showPicker}
         >

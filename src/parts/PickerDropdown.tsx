@@ -469,7 +469,7 @@ const RGBForm: Component<PickerProps> = (props) => {
       <ColorControls stringValue={stringValue} />
       <div class="color-form rgb">
         <label for={`color_rgb_red_${id}`}>
-          <span aria-hidden={true}>R:</span>
+          <span aria-hidden>R:</span>
           <span class="v-hidden">{locale().redLabel}</span>
         </label>
         <input
@@ -485,7 +485,7 @@ const RGBForm: Component<PickerProps> = (props) => {
           onChange={changeRed}
         />
         <label for={`color_rgb_green_${id}`}>
-          <span aria-hidden={true}>G:</span>
+          <span aria-hidden>G:</span>
           <span class="v-hidden">{locale().greenLabel}</span>
         </label>
         <input
@@ -501,7 +501,7 @@ const RGBForm: Component<PickerProps> = (props) => {
           onChange={changeGreen}
         />
         <label for={`color_rgb_blue_${id}`}>
-          <span aria-hidden={true}>B:</span>
+          <span aria-hidden>B:</span>
           <span class="v-hidden">{locale().blueLabel}</span>
         </label>
         <input
@@ -517,7 +517,7 @@ const RGBForm: Component<PickerProps> = (props) => {
           onChange={changeBlue}
         />
         <label for={`color_rgb_alpha_${id}`}>
-          <span aria-hidden={true}>A:</span>
+          <span aria-hidden>A:</span>
           <span class="v-hidden">{locale().alphaLabel}</span>
         </label>
         <input
@@ -592,7 +592,7 @@ const HSLForm: Component<PickerProps> = (props) => {
 
       <div class="color-form hsl">
         <label for={`color_hsl_hue_${id}`}>
-          <span aria-hidden={true}>H:</span>
+          <span aria-hidden>H:</span>
           <span class="v-hidden">{locale().hueLabel}</span>
         </label>
         <input
@@ -608,7 +608,7 @@ const HSLForm: Component<PickerProps> = (props) => {
           onChange={changeHue}
         />
         <label for={`color_hsl_saturation_${id}`}>
-          <span aria-hidden={true}>S:</span>
+          <span aria-hidden>S:</span>
           <span class="v-hidden">{locale().saturationLabel}</span>
         </label>
         <input
@@ -624,7 +624,7 @@ const HSLForm: Component<PickerProps> = (props) => {
           onChange={changeSaturation}
         />
         <label for={`color_hsl_lightness_${id}`}>
-          <span aria-hidden={true}>L:</span>
+          <span aria-hidden>L:</span>
           <span class="v-hidden">{locale().lightnessLabel}</span>
         </label>
         <input
@@ -640,7 +640,7 @@ const HSLForm: Component<PickerProps> = (props) => {
           onChange={changeLightness}
         />
         <label for={`color_hsl_alpha_${id}`}>
-          <span aria-hidden={true}>A:</span>
+          <span aria-hidden>A:</span>
           <span class="v-hidden">{locale().alphaLabel}</span>
         </label>
         <input
@@ -715,7 +715,7 @@ const HWBForm: Component<PickerProps> = (props) => {
 
       <div class="color-form hwb">
         <label for={`color_hwb_hue_${id}`}>
-          <span aria-hidden={true}>H:</span>
+          <span aria-hidden>H:</span>
           <span class="v-hidden">{locale().hueLabel}</span>
         </label>
         <input
@@ -731,7 +731,7 @@ const HWBForm: Component<PickerProps> = (props) => {
           onChange={changeHue}
         />
         <label for={`color_hwb_whiteness_${id}`}>
-          <span aria-hidden={true}>W:</span>
+          <span aria-hidden>W:</span>
           <span class="v-hidden">{locale().whitenessLabel}</span>
         </label>
         <input
@@ -747,7 +747,7 @@ const HWBForm: Component<PickerProps> = (props) => {
           onChange={changeWhiteness}
         />
         <label for={`color_hwb_blackness-${id}`}>
-          <span aria-hidden={true}>B:</span>
+          <span aria-hidden>B:</span>
           <span class="v-hidden">{locale().blacknessLabel}</span>
         </label>
         <input
@@ -763,7 +763,7 @@ const HWBForm: Component<PickerProps> = (props) => {
           onChange={changeBlackness}
         />
         <label for={`color_hwb_alpha_${id}`}>
-          <span aria-hidden={true}>A:</span>
+          <span aria-hidden>A:</span>
           <span class="v-hidden">{locale().alphaLabel}</span>
         </label>
         <input
@@ -808,9 +808,9 @@ const HEXForm: Component<PickerProps> = (props) => {
     >
       <ColorControls stringValue={stringValue} />
 
-      <div class={"color-form hex"}>
+      <div class="color-form hex">
         <label for="color_hex_hex_1">
-          <span aria-hidden={true}>#:</span>
+          <span aria-hidden>#:</span>
           <span class="v-hidden">{locale().hexLabel}</span>
         </label>
         <input

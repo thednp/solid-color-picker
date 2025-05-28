@@ -1,9 +1,9 @@
 import { ObjectEntries, ObjectKeys, ObjectValues } from '@thednp/shorty';
 import Color from '@thednp/color';
 import { For, createEffect, createSignal } from 'solid-js';
-import Fill from './assets/fill.svg';
-import Banner from './assets/banner.svg';
-import Plus from './assets/plus.svg';
+import Fill from './assets/fill.svg?solid';
+import Banner from './assets/banner.svg?solid';
+import Plus from './assets/plus.svg?solid';
 import './style.css';
 
 import Pre from './Pre';
